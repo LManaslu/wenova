@@ -29,7 +29,6 @@ Fighter::Fighter(string name, float x, float y){
   acceleration = Vector(0, 0.2);
 
   box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
-  printf("First: %f %f\n", box. width, box.height);
 }
 
 Fighter::~Fighter(){
@@ -42,28 +41,35 @@ void Fighter::update(float delta){
   if(inputManager.is_key_down(SDLK_a)){
     change_state(LEFT);
     speed.x = -1;
-  }else if(inputManager.is_key_down(SDLK_d)){
+  }
+
+  if(inputManager.is_key_down(SDLK_d)){
     change_state(RIGHT);
     speed.x = 1;
-  }else if(inputManager.is_key_down(SDLK_s)){
+  }
+
+  if(inputManager.is_key_down(SDLK_s)){
     change_state(SLIDING);
-  }else if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
-    change_state(JUMPING);
+  }
+
+  if(inputManager.is_key_down(SDLK_SPACE) && state != JUMPING){
     speed.y = -10;
-    //direita
-  }else if(speed.x == 0 && speed.y == 0){
+  }
+
+  if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){
     change_state(IDLE);
-  }else if(speed.y > 0){
+  }
+
+  if(speed.y > 0){
     change_state(FALLING);
+  }else if(speed.y > 0){
+    change_state(JUMPING);
   }
 
   speed.y += acceleration.y * delta;
 
   box.x += speed.x * delta;
   box.y += speed.y * delta;
-
-  //printf("sp.y = %.4f, %.4f, %.4f, (%.4f, %.4f)\n", speed.y, acceleration.y, delta, acceleration.y * delta);
-  //printf("BOX: %.4f, %.4f\n", box.x, box.y);
 
 //FIXME com colisão
   if(box.y + box.height * 0.5 > 500 && speed.y > 0){
@@ -72,25 +78,11 @@ void Fighter::update(float delta){
   }
 
   sprite[state].update(delta);
-
-  // speed.transform(linear_speed, rotation);
-  //
-  // float x = box.get_x() + speed.x * delta;
-  // if(x < 0) x = 0;
-  // if(x > 1407) x = 1408;
-  //
-  // float y = box.get_y() + speed.y * delta;
-  // if(y < 0) y = 0;
-  // if(y > 1280) y = 1280;
-  //
-  // box.set_x(x);
-  // box.set_y(y);
 }
 
 void Fighter::render(){
   int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
   int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
-  //printf("%d, %d\n", x, y);
   sprite[state].render(x, y, rotation);
 }
 
@@ -116,9 +108,6 @@ void Fighter::change_state(FighterState cstate){
 
   float x = box.x - (new_width - old_width) * 0.5;
   float y = box.y - (new_height - old_height) * 0.5;
-
-  printf("PRINT (%f,%f) %.2f %.2f\n", x, y, sprite[state].get_width(), sprite[state].get_height());
-
 
   box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }

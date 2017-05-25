@@ -52,7 +52,6 @@ void Sprite::open(string file){
     exit(-1);
   }
 
-  printf("Current frame = %d\n", current_frame);
   set_clip(current_frame * width, 0, width, height);
 }
 
