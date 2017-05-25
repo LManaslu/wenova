@@ -30,3 +30,7 @@
 
 # Vagrant path
 .vagrant/
+
+# Build paths
+bin
+obj
