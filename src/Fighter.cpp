@@ -4,6 +4,7 @@
 #include "Camera.h"
 
 #include <algorithm>
+#include <cstdlib>
 
 #define LAYER 0
 
@@ -57,7 +58,7 @@ void Fighter::update(float delta){
     change_state(SLIDING);
   }
   if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
-    speed.y = -10;
+    speed.y = -5;
   }
 
   if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){
@@ -91,7 +92,9 @@ bool Fighter::is_dead(){
 
 void Fighter::notify_collision(GameObject & object){
   //FIXME tá feio
-  if(object.is("floor") && speed.y >= 0){
+
+  float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
+  if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
     speed.y = 0;
     box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 

@@ -8,11 +8,13 @@
 BattleState::BattleState(string stage){
   background = Sprite("stage_" + stage + "/background.png");
 
-  add_object(new Floor("stage_" + stage + "/floor.png", 800, 500, 30));
-  add_object(new Floor("stage_" + stage + "/floor.png", 300, 400, 0));
+
   add_object(new Floor("stage_" + stage + "/floor.png", 0, 700, 45));
   add_object(new Floor("stage_" + stage + "/floor.png", 500, 700, 0));
   add_object(new Floor("stage_" + stage + "/floor.png", 1000, 700, 0));
+  add_object(new Floor("stage_" + stage + "/floor.png", 800, 500, 30));
+  add_object(new Floor("stage_" + stage + "/floor.png", 800, 500, 120));
+  add_object(new Floor("stage_" + stage + "/floor.png", 300, 400, 0));
 
   add_object(new Fighter("fighter", 100, 100));
 }
