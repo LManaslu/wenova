@@ -4,19 +4,14 @@
 #include "Camera.h"
 
 #define LAYER 0
-
-#define IDLE Floor::FloorState::IDLE
-#define LEFT Floor::FloorState::LEFT
-#define RIGHT Floor::FloorState::RIGHT
-#define JUMPING Floor::FloorState::JUMPING
-#define FALLING Floor::FloorState::FALLING
-#define SLIDING Floor::FloorState::SLIDING
+#define PI 3.14159265358979
 
 
 //TODO reavaliar se precisa ou não de Camera
-Floor::Floor(string path, float x, float y){
+Floor::Floor(string path, float x, float y, float crotation){
   sprite = Sprite(path);
 
+  rotation = crotation * PI / 180;
   box = Rectangle(x, y, sprite.get_width(), 20);
 }
 

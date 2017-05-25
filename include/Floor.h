@@ -11,7 +11,7 @@ private:
 
 public:
 
-  Floor(string name, float x, float y);
+  Floor(string name, float x, float y, float crotation);
   ~Floor();
 
   void update(float delta);

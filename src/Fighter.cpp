@@ -89,10 +89,9 @@ bool Fighter::is_dead(){
 
 void Fighter::notify_collision(GameObject & object){
   //FIXME tá feio
-  if(object.is("floor") && speed.y >= 0 &&
-     box.y - (object.box.get_draw_y() - box.height * 0.5) < 20){
+  if(object.is("floor") && speed.y >= 0){
     speed.y = 0;
-    box.y = object.box.get_draw_y() - box.height * 0.5;
+    box.y = object.box.y + (box.x - object.box.x) * sin(object.rotation) - box.height * 0.5;
     on_floor = true;
   }
 }
