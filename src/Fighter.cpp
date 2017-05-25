@@ -3,6 +3,8 @@
 #include "InputManager.h"
 #include "Camera.h"
 
+#include <algorithm>
+
 #define LAYER 0
 
 #define IDLE Fighter::FighterState::IDLE
@@ -24,9 +26,11 @@ Fighter::Fighter(string name, float x, float y){
 
   state = IDLE;
 
-  linear_speed = rotation = 0;
+  vertical_speed = rotation = 0;
   speed = Vector(0, 0);
   acceleration = Vector(0, 0.2);
+
+  on_floor = false;
 
   box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
@@ -38,21 +42,19 @@ void Fighter::update(float delta){
   InputManager inputManager = InputManager::get_instance();
 
   speed.x = 0;
+  on_floor = false;
   if(inputManager.is_key_down(SDLK_a)){
     change_state(LEFT);
     speed.x = -1;
   }
-
   if(inputManager.is_key_down(SDLK_d)){
     change_state(RIGHT);
     speed.x = 1;
   }
-
   if(inputManager.is_key_down(SDLK_s)){
     change_state(SLIDING);
   }
-
-  if(inputManager.is_key_down(SDLK_SPACE) && state != JUMPING){
+  if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
     speed.y = -10;
   }
 
@@ -60,24 +62,19 @@ void Fighter::update(float delta){
     change_state(IDLE);
   }
 
-  if(speed.y > 0){
-    change_state(FALLING);
-  }else if(speed.y > 0){
-    change_state(JUMPING);
-  }
+  sprite[state].update(delta);
+}
 
-  speed.y += acceleration.y * delta;
-
+void Fighter::post_collision_update(float delta){
+  speed.y += !on_floor * acceleration.y * delta;
   box.x += speed.x * delta;
   box.y += speed.y * delta;
 
-//FIXME com colisão
-  if(box.y + box.height * 0.5 > 500 && speed.y > 0){
-    speed.y = 0;
-    box.y = 500 - box.height * 0.5;
+  if(speed.y < 0){
+    change_state(JUMPING);
+  }else if(speed.y > 0 && not on_floor){
+    change_state(FALLING);
   }
-
-  sprite[state].update(delta);
 }
 
 void Fighter::render(){
@@ -90,7 +87,14 @@ bool Fighter::is_dead(){
  return false;
 }
 
-void Fighter::notify_collision(GameObject &){
+void Fighter::notify_collision(GameObject & object){
+  //FIXME tá feio
+  if(object.is("floor") && speed.y >= 0 &&
+     box.y - (object.box.get_draw_y() - box.height * 0.5) < 20){
+    speed.y = 0;
+    box.y = object.box.get_draw_y() - box.height * 0.5;
+    on_floor = true;
+  }
 }
 
 bool Fighter::is(string type){

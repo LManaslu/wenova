@@ -13,7 +13,8 @@ private:
   FighterState state;
   Vector speed;
   Vector acceleration;
-  float linear_speed;
+  float vertical_speed;
+  bool on_floor;
 
 public:
 
@@ -21,6 +22,7 @@ public:
   ~Fighter();
 
   void update(float delta);
+  void post_collision_update(float delta);
   void render();
   bool is_dead();
 

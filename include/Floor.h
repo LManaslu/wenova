@@ -1,23 +1,22 @@
-#ifndef FACE_H
-#define FACE_H
+#ifndef FLOOR_H
+#define FLOOR_H
 
 #include "GameObject.h"
 #include "Sprite.h"
 
-class Face : public GameObject{
+class Floor : public GameObject{
 private:
-  int hitpoints;
+
   Sprite sprite;
 
 public:
-  Face(float x, float y);
 
-  ~Face();
+  Floor(string name, float x, float y);
+  ~Floor();
+
   void update(float delta);
   void render();
   bool is_dead();
-
-  void take_damage(int damage);
 
   void notify_collision(GameObject & object);
   bool is(string type);
