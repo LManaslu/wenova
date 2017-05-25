@@ -24,7 +24,8 @@ Fighter::Fighter(string name, float x, float y){
 
   state = IDLE;
 
-  rotation = 0;
+  linear_speed = rotation = 0;
+  speed = Vector(0, 0);
   box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
 
@@ -36,16 +37,24 @@ void Fighter::update(float delta){
 
   if(inputManager.is_key_down(SDLK_a)){
     change_state(LEFT);
+    linear_speed = -1;
     //esquerda
   }else if(inputManager.is_key_down(SDLK_d)){
     change_state(RIGHT);
+    linear_speed = 1;
     //direita
   }else if(inputManager.is_key_down(SDLK_s)){
     change_state(SLIDING);
     //direita
-  }else
+  }else{
     change_state(IDLE);
+    linear_speed = 0;
+  }
 
+  speed.transform(linear_speed, rotation);
+
+  box.x += speed.x * delta;
+  box.y += speed.y * delta;
 
   sprite[state].update(delta);
 

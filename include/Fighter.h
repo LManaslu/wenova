@@ -12,6 +12,7 @@ private:
   Sprite sprite[10];
   FighterState state;
   Vector speed;
+  float linear_speed;
 
 public:
 
