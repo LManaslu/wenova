@@ -7,7 +7,7 @@
 BattleState::BattleState(string stage){
   background = Sprite("stage_" + stage + "/background.png");
 
-  add_object(new Fighter("fighter", 500, 500));
+  add_object(new Fighter("fighter", 100, 100));
 }
 
 void BattleState::update(float delta){

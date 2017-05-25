@@ -26,6 +26,8 @@ Fighter::Fighter(string name, float x, float y){
 
   linear_speed = rotation = 0;
   speed = Vector(0, 0);
+  acceleration = Vector(0, 0.2);
+
   box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
 
@@ -37,24 +39,37 @@ void Fighter::update(float delta){
 
   if(inputManager.is_key_down(SDLK_a)){
     change_state(LEFT);
-    linear_speed = -1;
+    speed.x = -1;
     //esquerda
   }else if(inputManager.is_key_down(SDLK_d)){
     change_state(RIGHT);
-    linear_speed = 1;
+    speed.x = 1;
     //direita
   }else if(inputManager.is_key_down(SDLK_s)){
     change_state(SLIDING);
     //direita
+  }else if(inputManager.is_key_down(SDLK_SPACE)){
+    change_state(JUMPING);
+    speed.y = -10;
+    //direita
   }else{
     change_state(IDLE);
-    linear_speed = 0;
+    speed.x = 0;
   }
 
-  speed.transform(linear_speed, rotation);
+  speed.y += acceleration.y * delta;
 
   box.x += speed.x * delta;
   box.y += speed.y * delta;
+
+  printf("sp.y = %.4f, %.4f, %.4f, (%.4f, %.4f)\n", speed.y, acceleration.y, delta, acceleration.y * delta);
+  printf("BOX: %.4f, %.4f\n", box.x, box.y);
+
+//FIXME com colisão
+  if(box.y + box.height * 0.5 > 500 && speed.y > 0){
+    speed.y = 0;
+    box.y = 500;
+  }
 
   sprite[state].update(delta);
 
@@ -73,8 +88,9 @@ void Fighter::update(float delta){
 }
 
 void Fighter::render(){
-  int x = box.get_draw_x()  + Camera::pos[LAYER].x;
-  int y = box.get_draw_y() + Camera::pos[LAYER].y;
+  int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
+  int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
+  printf("%d, %d\n", x, y);
   sprite[state].render(x, y, rotation);
 }
 
@@ -101,7 +117,7 @@ void Fighter::change_state(FighterState cstate){
   float x = box.x - (new_width - old_width) * 0.5;
   float y = box.y - (new_height - old_height) * 0.5;
 
-  printf("(%f,%f) %.2f %.2f\n", x, y, new_height, old_height);
+  printf("PRINT (%f,%f) %.2f %.2f\n", x, y, new_height, old_height);
 
 
   box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
