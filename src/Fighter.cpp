@@ -5,11 +5,27 @@
 
 #define LAYER 0
 
+#define IDLE Fighter::FighterState::IDLE
+#define LEFT Fighter::FighterState::LEFT
+#define RIGHT Fighter::FighterState::RIGHT
+#define JUMPING Fighter::FighterState::JUMPING
+#define FALLING Fighter::FighterState::FALLING
+#define SLIDING Fighter::FighterState::SLIDING
+
+
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
-  sprite = Sprite(name + "/idle.png", 6, 1);
+  sprite[IDLE] = Sprite(name + "/idle.png", 6, 1);
+  sprite[LEFT] = Sprite(name + "/left.png", 6, 1);
+  sprite[RIGHT] = Sprite(name + "/right.png", 8, 1);
+  sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 1);
+  sprite[FALLING] = Sprite(name + "/falling.png", 6, 1);
+  sprite[SLIDING] = Sprite(name + "/sliding.png", 6, 1);
+
+  state = IDLE;
+
   rotation = 0;
-  box = Rectangle(x, y, sprite.get_width(), sprite.get_height());
+  box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
 
 Fighter::~Fighter(){
@@ -19,14 +35,19 @@ void Fighter::update(float delta){
   InputManager inputManager = InputManager::get_instance();
 
   if(inputManager.is_key_down(SDLK_a)){
+    change_state(LEFT);
     //esquerda
-  }
-  if(inputManager.is_key_down(SDLK_d)){
+  }else if(inputManager.is_key_down(SDLK_d)){
+    change_state(RIGHT);
     //direita
-  }
+  }else if(inputManager.is_key_down(SDLK_s)){
+    change_state(SLIDING);
+    //direita
+  }else
+    change_state(IDLE);
 
 
-  sprite.update(delta);
+  sprite[state].update(delta);
 
   // speed.transform(linear_speed, rotation);
   //
@@ -45,7 +66,7 @@ void Fighter::update(float delta){
 void Fighter::render(){
   int x = box.get_draw_x()  + Camera::pos[LAYER].x;
   int y = box.get_draw_y() + Camera::pos[LAYER].y;
-  sprite.render(x, y, rotation);
+  sprite[state].render(x, y, rotation);
 }
 
 bool Fighter::is_dead(){
@@ -57,4 +78,22 @@ void Fighter::notify_collision(GameObject &){
 
 bool Fighter::is(string type){
   return type == "fighter";
+}
+
+void Fighter::change_state(FighterState cstate){
+  if(state == cstate) return;
+
+  float old_width = sprite[state].get_width();
+  float old_height = sprite[state].get_height();
+  state = cstate;
+  float new_width = sprite[state].get_width();
+  float new_height = sprite[state].get_height();
+
+  float x = box.x - (new_width - old_width) * 0.5;
+  float y = box.y - (new_height - old_height) * 0.5;
+
+  printf("(%f,%f) %.2f %.2f\n", x, y, new_height, old_height);
+
+
+  box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }

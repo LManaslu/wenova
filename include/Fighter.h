@@ -3,12 +3,15 @@
 
 #include "GameObject.h"
 #include "Sprite.h"
+#include "Vector.h"
 
 class Fighter : public GameObject{
 private:
 
-  Sprite sprite;
-
+  enum FighterState {IDLE, LEFT, RIGHT, JUMPING, FALLING, SLIDING};
+  Sprite sprite[10];
+  FighterState state;
+  Vector speed;
 
 public:
 
@@ -21,6 +24,8 @@ public:
 
   void notify_collision(GameObject & object);
   bool is(string type);
+
+  void change_state(FighterState cstate);
 };
 
 #endif
