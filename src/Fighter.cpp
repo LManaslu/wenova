@@ -14,6 +14,8 @@
 #define FALLING Fighter::FighterState::FALLING
 #define SLIDING Fighter::FighterState::SLIDING
 
+#define PI 3.14159265358979
+
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
@@ -91,7 +93,9 @@ void Fighter::notify_collision(GameObject & object){
   //FIXME tá feio
   if(object.is("floor") && speed.y >= 0){
     speed.y = 0;
-    box.y = object.box.y + (box.x - object.box.x) * sin(object.rotation) - box.height * 0.5;
+    box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+
+    printf("%f %f\n", object.rotation, object.rotation * 180 / PI);
     on_floor = true;
   }
 }

@@ -11,7 +11,7 @@
 Floor::Floor(string path, float x, float y, float crotation){
   sprite = Sprite(path);
 
-  rotation = crotation * PI / 180;
+  rotation = crotation * PI / 180.0;
   box = Rectangle(x, y, sprite.get_width(), 20);
 }
 
