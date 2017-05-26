@@ -42,7 +42,6 @@ void Camera::update(float delta){
       pos[i].y += speed.y * layer_speed[i];
     }
   }else{
-    //TODO proximo tX
     for(int i = 0; i < LAYERS; ++i){
       pos[i].x = (-focus->box.get_x() + SCREEN_WIDTH/2.0) * layer_speed[i]/layer_speed[PENGUIN_LAYER];
       pos[i].y = (-focus->box.get_y() + SCREEN_HEIGHT/2.0) * layer_speed[i]/layer_speed[PENGUIN_LAYER];

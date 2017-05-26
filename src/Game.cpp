@@ -113,7 +113,7 @@ void Game::run(){
 
     SDL_RenderPresent(renderer);
     manage_stack();
-    SDL_Delay(33);
+    SDL_Delay(15);
   }
 }
 

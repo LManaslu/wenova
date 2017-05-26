@@ -32,6 +32,8 @@ Fighter::Fighter(string name, float x, float y){
   vertical_speed = rotation = 0;
   speed = Vector(0, 0);
   acceleration = Vector(0, 0.2);
+  max_speed = 5;
+  //FIXME recebe no construtor
 
   on_floor = false;
 
@@ -69,9 +71,9 @@ void Fighter::update(float delta){
 }
 
 void Fighter::post_collision_update(float delta){
-  speed.y += !on_floor * acceleration.y * delta;
+  speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
   box.x += speed.x * delta;
-  box.y += speed.y * delta;
+  if(not on_floor) box.y += speed.y * delta;
 
   if(speed.y < 0){
     change_state(JUMPING);
@@ -98,7 +100,7 @@ void Fighter::notify_collision(GameObject & object){
     speed.y = 0;
     box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
-    printf("%f %f\n", object.rotation, object.rotation * 180 / PI);
+    //printf("%f %f\n", object.rotation, object.rotation * 180 / PI);
     on_floor = true;
   }
 }

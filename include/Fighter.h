@@ -15,6 +15,7 @@ private:
   Vector acceleration;
   float vertical_speed;
   bool on_floor;
+  float max_speed;
 
 public:
 
