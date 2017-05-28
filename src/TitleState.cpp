@@ -5,8 +5,7 @@
 #include "MenuState.h"
 
 TitleState::TitleState(){
-	text = new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "PRESS SPACE TO PLAY",
-					{0, 48, 255, 255}, 500, 500);
+	text = new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "PRESS SPACE TO PLAY", {0, 48, 255, 255}, 500, 500);
 	background = Sprite("title/background.png");
 }
 

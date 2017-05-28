@@ -3,10 +3,13 @@
 
 #include "State.h"
 #include "Sprite.h"
+#include "Text.h"
 
 class MenuState : public State {
 private:
 	Sprite background;
+	vector<Text*> options;
+	int current_option;
 
 public:
 	MenuState();

@@ -42,6 +42,7 @@ public:
 
 	static InputManager & get_instance();
 
+	// FIXME not being used
 	static const int LEFT_ARROW_KEY = SDLK_LEFT;
 	static const int RIGHT_ARROW_KEY = SDLK_RIGHT;
 	static const int DOWN_ARROW_KEY = SDLK_DOWN;

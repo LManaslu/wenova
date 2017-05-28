@@ -40,6 +40,12 @@ public:
 	void set_style(TextStyle cstyle);
 	void set_font_size(int cfont_size);
 
+	float get_x();
+	float get_y();
+	float get_width();
+	float get_height();
+	string get_text();
+
 	void remake_texture();
 	void open(string font_name, int cfont_size);
 };

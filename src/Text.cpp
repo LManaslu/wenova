@@ -67,6 +67,26 @@ void Text::set_font_size(int cfont_size){
 	remake_texture();
 }
 
+float Text::get_x(){
+	return box.get_x();
+}
+
+float Text::get_y(){
+	return box.get_y();
+}
+
+float Text::get_width(){
+	return box.get_width();
+}
+
+float Text::get_height(){
+	return box.get_height();
+}
+
+string Text::get_text(){
+	return text;
+}
+
 void Text::remake_texture(){
 	if(texture != nullptr){
 		SDL_DestroyTexture(texture);
