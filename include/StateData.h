@@ -3,7 +3,7 @@
 
 class StateData{
 public:
-  bool player_victory;
+	bool player_victory;
 };
 
 #endif

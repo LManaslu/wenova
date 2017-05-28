@@ -11,16 +11,16 @@ using std::shared_ptr;
 
 class Music{
 private:
-  shared_ptr<Mix_Music> music;
+	shared_ptr<Mix_Music> music;
 
 public:
-  Music();
-  Music(string file);
+	Music();
+	Music(string file);
 
-  void play(int times);
-  void stop();
-  void open(string file);
-  bool is_open();
+	void play(int times);
+	void stop();
+	void open(string file);
+	bool is_open();
 
 };
 

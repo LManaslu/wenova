@@ -11,17 +11,17 @@ using std::shared_ptr;
 
 class Sound{
 private:
-  shared_ptr<Mix_Chunk> sound;
-  int channel;
+	shared_ptr<Mix_Chunk> sound;
+	int channel;
 
 public:
-  Sound();
-  Sound(string file);
+	Sound();
+	Sound(string file);
 
-  void play(int times);
-  void stop();
-  void open(string file);
-  bool is_open();
+	void play(int times);
+	void stop();
+	void open(string file);
+	bool is_open();
 
 };
 

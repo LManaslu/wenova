@@ -3,13 +3,13 @@
 
 class Timer{
 private:
-  float time;
+	float time;
 
 public:
-  Timer();
-  void update(float delta);
-  void restart();
-  float get();
+	Timer();
+	void update(float delta);
+	void restart();
+	float get();
 };
 
 #endif

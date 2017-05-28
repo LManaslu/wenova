@@ -8,17 +8,17 @@
 
 class TitleState : public State{
 private:
-  Sprite background;
-  Text * text;
+	Sprite background;
+	Text * text;
 
 public:
-  TitleState();
+	TitleState();
 
-  void update(float delta);
-  void render();
+	void update(float delta);
+	void render();
 
-  void pause();
-  void resume();
+	void pause();
+	void resume();
 };
 
 #endif
