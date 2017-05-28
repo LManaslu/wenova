@@ -3,6 +3,9 @@
 #include "InputManager.h"
 #include "Camera.h"
 
+#include <algorithm>
+#include <cstdlib>
+
 #define LAYER 0
 
 #define IDLE Fighter::FighterState::IDLE
@@ -11,6 +14,8 @@
 #define JUMPING Fighter::FighterState::JUMPING
 #define FALLING Fighter::FighterState::FALLING
 #define SLIDING Fighter::FighterState::SLIDING
+
+#define PI 3.14159265358979
 
 
 //TODO reavaliar se precisa ou não de Camera
@@ -24,9 +29,13 @@ Fighter::Fighter(string name, float x, float y){
 
   state = IDLE;
 
-  linear_speed = rotation = 0;
+  vertical_speed = rotation = 0;
   speed = Vector(0, 0);
   acceleration = Vector(0, 0.2);
+  max_speed = 5;
+  //FIXME recebe no construtor
+
+  on_floor = false;
 
   box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
@@ -38,46 +47,39 @@ void Fighter::update(float delta){
   InputManager inputManager = InputManager::get_instance();
 
   speed.x = 0;
+  on_floor = false;
   if(inputManager.is_key_down(SDLK_a)){
     change_state(LEFT);
     speed.x = -1;
   }
-
   if(inputManager.is_key_down(SDLK_d)){
     change_state(RIGHT);
     speed.x = 1;
   }
-
   if(inputManager.is_key_down(SDLK_s)){
     change_state(SLIDING);
   }
-
-  if(inputManager.is_key_down(SDLK_SPACE) && state != JUMPING){
-    speed.y = -10;
+  if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
+    speed.y = -5;
   }
 
   if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){
     change_state(IDLE);
   }
 
-  if(speed.y > 0){
-    change_state(FALLING);
-  }else if(speed.y > 0){
-    change_state(JUMPING);
-  }
-
-  speed.y += acceleration.y * delta;
-
-  box.x += speed.x * delta;
-  box.y += speed.y * delta;
-
-//FIXME com colisão
-  if(box.y + box.height * 0.5 > 500 && speed.y > 0){
-    speed.y = 0;
-    box.y = 500 - box.height * 0.5;
-  }
-
   sprite[state].update(delta);
+}
+
+void Fighter::post_collision_update(float delta){
+  speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
+  box.x += speed.x * delta;
+  if(not on_floor) box.y += speed.y * delta;
+
+  if(speed.y < 0){
+    change_state(JUMPING);
+  }else if(speed.y > 0 && not on_floor){
+    change_state(FALLING);
+  }
 }
 
 void Fighter::render(){
@@ -90,7 +92,17 @@ bool Fighter::is_dead(){
  return false;
 }
 
-void Fighter::notify_collision(GameObject &){
+void Fighter::notify_collision(GameObject & object){
+  //FIXME tá feio
+
+  float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
+  if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
+    speed.y = 0;
+    box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+
+    //printf("%f %f\n", object.rotation, object.rotation * 180 / PI);
+    on_floor = true;
+  }
 }
 
 bool Fighter::is(string type){
