@@ -6,7 +6,7 @@
 #include "Floor.h"
 
 BattleState::BattleState(string stage){
-	background = Sprite("stage_" + stage + "/background.png");
+  background = Sprite("stage_" + stage + "/background.png", 6, 1);
 
 	add_object(new Floor("stage_" + stage + "/floor.png", 0, 700, 45));
 	add_object(new Floor("stage_" + stage + "/floor.png", 500, 700, 0));
@@ -15,7 +15,14 @@ BattleState::BattleState(string stage){
 	add_object(new Floor("stage_" + stage + "/floor.png", 800, 500, 120));
 	add_object(new Floor("stage_" + stage + "/floor.png", 300, 400, 0));
 
-	add_object(new Fighter("fighter", 100, 100));
+  add_object(new Floor(0, 700, 500, 20, 45));
+  add_object(new Floor(500, 700, 500, 20, 0));
+  add_object(new Floor(1000, 700, 500, 20, 0));
+  add_object(new Floor(800, 500, 500, 20, 30));
+  add_object(new Floor(800, 500, 500, 20, 120));
+  add_object(new Floor(300, 400, 500, 20, 0));
+
+  add_object(new Fighter("fighter", 100, 100));
 }
 
 void BattleState::update(float delta){

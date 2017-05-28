@@ -70,6 +70,18 @@ void Fighter::update(float delta){
 	sprite[state].update(delta);
 }
 
+void Fighter::notify_collision(GameObject & object){
+  //FIXME tá feio
+
+  float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
+  if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
+    speed.y = 0;
+    box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+
+    on_floor = true;
+  }
+}
+
 void Fighter::post_collision_update(float delta){
 	speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
 	box.x += speed.x * delta;
@@ -112,11 +124,12 @@ bool Fighter::is(string type){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
-	float old_width = sprite[state].get_width();
-	float old_height = sprite[state].get_height();
-	state = cstate;
-	float new_width = sprite[state].get_width();
-	float new_height = sprite[state].get_height();
+  //TODO Dar restart no count da sprite
+  float old_width = sprite[state].get_width();
+  float old_height = sprite[state].get_height();
+  state = cstate;
+  float new_width = sprite[state].get_width();
+  float new_height = sprite[state].get_height();
 
 	float x = box.x - (new_width - old_width) * 0.5;
 	float y = box.y - (new_height - old_height) * 0.5;

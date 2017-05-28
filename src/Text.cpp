@@ -31,14 +31,16 @@ Text::~Text(){
 }
 
 void Text::render(int camera_x, int camera_y){
-	SDL_Rect dstrect = SDL_Rect{(int) box.get_x() + camera_x, (int) box.get_y() + camera_y, clip_rect.w, clip_rect.h};
+  SDL_Rect src_rect = { 0, 0, (int)box.get_width(), (int)box.get_height() };
+  SDL_Rect dest_rect = { (int)box.get_x() + camera_x, (int)box.get_y() + camera_y, (int)box.get_width(), (int)box.get_height() };
 
-	int render_copy = SDL_RenderCopy(Game::get_instance().get_renderer(), texture,
-									&clip_rect, &dstrect);
-	if(render_copy){
-		printf("Render text: %s\n", SDL_GetError());
-		exit(-1);
-	}
+
+  int render_copy = SDL_RenderCopy(Game::get_instance().get_renderer(), texture,
+    &src_rect, &dest_rect);
+  if(render_copy){
+      printf("Render text: %s\n", SDL_GetError());
+      exit(-1);
+    }
 }
 
 void Text::set_pos(int x, int y, bool center_x, bool center_y){
