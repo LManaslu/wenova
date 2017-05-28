@@ -1,18 +1,15 @@
-#ifndef TITLESTATE_H
-#define TITLESTATE_H
+#ifndef MENU_STATE_H
+#define MENU_STATE_H
 
 #include "State.h"
 #include "Sprite.h"
-#include "Text.h"
-#include "Timer.h"
 
-class TitleState : public State {
+class MenuState : public State {
 private:
 	Sprite background;
-	Text * text;
 
 public:
-	TitleState();
+	MenuState();
 
 	void update(float delta);
 	void render();

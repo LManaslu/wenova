@@ -2,7 +2,7 @@
 
 #include "InputManager.h"
 #include "Game.h"
-#include "BattleState.h"
+#include "MenuState.h"
 
 TitleState::TitleState(){
 	text = new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "PRESS SPACE TO PLAY",
@@ -20,7 +20,7 @@ void TitleState::update(float delta){
 
 	if(inputManager.key_press(SDLK_SPACE)){
 		m_quit_requested = true;
-		Game::get_instance().push(new BattleState("1"));
+		Game::get_instance().push(new MenuState());
 		return;
 	}
 }
