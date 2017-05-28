@@ -5,19 +5,19 @@
 #include "Game.h"
 
 #define OPTION_OFFSET 50
+#define RED { 255, 0, 0, 1 }
+#define WHITE { 255, 255, 255, 255 }
 
 MenuState::MenuState() : current_option(0) {
 	background = Sprite("menu/background.png");
 
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "START", {255, 255, 255, 255}, 640, 640));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "CONTINUE", {255, 255, 255, 255}, 640, 640));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "OPTIONS", {255, 255, 255, 255}, 640, 640));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "EXIT", {255, 255, 255, 255}, 640, 640));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "START", RED, 640, 640));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "CONTINUE", RED, 640, 640));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "OPTIONS", RED, 640, 640));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "EXIT", RED, 640, 640));
 }
 
 void MenuState::update(float delta){
-	printf("CURRENT OPTION: %d\n", current_option);
-
 	InputManager input_manager = InputManager::get_instance();
 
 	// handling general inputs
@@ -34,33 +34,36 @@ void MenuState::update(float delta){
 	}
 
 	// handling options input
-	if(input_manager.key_press(SDLK_LEFT)){
-		current_option = (current_option - 1) % options.size();
+	if(input_manager.key_press(SDLK_LEFT) && current_option != 0){
+		current_option--;
 	}
 
-	if(input_manager.key_press(SDLK_RIGHT)){
-		current_option = (current_option + 1) % options.size();
+	if(input_manager.key_press(SDLK_RIGHT) && current_option != (int)options.size() - 1){
+		current_option++;
 	}
 
 	// TODO when press space switch case in options
 
 	// handling options positioning
 	options[current_option]->set_pos(640, 640, true, true);
-	options[current_option]->set_color({ 255, 0, 0, 1 });
+	options[current_option]->set_color(WHITE);
 
-	int idx = (current_option + 1) % options.size();
+	// positioning options before current option
+	for(int idx = 0; idx < current_option; idx++){
+		Text* next_option = options[idx + 1];
 
-	for(int counter = 0; counter < options.size() - 1; counter++){
-		int prev_idx = (idx - 1) % options.size();
-		Text* prev_option = options[prev_idx];
+		int new_x = next_option->get_x() - options[idx]->get_width() - OPTION_OFFSET;
+		options[idx]->set_pos(new_x, 640, false, true);
+		options[idx]->set_color(RED);
+	}
 
-		// printf("PREV: (x: %f, y: %f, w: %f, h: %f)")
+	// positioning options after current option
+	for(unsigned int idx = current_option + 1; idx < options.size(); idx++){
+		Text* prev_option = options[idx - 1];
 
 		int new_x = prev_option->get_x() + prev_option->get_width() + OPTION_OFFSET;
 		options[idx]->set_pos(new_x, 640, false, true);
-		options[idx]->set_color({ 255, 255, 255, 255 });
-
-		idx = (idx + 1) % options.size();
+		options[idx]->set_color(RED);
 	}
 }
 
