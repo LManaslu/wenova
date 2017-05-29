@@ -6,20 +6,18 @@
 
 class Floor : public GameObject{
 private:
-
-  Sprite sprite;
+	Sprite sprite;
 
 public:
+	Floor(string name, float x, float y, float crotation);
+	~Floor();
 
-  Floor(string name, float x, float y, float crotation);
-  ~Floor();
+	void update(float delta);
+	void render();
+	bool is_dead();
 
-  void update(float delta);
-  void render();
-  bool is_dead();
-
-  void notify_collision(GameObject & object);
-  bool is(string type);
+	void notify_collision(GameObject & object);
+	bool is(string type);
 };
 
 #endif

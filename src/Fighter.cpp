@@ -20,106 +20,106 @@
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
-  sprite[IDLE] = Sprite(name + "/idle.png", 6, 1);
-  sprite[LEFT] = Sprite(name + "/left.png", 6, 1);
-  sprite[RIGHT] = Sprite(name + "/right.png", 8, 1);
-  sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 1);
-  sprite[FALLING] = Sprite(name + "/falling.png", 6, 1);
-  sprite[SLIDING] = Sprite(name + "/sliding.png", 6, 1);
+	sprite[IDLE] = Sprite(name + "/idle.png", 6, 1);
+	sprite[LEFT] = Sprite(name + "/left.png", 6, 1);
+	sprite[RIGHT] = Sprite(name + "/right.png", 8, 1);
+	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 1);
+	sprite[FALLING] = Sprite(name + "/falling.png", 6, 1);
+	sprite[SLIDING] = Sprite(name + "/sliding.png", 6, 1);
 
-  state = IDLE;
+	state = IDLE;
 
-  vertical_speed = rotation = 0;
-  speed = Vector(0, 0);
-  acceleration = Vector(0, 0.2);
-  max_speed = 5;
-  //FIXME recebe no construtor
+	vertical_speed = rotation = 0;
+	speed = Vector(0, 0);
+	acceleration = Vector(0, 0.2);
+	max_speed = 5;
+	//FIXME recebe no construtor
 
-  on_floor = false;
+	on_floor = false;
 
-  box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
+	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
 
 Fighter::~Fighter(){
 }
 
 void Fighter::update(float delta){
-  InputManager inputManager = InputManager::get_instance();
+	InputManager inputManager = InputManager::get_instance();
 
-  speed.x = 0;
-  on_floor = false;
-  if(inputManager.is_key_down(SDLK_a)){
-    change_state(LEFT);
-    speed.x = -1;
-  }
-  if(inputManager.is_key_down(SDLK_d)){
-    change_state(RIGHT);
-    speed.x = 1;
-  }
-  if(inputManager.is_key_down(SDLK_s)){
-    change_state(SLIDING);
-  }
-  if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
-    speed.y = -5;
-  }
+	speed.x = 0;
+	on_floor = false;
+	if(inputManager.is_key_down(SDLK_a)){
+		change_state(LEFT);
+		speed.x = -1;
+	}
+	if(inputManager.is_key_down(SDLK_d)){
+		change_state(RIGHT);
+		speed.x = 1;
+	}
+	if(inputManager.is_key_down(SDLK_s)){
+		change_state(SLIDING);
+	}
+	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
+		speed.y = -5;
+	}
 
-  if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){
-    change_state(IDLE);
-  }
+	if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){
+		change_state(IDLE);
+	}
 
-  sprite[state].update(delta);
+	sprite[state].update(delta);
 }
 
 void Fighter::post_collision_update(float delta){
-  speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
-  box.x += speed.x * delta;
-  if(not on_floor) box.y += speed.y * delta;
+	speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
+	box.x += speed.x * delta;
+	if(not on_floor) box.y += speed.y * delta;
 
-  if(speed.y < 0){
-    change_state(JUMPING);
-  }else if(speed.y > 0 && not on_floor){
-    change_state(FALLING);
-  }
+	if(speed.y < 0){
+		change_state(JUMPING);
+	}else if(speed.y > 0 && not on_floor){
+		change_state(FALLING);
+	}
 }
 
 void Fighter::render(){
-  int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
-  int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
-  sprite[state].render(x, y, rotation);
+	int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
+	int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
+	sprite[state].render(x, y, rotation);
 }
 
 bool Fighter::is_dead(){
- return false;
+	return false;
 }
 
 void Fighter::notify_collision(GameObject & object){
-  //FIXME tá feio
+	//FIXME tá feio
 
-  float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
-  if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
-    speed.y = 0;
-    box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
+	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
+		speed.y = 0;
+		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
-    //printf("%f %f\n", object.rotation, object.rotation * 180 / PI);
-    on_floor = true;
-  }
+		//printf("%f %f\n", object.rotation, object.rotation * 180 / PI);
+		on_floor = true;
+	}
 }
 
 bool Fighter::is(string type){
-  return type == "fighter";
+	return type == "fighter";
 }
 
 void Fighter::change_state(FighterState cstate){
-  if(state == cstate) return;
+	if(state == cstate) return;
 
-  float old_width = sprite[state].get_width();
-  float old_height = sprite[state].get_height();
-  state = cstate;
-  float new_width = sprite[state].get_width();
-  float new_height = sprite[state].get_height();
+	float old_width = sprite[state].get_width();
+	float old_height = sprite[state].get_height();
+	state = cstate;
+	float new_width = sprite[state].get_width();
+	float new_height = sprite[state].get_height();
 
-  float x = box.x - (new_width - old_width) * 0.5;
-  float y = box.y - (new_height - old_height) * 0.5;
+	float x = box.x - (new_width - old_width) * 0.5;
+	float y = box.y - (new_height - old_height) * 0.5;
 
-  box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
+	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }

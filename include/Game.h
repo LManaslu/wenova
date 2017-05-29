@@ -17,33 +17,33 @@ using std::unique_ptr;
 
 class Game{
 private:
-  static Game * instance;
+	static Game * instance;
 
-  int frame_start;
-  float delta;
+	int frame_start;
+	float delta;
 
-  State * stored_state;
-  SDL_Window * window;
-  SDL_Renderer * renderer = nullptr;
+	State * stored_state;
+	SDL_Window * window;
+	SDL_Renderer * renderer = nullptr;
 
-  stack< unique_ptr<State> > state_stack;
+	stack< unique_ptr<State> > state_stack;
 
-  void calculate_delta_time();
-  void manage_stack();
+	void calculate_delta_time();
+	void manage_stack();
 
 public:
-  Game(string title, int width, int height);
-  ~Game();
+	Game(string title, int width, int height);
+	~Game();
 
-  static Game & get_instance();
-  SDL_Renderer * get_renderer();
-  State & get_current_state();
+	static Game & get_instance();
+	SDL_Renderer * get_renderer();
+	State & get_current_state();
 
-  void push(State * state);
+	void push(State * state);
 
-  void run();
+	void run();
 
-  float get_delta_time();
+	float get_delta_time();
 };
 
 #endif

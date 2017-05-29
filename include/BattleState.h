@@ -8,16 +8,16 @@
 
 class BattleState : public State{
 private:
-  Sprite background;
+	Sprite background;
 
 public:
-  BattleState(string stage);
+	BattleState(string stage);
 
-  void update(float delta);
-  void render();
+	void update(float delta);
+	void render();
 
-  void pause();
-  void resume();
+	void pause();
+	void resume();
 };
 
 #endif
