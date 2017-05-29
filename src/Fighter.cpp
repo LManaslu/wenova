@@ -74,7 +74,7 @@ void Fighter::notify_collision(GameObject & object){
 	//FIXME tá feio
 
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
-	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
+	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 30){
 		speed.y = 0;
 		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
@@ -145,4 +145,10 @@ void Fighter::test_limits(){
 	if(box.x > 1280) box.x = 1280;
 	if(box.y < 0) box.y = 0;
 	if(box.y > 720) box.y = 720;
+}
+
+void Fighter::reset_position(float x, float y){
+	box.x = x;
+	box.y = y;
+	speed.y = 0;
 }
