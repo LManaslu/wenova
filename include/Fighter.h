@@ -15,11 +15,13 @@ private:
 	float vertical_speed;
 	bool on_floor;
 	float max_speed;
+	void test_limits();
 
 public:
+
 	Fighter(string name, float x, float y);
 	~Fighter();
-	
+
 	void update(float delta);
 	void post_collision_update(float delta);
 	void render();
