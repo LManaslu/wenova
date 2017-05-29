@@ -3,9 +3,10 @@
 #include "TitleState.h"
 #include "BattleState.h"
 #include "Game.h"
+#include "Resources.h"
 
 #define OPTION_OFFSET 50
-#define RED { 255, 0, 0, 1 }
+#define RED { 236, 0, 46, 1 }
 #define WHITE { 255, 255, 255, 255 }
 
 MenuState::MenuState() : current_option(0) {
@@ -27,12 +28,6 @@ void MenuState::update(float delta){
 		return;
 	}
 
-	if(input_manager.key_press(SDLK_SPACE)){
-		m_quit_requested = true;
-		Game::get_instance().push(new BattleState("1"));
-		return;
-	}
-
 	// handling options input
 	if(input_manager.key_press(SDLK_LEFT) && current_option != 0){
 		current_option--;
@@ -43,6 +38,27 @@ void MenuState::update(float delta){
 	}
 
 	// TODO when press space switch case in options
+	if(input_manager.key_press(SDLK_RETURN)){
+		switch(current_option){
+			case 0:
+				m_quit_requested = true;
+				Game::get_instance().push(new BattleState("1"));
+				return;
+
+			case 1:
+				printf("CONTINUE SELECTED\n");
+				break;
+
+			case 2:
+				printf("OPTIONS SELECTED\n");
+				break;
+
+			case 3:
+				m_quit_requested = true;
+				Game::get_instance().push(new TitleState());
+				return;
+		}
+	}
 
 	// handling options positioning
 	options[current_option]->set_pos(640, 640, true, true);

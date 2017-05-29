@@ -34,7 +34,7 @@ void Text::render(int camera_x, int camera_y){
 	SDL_Rect dstrect = SDL_Rect{(int) box.get_x() + camera_x, (int) box.get_y() + camera_y, clip_rect.w, clip_rect.h};
 
 	int render_copy = SDL_RenderCopy(Game::get_instance().get_renderer(), texture,
-	&clip_rect, &dstrect);
+									&clip_rect, &dstrect);
 	if(render_copy){
 		printf("Render text: %s\n", SDL_GetError());
 		exit(-1);

@@ -10,6 +10,8 @@ class TitleState : public State {
 private:
 	Sprite background;
 	Text * text;
+	Timer text_timer;
+	bool show_text;
 
 public:
 	TitleState();
