@@ -61,15 +61,18 @@ void EditableFloor::update(float delta){
 			rotation = 0;
 		}
 
-		if(inputManager.is_key_down(SDLK_m)){
-			normal_sprite.update_scale_x(0.001 * value);
-			selected_sprite.update_scale_x(0.001 * value);
+		if(inputManager.is_key_down(SDLK_PERIOD)){
+			normal_sprite.update_scale_x(0.005 * value);
+			selected_sprite.update_scale_x(0.005 * value);
 			box.width = normal_sprite.get_width();
 		}
-		if(inputManager.is_key_down(SDLK_n)){
-			normal_sprite.update_scale_x(-0.001 * value);
-			selected_sprite.update_scale_x(-0.001 * value);
+		if(inputManager.is_key_down(SDLK_COMMA)){
+			normal_sprite.update_scale_x(-0.005 * value);
+			selected_sprite.update_scale_x(-0.005 * value);
 			box.width = normal_sprite.get_width();
+		}
+		if(inputManager.is_key_down(SDLK_DELETE)){
+			deleted = true;
 		}
 	}
 }
