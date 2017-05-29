@@ -40,9 +40,9 @@ public:
 	void update(float delta);
 	void render(int x, int y, float angle = 0);
 
-	void set_scale_x(float scale);
-	void set_scale_y(float scale);
-
+  void set_scale_x(float scale);
+  void set_scale_y(float scale);
+  void update_scale_x(float scale);
 };
 
 #endif

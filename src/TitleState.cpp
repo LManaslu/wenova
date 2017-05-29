@@ -5,6 +5,8 @@
 #include "MenuState.h"
 
 #define TEXT_TIMER_COOLDOWN 50
+#include "BattleState.h"
+#include "EditState.h"
 
 TitleState::TitleState(){
 	text = new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "PRESS ENTER", { 23, 28, 57, 1 }, 640, 640);
@@ -32,6 +34,12 @@ void TitleState::update(float delta){
 	}
 
 	text_timer.update(delta);
+
+  if(inputManager.is_key_down(SDLK_w) and inputManager.is_key_down(SDLK_r) and inputManager.is_key_down(SDLK_c)){
+    m_quit_requested = true;
+    Game::get_instance().push(new EditState("1"));
+    return;
+  }
 }
 
 void TitleState::render(){

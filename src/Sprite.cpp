@@ -100,3 +100,7 @@ void Sprite::set_scale_x(float scale){
 void Sprite::set_scale_y(float scale){
 	scale_y = scale;
 }
+
+void Sprite::update_scale_x(float scale){
+	scale_x += scale;
+}
