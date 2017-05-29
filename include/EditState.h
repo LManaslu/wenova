@@ -5,10 +5,12 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "Timer.h"
+#include "Fighter.h"
 
 class EditState : public State{
 private:
 	Sprite background;
+	Fighter * test_fighter;
 
 public:
 	EditState(string stage);

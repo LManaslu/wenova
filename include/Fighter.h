@@ -31,6 +31,7 @@ public:
 	bool is(string type);
 
 	void change_state(FighterState cstate);
+	void reset_position(float x, float y);
 };
 
 #endif
