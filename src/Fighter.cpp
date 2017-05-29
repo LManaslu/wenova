@@ -71,21 +71,23 @@ void Fighter::update(float delta){
 }
 
 void Fighter::notify_collision(GameObject & object){
-  //FIXME tá feio
+	//FIXME tá feio
 
-  float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
-  if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
-    speed.y = 0;
-    box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
+	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
+		speed.y = 0;
+		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
-    on_floor = true;
-  }
+		on_floor = true;
+	}
 }
 
 void Fighter::post_collision_update(float delta){
 	speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
 	box.x += speed.x * delta;
 	if(not on_floor) box.y += speed.y * delta;
+
+	test_limits();
 
 	if(speed.y < 0){
 		change_state(JUMPING);
@@ -124,15 +126,23 @@ bool Fighter::is(string type){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
-  //TODO Dar restart no count da sprite
-  float old_width = sprite[state].get_width();
-  float old_height = sprite[state].get_height();
-  state = cstate;
-  float new_width = sprite[state].get_width();
-  float new_height = sprite[state].get_height();
+	//TODO Dar restart no count da sprite
+	float old_width = sprite[state].get_width();
+	float old_height = sprite[state].get_height();
+	state = cstate;
+	float new_width = sprite[state].get_width();
+	float new_height = sprite[state].get_height();
 
 	float x = box.x - (new_width - old_width) * 0.5;
 	float y = box.y - (new_height - old_height) * 0.5;
 
 	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
+}
+
+void Fighter::test_limits(){
+	//TODO config
+	if(box.x < 0) box.x = 0;
+	if(box.x > 1280) box.x = 1280;
+	if(box.y < 0) box.y = 0;
+	if(box.y > 720) box.y = 720;
 }
