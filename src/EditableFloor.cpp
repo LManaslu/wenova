@@ -15,6 +15,12 @@ Floor(x, y, normal_sprite.get_width(), normal_sprite.get_height(), crotation){
 	selected = false;
 }
 
+EditableFloor::EditableFloor(float x, float y, float width, float height, float crotation) : EditableFloor(x, y, crotation){
+	normal_sprite.set_scale_x(width / normal_sprite.get_width());
+	selected_sprite.set_scale_x(width / selected_sprite.get_width());
+	box.width = normal_sprite.get_width();
+}
+
 EditableFloor::~EditableFloor(){
 
 }
@@ -75,7 +81,7 @@ void EditableFloor::update(float delta){
 		}
 	}
 
-	printf("%f, %f, %.f, %f, %f\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI);
+	//printf("%f, %f, %.f, %f, %f\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI);
 }
 
 void EditableFloor::render(){
