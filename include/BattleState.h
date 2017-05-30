@@ -10,6 +10,8 @@ class BattleState : public State{
 private:
 	Sprite background;
 
+  void read_level_design(string stage);
+
 public:
 	BattleState(string stage);
 
