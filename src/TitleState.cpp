@@ -35,11 +35,11 @@ void TitleState::update(float delta){
 
 	text_timer.update(delta);
 
-  if(inputManager.is_key_down(SDLK_w) and inputManager.is_key_down(SDLK_r) and inputManager.is_key_down(SDLK_c)){
-    m_quit_requested = true;
-    Game::get_instance().push(new EditState("1"));
-    return;
-  }
+	if(inputManager.is_key_down(SDLK_w) and inputManager.is_key_down(SDLK_r) and inputManager.is_key_down(SDLK_c)){
+		m_quit_requested = true;
+		Game::get_instance().push(new EditState("1"));
+		return;
+	}
 }
 
 void TitleState::render(){

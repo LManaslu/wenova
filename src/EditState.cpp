@@ -38,7 +38,9 @@ void EditState::update(float delta){
 		add_object(new EditableFloor(x, y, 0));
 	}
 
+	printf("Floors\n------------------------------------\n");
 	update_array(delta);
+	printf("-------------------------------\n");
 }
 
 void EditState::render(){
