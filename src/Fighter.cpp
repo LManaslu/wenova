@@ -106,19 +106,6 @@ bool Fighter::is_dead(){
 	return false;
 }
 
-void Fighter::notify_collision(GameObject & object){
-	//FIXME tá feio
-
-	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
-	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 20){
-		speed.y = 0;
-		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
-
-		//printf("%f %f\n", object.rotation, object.rotation * 180 / PI);
-		on_floor = true;
-	}
-}
-
 bool Fighter::is(string type){
 	return type == "fighter";
 }

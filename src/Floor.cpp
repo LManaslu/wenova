@@ -17,7 +17,7 @@ Floor::Floor(float x, float y, float width, float crotation){
 Floor::~Floor(){
 }
 
-void Floor::update(float delta){
+void Floor::update(float){
 	//printf("%.f %.f %.f %.f %.f\n", box.x, box.y, box.width, box.height, rotation);
 }
 
