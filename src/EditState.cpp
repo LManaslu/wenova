@@ -20,7 +20,7 @@ using std::stringstream;
 EditState::EditState(string cstage) : stage(cstage){
 	background = Sprite("stage_" + stage + "/background.png", 6, 1);
 
-	test_fighter = new Fighter("fighter", WIDTH/2, HEIGHT/2 - 200);
+	test_fighter = new Fighter("flesh", WIDTH/2, HEIGHT/2 - 200);
 	add_object(test_fighter);
 
 	read_level_design();
