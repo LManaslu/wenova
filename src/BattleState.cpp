@@ -17,7 +17,7 @@ BattleState::BattleState(string stage){
 
 	read_level_design(stage);
 
-	add_object(new Fighter("fighter", 100, 100));
+	add_object(new Fighter("flesh", 100, 100));
 }
 
 void BattleState::update(float delta){

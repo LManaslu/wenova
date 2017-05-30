@@ -14,7 +14,7 @@
 #define RIGHT Fighter::FighterState::RIGHT
 #define JUMPING Fighter::FighterState::JUMPING
 #define FALLING Fighter::FighterState::FALLING
-#define SLIDING Fighter::FighterState::SLIDING
+#define CROUCH Fighter::FighterState::CROUCH
 
 #define PI 3.14159265358979
 
@@ -22,12 +22,12 @@
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
-	sprite[IDLE] = Sprite(name + "/idle.png", 6, 1);
-	sprite[LEFT] = Sprite(name + "/left.png", 6, 1);
-	sprite[RIGHT] = Sprite(name + "/right.png", 8, 1);
-	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 1);
-	sprite[FALLING] = Sprite(name + "/falling.png", 6, 1);
-	sprite[SLIDING] = Sprite(name + "/sliding.png", 6, 1);
+	sprite[IDLE] = Sprite(name + "/idle.png", 8, 30);
+	sprite[LEFT] = Sprite(name + "/left.png", 8, 30);
+	sprite[RIGHT] = Sprite(name + "/right.png", 8, 30);
+	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 30);
+	sprite[FALLING] = Sprite(name + "/falling.png", 7, 30);
+	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 30);
 
 	state = IDLE;
 
@@ -62,8 +62,12 @@ void Fighter::update(float delta){
 		speed.x = 1;
 	}
 
+	if(inputManager.is_key_down(SDLK_s)){
+		change_state(CROUCH);
+	}
+
 	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
-		speed.y = -5;
+		speed.y = -7.5;
 	}
 
 	if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){
