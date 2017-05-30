@@ -14,10 +14,11 @@ Sprite::Sprite(){
 	current_frame = time_elapsed = 0;
 }
 
-Sprite::Sprite(string file, int cframe_count, float cframe_time){
+Sprite::Sprite(string file, int cframe_count, float cframe_time, int cur_frame){
 	frame_count = cframe_count;
 	frame_time = cframe_time;
-	current_frame = time_elapsed = 0;
+	current_frame = cur_frame;
+	time_elapsed = 0;
 	texture = nullptr;
 	open("res/" + file);
 
