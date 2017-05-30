@@ -74,6 +74,8 @@ void EditableFloor::update(float delta){
 			deleted = true;
 		}
 	}
+
+	printf("%f, %f, %.f, %f, %f\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI);
 }
 
 void EditableFloor::render(){
