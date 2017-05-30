@@ -2,6 +2,7 @@
 #include "InputManager.h"
 #include "TitleState.h"
 #include "BattleState.h"
+#include "EditState.h"
 #include "Game.h"
 #include "Resources.h"
 
@@ -18,7 +19,7 @@ MenuState::MenuState() : current_option(0) {
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "EXIT", RED, 640, 640));
 }
 
-void MenuState::update(float delta){
+void MenuState::update(float){
 	InputManager input_manager = InputManager::get_instance();
 
 	// handling general inputs
@@ -35,6 +36,12 @@ void MenuState::update(float delta){
 
 	if(input_manager.key_press(SDLK_RIGHT) && current_option != (int)options.size() - 1){
 		current_option++;
+	}
+
+	if(input_manager.is_key_down(SDLK_w) and input_manager.is_key_down(SDLK_r) and input_manager.is_key_down(SDLK_c)){
+		m_quit_requested = true;
+		Game::get_instance().push(new EditState("1"));
+		return;
 	}
 
 	// TODO when press space switch case in options

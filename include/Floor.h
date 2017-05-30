@@ -6,9 +6,6 @@
 
 class Floor : public GameObject{
 public:
-	Floor(string name, float x, float y, float crotation);
-	~Floor();
-
   Floor(float x, float y, float width, float crotation);
   ~Floor();
 

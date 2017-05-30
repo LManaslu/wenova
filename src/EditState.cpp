@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Fighter.h"
 #include "EditableFloor.h"
+#include "MenuState.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -29,6 +30,12 @@ EditState::EditState(string cstage) : stage(cstage){
 
 void EditState::update(float delta){
 	InputManager inputManager = InputManager::get_instance();
+
+	if(inputManager.key_press(SDLK_ESCAPE)){
+		m_quit_requested = true;
+		Game::get_instance().push(new MenuState());
+		return;
+	}
 
 	if(inputManager.quit_requested()){
 		m_quit_requested = true;
@@ -82,7 +89,7 @@ void EditState::read_level_design(){
 		for(auto & c : s) c -= 10;
 		stringstream cim(s);
 		cim >> x >> y >> width >> crotation;
-		printf("Edit: %.f %.f %.f %.f\n", x, y, width, crotation);
+		//printf("Edit: %.f %.f %.f %.f\n", x, y, width, crotation);
 		add_object(new EditableFloor(x, y, width, crotation));
  	}
 	level_design.close();

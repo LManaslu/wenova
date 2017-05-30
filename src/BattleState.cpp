@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Fighter.h"
 #include "Floor.h"
+#include "MenuState.h"
 
 using std::fstream;
 using std::stringstream;
@@ -22,7 +23,13 @@ BattleState::BattleState(string stage){
 void BattleState::update(float delta){
 	InputManager inputManager = InputManager::get_instance();
 
-	if(inputManager.key_press(SDLK_ESCAPE) or inputManager.quit_requested()){
+	if(inputManager.key_press(SDLK_ESCAPE)){
+		m_quit_requested = true;
+		Game::get_instance().push(new MenuState());
+		return;
+	}
+
+	if(inputManager.quit_requested()){
 		m_quit_requested = true;
 		return;
 	}
