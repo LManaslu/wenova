@@ -15,7 +15,7 @@ private:
 public:
 
 	EditableFloor(float x, float y, float crotation);
-	EditableFloor(float x, float y, float width, float height, float crotation);
+	EditableFloor(float x, float y, float width, float crotation);
 
 	~EditableFloor();
 

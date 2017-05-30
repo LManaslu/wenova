@@ -6,17 +6,19 @@
 #define LAYER 0
 #define PI 3.14159265358979
 
+#define HEIGHT 20
 
 //TODO reavaliar se precisa ou não de Camera
-Floor::Floor(float x, float y, float height, float width, float crotation){
+Floor::Floor(float x, float y, float width, float crotation){
   rotation = crotation * PI / 180.0;
-  box = Rectangle(x, y, height, width);
+  box = Rectangle(x, y, width, HEIGHT);
 }
 
 Floor::~Floor(){
 }
 
 void Floor::update(float delta){
+	//printf("%.f %.f %.f %.f %.f\n", box.x, box.y, box.width, box.height, rotation);
 }
 
 void Floor::render(){
