@@ -33,7 +33,7 @@ Fighter::Fighter(string name, float x, float y){
 
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
-	acceleration = Vector(0, 0.2);
+	acceleration = Vector(0, 0.07);
 	max_speed = 5;
 	//FIXME recebe no construtor
 
@@ -55,11 +55,11 @@ void Fighter::update(float delta){
 
 	if(inputManager.is_key_down(SDLK_a)){
 		change_state(LEFT);
-		speed.x = -1;
+		speed.x = -1.5;
 	}
 	if(inputManager.is_key_down(SDLK_d)){
 		change_state(RIGHT);
-		speed.x = 1;
+		speed.x = 1.5;
 	}
 
 	if(inputManager.is_key_down(SDLK_s)){
@@ -67,7 +67,7 @@ void Fighter::update(float delta){
 	}
 
 	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
-		speed.y = -7.5;
+		speed.y = -5;
 	}
 
 	if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){

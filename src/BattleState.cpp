@@ -13,7 +13,7 @@ using std::fstream;
 using std::stringstream;
 
 BattleState::BattleState(string stage){
-	background = Sprite("stage_" + stage + "/background.png", 6, 1);
+	background = Sprite("stage_" + stage + "/background.png", 6, 30);
 
 	read_level_design(stage);
 
@@ -34,6 +34,8 @@ void BattleState::update(float delta){
 		Game::get_instance().push(new MenuState());
 		return;
 	}
+
+	background.update(delta);
 
 	update_array(delta);
 }
