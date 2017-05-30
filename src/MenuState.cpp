@@ -20,7 +20,7 @@ MenuState::MenuState() : current_option(0) {
 	show_text = true;
 
 	background = Sprite("menu/background.jpg");
-	title = Sprite("menu/title.png", 8, FRAME_TIME);
+	title = Sprite("menu/title.png", 5, FRAME_TIME);
 	planet = Sprite("menu/planet.png", 8, FRAME_TIME);
 	green_ship = Sprite("menu/green_ship.png", 8, FRAME_TIME, 2);
 	red_ship = Sprite("menu/red_ship.png", 8, FRAME_TIME);
