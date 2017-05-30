@@ -10,17 +10,19 @@
 
 #define WIDTH 1280
 #define HEIGHT 720
+#define CONTROL 1073742048
 
-using std::fstream;
+using std::ifstream;
+using std::ofstream;
 using std::stringstream;
 
-EditState::EditState(string stage){
+EditState::EditState(string cstage) : stage(cstage){
 	background = Sprite("stage_" + stage + "/background.png", 6, 1);
 
 	test_fighter = new Fighter("fighter", WIDTH/2, HEIGHT/2 - 200);
 	add_object(test_fighter);
 
-	read_level_design(stage);
+	read_level_design();
 
 	//TODO ler os tiles que já tem e colocar
 }
@@ -45,6 +47,10 @@ void EditState::update(float delta){
 		add_object(new EditableFloor(x, y, 0));
 	}
 
+	if(inputManager.is_key_down(CONTROL) and inputManager.key_press(SDLK_c)){
+		update_level_design();
+	}
+
 	//printf("Floors\n------------------------------------\n");
 	update_array(delta);
 	//printf("-------------------------------\n");
@@ -64,9 +70,9 @@ void EditState::resume(){
 
 }
 
-void EditState::read_level_design(string stage){
+void EditState::read_level_design(){
 	float x, y, width, crotation;
-	fstream level_design("res/stage_" + stage + "/level_design.dat");
+	ifstream level_design("res/stage_" + stage + "/level_design.dat");
 	if(not level_design.is_open()){
 		printf("Level design of stage %s can't be opened\n", stage.c_str());
 		exit(-5);
@@ -80,4 +86,20 @@ void EditState::read_level_design(string stage){
 		add_object(new EditableFloor(x, y, width, crotation));
  	}
 	level_design.close();
+}
+
+void EditState::update_level_design(){
+	ifstream level_design("res/stage_" + stage + "/level_design.dat", std::ios::binary);
+	ofstream old_level_design("res/stage_" + stage + "/level_design.dat.old", std::ios::trunc | std::ios::binary);
+	old_level_design << level_design.rdbuf();
+	level_design.close();
+	old_level_design.close();
+
+	ofstream new_level_design("res/stage_" + stage + "/level_design.dat", std::ios::trunc);
+	for(auto & go : object_array){
+	 	if(go->is("floor")){
+	 		new_level_design << ((EditableFloor *) go.get())->get_information() << std::endl;
+	 	}
+	}
+	new_level_design.close();
 }

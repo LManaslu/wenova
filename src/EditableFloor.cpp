@@ -4,6 +4,8 @@
 #include "Collision.h"
 #include "Rectangle.h"
 
+#include <cstdio>
+
 #define LAYER 0
 #define PI 3.14159265358979
 
@@ -99,4 +101,13 @@ void EditableFloor::notify_collision(GameObject &){
 
 bool EditableFloor::is(string type){
 	return type == "floor";
+}
+
+string EditableFloor::get_information(){
+	char info[500];
+	sprintf(info, "%.f %.f %.f %.f", box.x, box.y, box.width, rotation * 180 / PI);
+	string s(info);
+	for(auto & c : s) c += 10;
+
+	return s;
 }

@@ -25,6 +25,8 @@ public:
 
 	void notify_collision(GameObject & object);
 	bool is(string type);
+
+	string get_information();
 };
 
 #endif

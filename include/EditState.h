@@ -11,8 +11,10 @@ class EditState : public State{
 private:
 	Sprite background;
 	Fighter * test_fighter;
+	string stage;
 
-	void read_level_design(string stage);
+	void read_level_design();
+	void update_level_design();
 
 public:
 	EditState(string stage);
