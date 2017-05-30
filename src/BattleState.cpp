@@ -31,6 +31,7 @@ void BattleState::update(float delta){
 
 	if(inputManager.quit_requested()){
 		m_quit_requested = true;
+		Game::get_instance().push(new MenuState());
 		return;
 	}
 

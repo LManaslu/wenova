@@ -1,32 +1,61 @@
 #include "MenuState.h"
 #include "InputManager.h"
-#include "TitleState.h"
 #include "BattleState.h"
 #include "EditState.h"
 #include "Game.h"
 #include "Resources.h"
 
 #define OPTION_OFFSET 50
+#define FONT_X 640
+#define FONT_Y 680
 #define RED { 236, 0, 46, 1 }
 #define WHITE { 255, 255, 255, 255 }
 
-MenuState::MenuState() : current_option(0) {
-	background = Sprite("menu/background.png");
+// FIXME fix time
+#define FRAME_TIME 5.0
+#define TEXT_TIMER_COOLDOWN 50
 
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "START", RED, 640, 640));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "CONTINUE", RED, 640, 640));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "OPTIONS", RED, 640, 640));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 45, Text::TextStyle::SOLID, "EXIT", RED, 640, 640));
+MenuState::MenuState() : current_option(0) {
+	start_pressed = false;
+	show_text = true;
+
+	background = Sprite("menu/background.jpg");
+	title = Sprite("menu/title.png", 8, FRAME_TIME);
+	planet = Sprite("menu/planet.png", 8, FRAME_TIME);
+	green_ship = Sprite("menu/green_ship.png", 8, FRAME_TIME, 2);
+	red_ship = Sprite("menu/red_ship.png", 8, FRAME_TIME);
+
+	start_option = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "PRESS START", WHITE, FONT_X, FONT_Y);
+
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "START", RED, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "CONTINUE", RED, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OPTIONS", RED, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", RED, FONT_X, FONT_Y));
 }
 
-void MenuState::update(float){
+void MenuState::update(float delta){
+	title.update(delta);
+	planet.update(delta);
+	green_ship.update(delta);
+	red_ship.update(delta);
+
 	InputManager input_manager = InputManager::get_instance();
 
 	// handling general inputs
-	if(input_manager.key_press(SDLK_ESCAPE) or input_manager.quit_requested()){
+	if(input_manager.quit_requested()){
 		m_quit_requested = true;
-		Game::get_instance().push(new TitleState());
 		return;
+	}
+
+	if(input_manager.key_press(SDLK_ESCAPE)){
+		if(start_pressed){
+			start_pressed = false;
+			current_option = 0;
+		}
+		else{
+			m_quit_requested = true;
+			return;
+		}
 	}
 
 	// handling options input
@@ -46,55 +75,79 @@ void MenuState::update(float){
 
 	// TODO when press space switch case in options
 	if(input_manager.key_press(SDLK_RETURN)){
-		switch(current_option){
-			case 0:
-				m_quit_requested = true;
-				Game::get_instance().push(new BattleState("1"));
-				return;
+		if(not start_pressed){
+			start_pressed = true;
+			current_option = 0;
+		}
+		else{
+			switch(current_option){
+				case 0:
+					m_quit_requested = true;
+					Game::get_instance().push(new BattleState("1"));
+					return;
 
-			case 1:
-				printf("CONTINUE SELECTED\n");
-				break;
+				case 1:
+					printf("CONTINUE SELECTED\n");
+					break;
 
-			case 2:
-				printf("OPTIONS SELECTED\n");
-				break;
+				case 2:
+					printf("OPTIONS SELECTED\n");
+					break;
 
-			case 3:
-				m_quit_requested = true;
-				Game::get_instance().push(new TitleState());
-				return;
+				case 3:
+					m_quit_requested = true;
+					return;
+			}
 		}
 	}
 
-	// handling options positioning
-	options[current_option]->set_pos(640, 640, true, true);
-	options[current_option]->set_color(WHITE);
+	if(start_pressed){
+		// handling options positioning
+		options[current_option]->set_pos(FONT_X, FONT_Y, true, true);
+		options[current_option]->set_color(WHITE);
 
-	// positioning options before current option
-	for(int idx = 0; idx < current_option; idx++){
-		Text* next_option = options[idx + 1];
+		// positioning options before current option
+		for(int idx = 0; idx < current_option; idx++){
+			Text* next_option = options[idx + 1];
 
-		int new_x = next_option->get_x() - options[idx]->get_width() - OPTION_OFFSET;
-		options[idx]->set_pos(new_x, 640, false, true);
-		options[idx]->set_color(RED);
+			int new_x = next_option->get_x() - options[idx]->get_width() - OPTION_OFFSET;
+			options[idx]->set_pos(new_x, FONT_Y, false, true);
+			options[idx]->set_color(RED);
+		}
+
+		// positioning options after current option
+		for(unsigned int idx = current_option + 1; idx < options.size(); idx++){
+			Text* prev_option = options[idx - 1];
+
+			int new_x = prev_option->get_x() + prev_option->get_width() + OPTION_OFFSET;
+			options[idx]->set_pos(new_x, FONT_Y, false, true);
+			options[idx]->set_color(RED);
+		}
 	}
 
-	// positioning options after current option
-	for(unsigned int idx = current_option + 1; idx < options.size(); idx++){
-		Text* prev_option = options[idx - 1];
-
-		int new_x = prev_option->get_x() + prev_option->get_width() + OPTION_OFFSET;
-		options[idx]->set_pos(new_x, 640, false, true);
-		options[idx]->set_color(RED);
+	if(text_timer.get() > TEXT_TIMER_COOLDOWN){
+		show_text = !show_text;
+		text_timer.restart();
 	}
+
+	text_timer.update(delta);
 }
 
 void MenuState::render(){
 	background.render(0, 0);
 
-	for(auto option_text : options){
-		option_text->render(0, 0);
+	planet.render(423, 177);
+	green_ship.render(805, 405);
+	red_ship.render(36, 400);
+	title.render(260, 0);
+
+	if(start_pressed){
+		for(auto option_text : options){
+			option_text->render(0, 0);
+		}
+	}
+	else if(show_text){
+		start_option->render(0, 0);
 	}
 }
 

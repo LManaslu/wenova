@@ -24,7 +24,7 @@ private:
 
 public:
 	Sprite();
-	Sprite(string file, int cframe_count = 1, float cframe_time = 1);
+	Sprite(string file, int cframe_count = 1, float cframe_time = 1, int cur_frame = 0);
 	~Sprite();
 
 	int get_width();

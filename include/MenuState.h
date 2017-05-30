@@ -4,12 +4,16 @@
 #include "State.h"
 #include "Sprite.h"
 #include "Text.h"
+#include "Timer.h"
 
 class MenuState : public State {
 private:
-	Sprite background;
+	Sprite background, green_ship, red_ship, title, planet;
 	vector<Text*> options;
+	Text* start_option;
 	int current_option;
+	bool start_pressed, show_text;
+	Timer text_timer;
 
 public:
 	MenuState();
