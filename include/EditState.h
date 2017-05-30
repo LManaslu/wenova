@@ -12,6 +12,8 @@ private:
 	Sprite background;
 	Fighter * test_fighter;
 
+	void read_level_design(string stage);
+
 public:
 	EditState(string stage);
 

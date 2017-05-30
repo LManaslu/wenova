@@ -47,13 +47,17 @@ void BattleState::resume(){
 void BattleState::read_level_design(string stage){
 	float x, y, width, height, crotation;
 	fstream level_design("res/stage_" + stage + "/level_design.dat");
-	fstream test("res/stage_1/test.dat");
-	if(not level_design.is_open()) exit(-5);
+	if(not level_design.is_open()){
+		printf("Level design of stage %s can't be opened\n", stage.c_str());
+		exit(-5);
+	}
 	string s;
 	while(std::getline(level_design, s)){
 		for(auto & c : s) c -= 10;
 		stringstream cim(s);
 		cim >> x >> y >> width >> height >> crotation;
+		printf("Battle: %.f %.f %.f %.f %.f\n", x, y, width, height, crotation);
 		add_object(new Floor(x, y, width, height, crotation));
  	}
+	level_design.close();
 }
