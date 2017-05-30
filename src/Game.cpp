@@ -111,14 +111,14 @@ void Game::run(){
 
 		SDL_RenderPresent(renderer);
 		manage_stack();
-		SDL_Delay(33);
+		SDL_Delay(1);
 	}
 }
 
 void Game::calculate_delta_time(){
 	int new_frame_start = SDL_GetTicks();
 
-	delta = (new_frame_start - frame_start)/100.0;
+	delta = (new_frame_start - frame_start)/1000.0;
 
 	frame_start = new_frame_start;
 }

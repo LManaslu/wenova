@@ -10,7 +10,6 @@
 EditableFloor::EditableFloor(float x, float y, float crotation) : normal_sprite(Sprite("images/editable_floor.png")),
 selected_sprite(Sprite("images/selected_editable_floor.png")),
 Floor(x, y, normal_sprite.get_width(), normal_sprite.get_height(), crotation){
-	printf("Entrou\n");
 	box = Rectangle(x, y, normal_sprite.get_width(), normal_sprite.get_height());
 	deleted = false;
 	selected = false;
