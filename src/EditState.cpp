@@ -65,7 +65,7 @@ void EditState::resume(){
 }
 
 void EditState::read_level_design(string stage){
-	float x, y, width, height, crotation;
+	float x, y, width, crotation;
 	fstream level_design("res/stage_" + stage + "/level_design.dat");
 	if(not level_design.is_open()){
 		printf("Level design of stage %s can't be opened\n", stage.c_str());
@@ -75,9 +75,9 @@ void EditState::read_level_design(string stage){
 	while(std::getline(level_design, s)){
 		for(auto & c : s) c -= 10;
 		stringstream cim(s);
-		cim >> x >> y >> width >> height >> crotation;
-		printf("Edit: %.f %.f %.f %.f %.f\n", x, y, width, height, crotation);
-		add_object(new EditableFloor(x, y, width, height, crotation));
+		cim >> x >> y >> width >> crotation;
+		printf("Edit: %.f %.f %.f %.f\n", x, y, width, crotation);
+		add_object(new EditableFloor(x, y, width, crotation));
  	}
 	level_design.close();
 }

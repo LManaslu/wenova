@@ -9,7 +9,7 @@ public:
 	Floor(string name, float x, float y, float crotation);
 	~Floor();
 
-  Floor(float x, float y, float width, float height, float crotation);
+  Floor(float x, float y, float width, float crotation);
   ~Floor();
 
   void update(float delta);

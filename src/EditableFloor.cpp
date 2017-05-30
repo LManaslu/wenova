@@ -7,15 +7,13 @@
 #define LAYER 0
 #define PI 3.14159265358979
 
-EditableFloor::EditableFloor(float x, float y, float crotation) : normal_sprite(Sprite("images/editable_floor.png")),
-selected_sprite(Sprite("images/selected_editable_floor.png")),
-Floor(x, y, normal_sprite.get_width(), normal_sprite.get_height(), crotation){
+EditableFloor::EditableFloor(float x, float y, float crotation) : Floor(x, y, 100, crotation), normal_sprite(Sprite("images/editable_floor.png")), selected_sprite(Sprite("images/selected_editable_floor.png")){
 	box = Rectangle(x, y, normal_sprite.get_width(), normal_sprite.get_height());
 	deleted = false;
 	selected = false;
 }
 
-EditableFloor::EditableFloor(float x, float y, float width, float height, float crotation) : EditableFloor(x, y, crotation){
+EditableFloor::EditableFloor(float x, float y, float width, float crotation) : EditableFloor(x, y, crotation){
 	normal_sprite.set_scale_x(width / normal_sprite.get_width());
 	selected_sprite.set_scale_x(width / selected_sprite.get_width());
 	box.width = normal_sprite.get_width();
