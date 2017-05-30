@@ -5,9 +5,9 @@
 
 #include "InputManager.h"
 #include "Game.h"
-#include "Fighter.h"
 #include "Floor.h"
 #include "MenuState.h"
+#include "FighterStats.h"
 
 using std::fstream;
 using std::stringstream;
@@ -18,9 +18,29 @@ BattleState::BattleState(string stage, string cmusic){
 
 	read_level_design(stage);
 
-	add_object(new Fighter("flesh", 100, 100));
 
 	music.play();
+
+	fighters.push_back(new Fighter("flesh", 100, 100));
+	fighters.push_back(new Fighter("flesh", 200, 100));
+	fighters.push_back(new Fighter("flesh", 300, 100));
+	fighters.push_back(new Fighter("flesh", 400, 100));
+
+	for(unsigned i = 0; i < fighters.size(); i++)
+		add_object(fighters[i]);
+
+	add_object(new FighterStats("Timer"));
+	add_object(new FighterStats("Life1", fighters[0]));
+	add_object(new FighterStats("Life2", fighters[1]));
+	add_object(new FighterStats("Life3", fighters[2]));
+	add_object(new FighterStats("Life4", fighters[3]));
+}
+
+BattleState::~BattleState(){
+//	for(unsigned i = 0; i < fighters.size(); i++)
+//		delete(fighters[i]);
+
+//	fighters.clear();
 }
 
 void BattleState::update(float delta){

@@ -48,6 +48,7 @@ public:
 	static const int DOWN_ARROW_KEY = SDLK_DOWN;
 	static const int UP_ARROW_KEY = SDLK_UP;
 	static const int ESCAPE_KEY = SDLK_ESCAPE;
+  	static const int SPACE_KEY = SDLK_SPACE;
 	static const int LEFT_MOUSE_BUTTON = SDL_BUTTON_LEFT;
 	static const int RIGHT_MOUSE_BUTTON = SDL_BUTTON_RIGHT;
 	static const int ENTER_KEY = SDLK_RETURN;

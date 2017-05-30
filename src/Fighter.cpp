@@ -29,6 +29,8 @@ Fighter::Fighter(string name, float x, float y){
 
 	state = IDLE;
 
+	remaining_life = MAX_LIFE;
+
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
 	acceleration = Vector(0, 0.07);
@@ -48,6 +50,10 @@ Fighter::~Fighter(){
 void Fighter::update(float delta){
 	InputManager inputManager = InputManager::get_instance();
 
+	//FIXME
+	if(inputManager.is_key_down(InputManager::SPACE_KEY))
+		remaining_life--;
+
 	speed.x = 0;
 	on_floor = false;
 
@@ -65,7 +71,7 @@ void Fighter::update(float delta){
 	if(inputManager.is_key_down(SDLK_s)){
 		change_state(CROUCH);
 	}
-
+	
 	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
 		speed.y = -5;
 	}
@@ -112,7 +118,6 @@ void Fighter::post_collision_update(float delta){
 		change_state(CROUCH);
 	}
 
-
 	speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
 	box.x += speed.x * delta;
 	if(not on_floor) box.y += speed.y * delta;
@@ -131,12 +136,17 @@ void Fighter::post_collision_update(float delta){
 void Fighter::render(){
 	int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
 	int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
+
 	SDL_RendererFlip flip = speed.x < 0 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 	sprite[state].render(x, y, rotation, flip);
 }
 
 bool Fighter::is_dead(){
 	return false;
+}
+
+int Fighter::get_remaining_life(){
+	return remaining_life;
 }
 
 bool Fighter::is(string type){

@@ -34,3 +34,6 @@
 # Build paths
 bin
 obj
+
+*.swp
+*.swo
