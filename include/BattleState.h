@@ -6,22 +6,25 @@
 #include "Text.h"
 #include "Timer.h"
 #include "Music.h"
+#include "Fighter.h"
+
+#include <vector>
 
 class BattleState : public State{
-private:
-	Sprite background;
-	Music music;
+	private:
+		Sprite background;
+		vector <Fighter *> fighters;
+		Music music;
 
-  void read_level_design(string stage);
+	public:
+		BattleState(string stage);
+		~BattleState();
+		
+		void update(float delta);
+		void render();
 
-public:
-	BattleState(string stage, string cmusic);
-
-	void update(float delta);
-	void render();
-
-	void pause();
-	void resume();
+		void pause();
+		void resume();
 };
 
 #endif
