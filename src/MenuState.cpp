@@ -12,7 +12,7 @@
 #define WHITE { 255, 255, 255, 255 }
 
 // FIXME fix time
-#define FRAME_TIME 5.0
+#define FRAME_TIME 7.5
 #define TEXT_TIMER_COOLDOWN 50
 
 MenuState::MenuState() : current_option(0) {

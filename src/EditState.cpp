@@ -22,7 +22,7 @@ using std::to_string;
 
 EditState::EditState(string cstage) : stage(cstage){
 	for(int i = 0; i < N_BACKGROUND; i++)
-		background[i] = Sprite("stage_" + stage + "/background_" + to_string(i) + ".png", 6, 1);
+		background[i] = Sprite("stage_" + stage + "/background_" + to_string(i) + ".png");
 
 	test_fighter = new Fighter("flesh", WIDTH/2, HEIGHT/2 - 200);
 	add_object(test_fighter);

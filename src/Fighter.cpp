@@ -17,15 +17,15 @@
 
 #define PI 3.14159265358979
 
-#define CROUCH_COOLDOWN 10.0
+#define CROUCH_COOLDOWN 100.0
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
-	sprite[IDLE] = Sprite(name + "/idle.png", 8, 30);
-	sprite[RUNNING] = Sprite(name + "/running.png", 8, 30);
-	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 30);
-	sprite[FALLING] = Sprite(name + "/falling.png", 7, 30);
-	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 30);
+	sprite[IDLE] = Sprite(name + "/idle.png", 8, 10);
+	sprite[RUNNING] = Sprite(name + "/running.png", 8, 10);
+	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
+	sprite[FALLING] = Sprite(name + "/falling.png", 7, 10);
+	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 20);
 
 	state = IDLE;
 
@@ -34,7 +34,7 @@ Fighter::Fighter(string name, float x, float y){
 
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
-	acceleration = Vector(0, 0.07);
+	acceleration = Vector(0, 0.1);
 	max_speed = 5;
 	//FIXME recebe no construtor
 
@@ -68,11 +68,11 @@ void Fighter::update(float delta){
 	if(state != CROUCH){
 		if(inputManager.is_key_down(SDLK_a)){
 			change_state(RUNNING);
-			speed.x = -1.5;
+			speed.x = -3;
 		}
 		if(inputManager.is_key_down(SDLK_d)){
 			change_state(RUNNING);
-			speed.x = 1.5;
+			speed.x = 3;
 		}
 	}
 
@@ -185,7 +185,10 @@ void Fighter::test_limits(){
 	//TODO Matar personagem ao cair do cenario
 	if(box.x < 0) box.x = 0;
 	if(box.x > 1280) box.x = 1280;
-	if(box.y < 0 or box.y > 720) box.y = 0;
+	if(box.y < 0 or box.y > 720){
+		box.y = 0;
+		pass_through = false;
+	} 
 }
 
 void Fighter::reset_position(float x, float y){
