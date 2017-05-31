@@ -27,6 +27,7 @@ public:
 	bool is(string type);
 
 	string get_information();
+	void set_selected(bool cselected);
 };
 
 #endif
