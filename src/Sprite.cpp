@@ -82,12 +82,12 @@ void Sprite::update(float delta){
 	}
 }
 
-void Sprite::render(int x, int y, float angle){
+void Sprite::render(int x, int y, float angle, SDL_RendererFlip flip){
 	SDL_Rect dstrect = SDL_Rect{x, y, (int)(clip_rect.w * scale_x), (int)(clip_rect.h * scale_y)};
 
 	angle *= (180 / PI);
 	int render_copy = SDL_RenderCopyEx(Game::get_instance().get_renderer(), texture.get(),
-	&clip_rect, &dstrect, angle, nullptr, SDL_FLIP_NONE);
+	&clip_rect, &dstrect, angle, nullptr, flip);
 	if(render_copy){
 		printf("Render: %s\n", SDL_GetError());
 		exit(-1);
