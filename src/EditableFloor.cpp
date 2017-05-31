@@ -29,7 +29,6 @@ EditableFloor::~EditableFloor(){
 void EditableFloor::update(float delta){
 	InputManager inputManager = InputManager::get_instance();
 
-
 	if(inputManager.mouse_press(InputManager::LEFT_MOUSE_BUTTON)){
 		int x = inputManager.get_mouse_x();
       	int y = inputManager.get_mouse_y();
@@ -87,7 +86,7 @@ void EditableFloor::update(float delta){
 		}
 	}
 
-	printf("%f, %f, %.f, %f, %f %d\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI, (int) is_platform);
+	//printf("%f, %f, %.f, %f, %f %d\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI, (int) is_platform);
 }
 
 void EditableFloor::render(){
@@ -106,10 +105,6 @@ bool EditableFloor::is_dead(){
 }
 
 void EditableFloor::notify_collision(GameObject &){
-}
-
-bool EditableFloor::is(string type){
-	return type == "floor";
 }
 
 string EditableFloor::get_information(){

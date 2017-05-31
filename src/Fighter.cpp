@@ -62,16 +62,6 @@ void Fighter::update(float delta){
 		speed.x = 1;
 	}
 
-	// TODO não deixar atravessar a plataforma se não tiver outra embaixo (smash-like)
-	// TODO só poder atravessar se estiver em cima de uma plataforma
-	if(inputManager.key_press(SDLK_s)){
-		if(crouch_timer.get() < CROUCH_COOLDOWN){
-			pass_through = true;
-		}
-
-		crouch_timer.restart();
-		change_state(SLIDING);
-	}
 	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
 		speed.y = -5;
 	}
@@ -81,17 +71,15 @@ void Fighter::update(float delta){
 	}
 
 	sprite[state].update(delta);
-	crouch_timer.update(delta);
 }
 
 void Fighter::notify_collision(GameObject & object){
 	if(pass_through){
-		if(object.is("floor") && ((Floor&)object).get_id() == last_collided_floor){
-			// skip collision checking
-			return;
-		}
-		else{
-			pass_through = false;
+		if(object.is("platform")){
+			if(((Floor&)object).get_id() == last_collided_floor)
+				return;
+			else
+				pass_through = false;
 		}
 	}
 
@@ -103,10 +91,24 @@ void Fighter::notify_collision(GameObject & object){
 
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
+		pass_through = false;
 	}
 }
 
 void Fighter::post_collision_update(float delta){
+	InputManager inputManager = InputManager::get_instance();
+
+	// check pass through when double crouching
+	if(inputManager.key_press(SDLK_s)){
+		if(crouch_timer.get() < CROUCH_COOLDOWN){
+			pass_through = true;
+		}
+
+		crouch_timer.restart();
+		change_state(SLIDING);
+	}
+
+
 	speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
 	box.x += speed.x * delta;
 	if(not on_floor) box.y += speed.y * delta;
@@ -118,6 +120,8 @@ void Fighter::post_collision_update(float delta){
 	}else if(speed.y > 0 && not on_floor){
 		change_state(FALLING);
 	}
+
+	crouch_timer.update(delta);
 }
 
 void Fighter::render(){
