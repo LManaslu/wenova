@@ -48,10 +48,11 @@ void EditState::update(float delta){
 		test_fighter->reset_position(x, y);
 	}
 
-	if(inputManager.key_press(SDLK_n)){
+	if(inputManager.key_press(SDLK_f) or inputManager.key_press(SDLK_p)){
 		int x = inputManager.get_mouse_x();
-      	int y = inputManager.get_mouse_y();
-		add_object(new EditableFloor(x, y, 0, 1));
+		int y = inputManager.get_mouse_y();
+		bool is_platform = inputManager.key_press(SDLK_p);
+		add_object(new EditableFloor(x, y, 0, is_platform));
 	}
 
 	if(inputManager.is_key_down(CONTROL) and inputManager.key_press(SDLK_c)){
@@ -92,7 +93,7 @@ void EditState::read_level_design(){
 		cim >> x >> y >> width >> crotation >> platform;
 		//printf("Edit: %.f %.f %.f %.f\n", x, y, width, crotation);
 		add_object(new EditableFloor(x, y, width, crotation, (bool) platform));
- 	}
+	}
 	level_design.close();
 }
 
@@ -105,9 +106,9 @@ void EditState::update_level_design(){
 
 	ofstream new_level_design("res/stage_" + stage + "/level_design.dat", std::ios::trunc);
 	for(auto & go : object_array){
-	 	if(go->is("floor")){
-	 		new_level_design << ((EditableFloor *) go.get())->get_information() << std::endl;
-	 	}
+		if(go->is("floor")){
+			new_level_design << ((EditableFloor *) go.get())->get_information() << std::endl;
+		}
 	}
 	new_level_design.close();
 }

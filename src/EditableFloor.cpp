@@ -66,6 +66,9 @@ void EditableFloor::update(float delta){
 		if(inputManager.is_key_down(SDLK_r)){
 			rotation = 0;
 		}
+		if(inputManager.key_press(SDLK_c)){
+			is_platform = !is_platform;
+		}
 
 		if(inputManager.is_key_down(SDLK_PERIOD)){
 			normal_sprite.update_scale_x(0.005 * value);
@@ -90,12 +93,12 @@ void EditableFloor::update(float delta){
 void EditableFloor::render(){
 	if(selected){
 		selected_sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
-	}else{
-		if(is_platform)
-			platform_sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
-		else
-			normal_sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
 	}
+
+	if(is_platform)
+		platform_sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
+	else
+		normal_sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
 }
 
 bool EditableFloor::is_dead(){
