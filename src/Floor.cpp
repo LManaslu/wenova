@@ -36,6 +36,10 @@ void Floor::notify_collision(GameObject &){
 }
 
 bool Floor::is(string type){
+	if(type == "platform"){
+		if(is_platform) return true;
+	}
+
 	return type == "floor";
 }
 
