@@ -5,15 +5,17 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "Timer.h"
+#include "Music.h"
 
 class BattleState : public State{
 private:
 	Sprite background;
+	Music music;
 
   void read_level_design(string stage);
 
 public:
-	BattleState(string stage);
+	BattleState(string stage, string cmusic);
 
 	void update(float delta);
 	void render();

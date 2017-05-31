@@ -83,7 +83,7 @@ void MenuState::update(float delta){
 			switch(current_option){
 				case 0:
 					m_quit_requested = true;
-					Game::get_instance().push(new BattleState("1"));
+					Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
 					return;
 
 				case 1:

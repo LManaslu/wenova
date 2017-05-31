@@ -17,7 +17,7 @@ public:
 	Music();
 	Music(string file);
 
-	void play(int times);
+	void play(int times = -1);
 	void stop();
 	void open(string file);
 	bool is_open();
