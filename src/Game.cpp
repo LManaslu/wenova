@@ -39,7 +39,7 @@ Game::Game(string title, int width, int height){
 		exit(-1);
 	}
 
-	int mix_flags = MIX_INIT_OGG | MIX_INIT_MP3;
+	int mix_flags = MIX_INIT_OGG;
 	int sdl_mix = Mix_Init(mix_flags);
 	if(sdl_mix != mix_flags){
 		printf("%s\n", SDL_GetError());

@@ -12,12 +12,15 @@
 using std::fstream;
 using std::stringstream;
 
-BattleState::BattleState(string stage){
+BattleState::BattleState(string stage, string cmusic){
 	background = Sprite("stage_" + stage + "/background.png", 6, 30);
+	music = Music("stage_" + stage + "/" + cmusic);
 
 	read_level_design(stage);
 
 	add_object(new Fighter("flesh", 100, 100));
+
+	music.play();
 }
 
 void BattleState::update(float delta){

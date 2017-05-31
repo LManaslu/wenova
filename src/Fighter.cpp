@@ -51,15 +51,6 @@ void Fighter::update(float delta){
 	speed.x = 0;
 	on_floor = false;
 
-	if(inputManager.is_key_down(SDLK_a)){
-		change_state(LEFT);
-		speed.x = -1.5;
-	}
-	if(inputManager.is_key_down(SDLK_d)){
-		change_state(RIGHT);
-		speed.x = 1.5;
-	}
-
 	if(state != CROUCH){
 		if(inputManager.is_key_down(SDLK_a)){
 			change_state(RUNNING);
@@ -118,7 +109,7 @@ void Fighter::post_collision_update(float delta){
 		}
 
 		crouch_timer.restart();
-		change_state(SLIDING);
+		change_state(CROUCH);
 	}
 
 
