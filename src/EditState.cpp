@@ -51,7 +51,7 @@ void EditState::update(float delta){
 	if(inputManager.key_press(SDLK_n)){
 		int x = inputManager.get_mouse_x();
       	int y = inputManager.get_mouse_y();
-		add_object(new EditableFloor(x, y, 0));
+		add_object(new EditableFloor(x, y, 0, 1));
 	}
 
 	if(inputManager.is_key_down(CONTROL) and inputManager.key_press(SDLK_c)){
@@ -79,6 +79,7 @@ void EditState::resume(){
 
 void EditState::read_level_design(){
 	float x, y, width, crotation;
+	int platform;
 	ifstream level_design("res/stage_" + stage + "/level_design.dat");
 	if(not level_design.is_open()){
 		printf("Level design of stage %s can't be opened\n", stage.c_str());
@@ -88,9 +89,9 @@ void EditState::read_level_design(){
 	while(std::getline(level_design, s)){
 		for(auto & c : s) c -= 10;
 		stringstream cim(s);
-		cim >> x >> y >> width >> crotation;
+		cim >> x >> y >> width >> crotation >> platform;
 		//printf("Edit: %.f %.f %.f %.f\n", x, y, width, crotation);
-		add_object(new EditableFloor(x, y, width, crotation));
+		add_object(new EditableFloor(x, y, width, crotation, (bool) platform));
  	}
 	level_design.close();
 }
