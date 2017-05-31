@@ -6,14 +6,12 @@
 #include "GameObject.h"
 #include "Sprite.h"
 #include "Fighter.h"
-#include "Timer.h"
-#include "Text.h"
 
 using std::string;
 
 class FighterStats : public GameObject{
 	public:
-		FighterStats(string type, Fighter *p_fighter = nullptr);
+		FighterStats(Fighter *p_fighter, int index_fighter, int p_side, double p_x, double p_y);
 		~FighterStats();
 
 		void update(float delta);
@@ -27,13 +25,13 @@ class FighterStats : public GameObject{
 		bool is(string type);
 
 	private:
-		Sprite sp;
+		Sprite bg;
 		Sprite life; 
-		string type;
-		double percent_to_draw; 
-		int remaining_seconds;
-		Timer timer;
-		Text *text;
+		Sprite special;
+		double percent_to_draw_life; 
+		double percent_to_draw_special;
+		int side;
+		double x, y;
 		Fighter *fighter;
 };
 

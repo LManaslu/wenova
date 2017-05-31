@@ -8,6 +8,7 @@
 #include "Floor.h"
 #include "MenuState.h"
 #include "FighterStats.h"
+#include "TimeCounter.h"
 
 using std::fstream;
 using std::stringstream;
@@ -29,11 +30,12 @@ BattleState::BattleState(string stage, string cmusic){
 	for(unsigned i = 0; i < fighters.size(); i++)
 		add_object(fighters[i]);
 
-	add_object(new FighterStats("Timer"));
-	add_object(new FighterStats("Life1", fighters[0]));
-	add_object(new FighterStats("Life2", fighters[1]));
-	add_object(new FighterStats("Life3", fighters[2]));
-	add_object(new FighterStats("Life4", fighters[3]));
+	add_object(new FighterStats(fighters[3], 4, 1, 1147, 679.5));
+	add_object(new FighterStats(fighters[2], 3, 1, 1147, 599.5));
+	add_object(new FighterStats(fighters[1], 2, 0, 133, 679.5));
+	add_object(new FighterStats(fighters[0], 1, 0, 133, 599.5));
+
+	add_object(new TimeCounter());
 }
 
 BattleState::~BattleState(){

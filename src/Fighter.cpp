@@ -30,6 +30,7 @@ Fighter::Fighter(string name, float x, float y){
 	state = IDLE;
 
 	remaining_life = MAX_LIFE;
+	special = 0;
 
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
@@ -51,8 +52,12 @@ void Fighter::update(float delta){
 	InputManager inputManager = InputManager::get_instance();
 
 	//FIXME
-	if(inputManager.is_key_down(InputManager::SPACE_KEY))
+	if(inputManager.is_key_down(InputManager::SPACE_KEY)){
 		remaining_life--;
+
+		if(special < MAX_SPECIAL)
+			special++;
+	}
 
 	speed.x = 0;
 	on_floor = false;
@@ -147,6 +152,10 @@ bool Fighter::is_dead(){
 
 int Fighter::get_remaining_life(){
 	return remaining_life;
+}
+
+int Fighter::get_special(){
+	return special;
 }
 
 bool Fighter::is(string type){
