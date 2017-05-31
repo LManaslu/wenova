@@ -1,9 +1,13 @@
 #ifndef FIGHTERSTATS_H
 #define FIGHTERSTATS_H
 
+#include <string>
+
 #include "GameObject.h"
 #include "Sprite.h"
 #include "Fighter.h"
+#include "Timer.h"
+#include "Text.h"
 
 using std::string;
 
@@ -27,6 +31,9 @@ class FighterStats : public GameObject{
 		Sprite life; 
 		string type;
 		double percent_to_draw; 
+		int remaining_seconds;
+		Timer timer;
+		Text *text;
 		Fighter *fighter;
 };
 
