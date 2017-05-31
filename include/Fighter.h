@@ -19,6 +19,7 @@ class Fighter : public GameObject{
 		float max_speed;
 		int remaining_life;
 		void test_limits();
+		int special;
 
 	public:
 		Fighter(string name, float x, float y);
@@ -30,6 +31,7 @@ class Fighter : public GameObject{
 		bool is_dead();
 
 		int get_remaining_life();
+		int get_special();
 
 		void notify_collision(GameObject & object);
 		bool is(string type);
@@ -37,7 +39,9 @@ class Fighter : public GameObject{
 		void change_state(FighterState cstate);
 		void reset_position(float x, float y);
 
-		static const int MAX_LIFE = 100;
+		static const int MAX_LIFE = 500;
+
+		static const int MAX_SPECIAL = 400;
 };
 
 #endif
