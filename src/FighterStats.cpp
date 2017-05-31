@@ -1,6 +1,8 @@
 #include "FighterStats.h"
 #include "InputManager.h"
 
+using std::to_string;
+
 //FIXME: Trocar side pra enum
 FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side, double p_x, double p_y){
 	fighter = p_fighter;
@@ -10,7 +12,7 @@ FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side, 
 	percent_to_draw_life = 1.0;
 	index_fighter = p_index_fighter;
 
-	bg = Sprite("hud/life" + std::to_string(index_fighter) + (string)"_frame.png");
+	bg = Sprite("hud/life" + to_string(index_fighter) + "_frame.png");
 
 	//Left
 	if(side == 0){
@@ -33,7 +35,7 @@ FighterStats::~FighterStats(){
 
 }
 
-void FighterStats::update(float delta){
+void FighterStats::update(float){
 	percent_to_draw_life = (fighter->get_remaining_life() * 1.0) / Fighter::MAX_LIFE;
 	percent_to_draw_special = (fighter->get_special() * 1.0) / Fighter::MAX_SPECIAL;
 
@@ -76,10 +78,10 @@ bool FighterStats::is_dead(){
 	return false;
 }
 
-void FighterStats::notify_collision(GameObject &object){
+void FighterStats::notify_collision(GameObject &){
 
 }
 
-bool FighterStats::is(string type){
+bool FighterStats::is(string){
 	return false;
 }

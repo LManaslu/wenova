@@ -12,12 +12,13 @@
 
 class BattleState : public State{
 	private:
-		Sprite background;
+		Sprite background[3];
 		vector <Fighter *> fighters;
 		Music music;
+		void read_level_design(string stage);
 
 	public:
-		BattleState(string stage);
+		BattleState(string stage, string cmusic);
 		~BattleState();
 		
 		void update(float delta);

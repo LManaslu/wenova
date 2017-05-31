@@ -10,11 +10,16 @@
 #include "FighterStats.h"
 #include "TimeCounter.h"
 
+#define N_BACKGROUND 2
+
 using std::fstream;
 using std::stringstream;
+using std::to_string;
 
 BattleState::BattleState(string stage, string cmusic){
-	background = Sprite("stage_" + stage + "/background.png", 6, 30);
+	for(int i = 0; i < N_BACKGROUND; i++)
+		background[i] = Sprite("stage_" + stage + "/background_" + to_string(i) + ".png");
+
 	music = Music("stage_" + stage + "/" + cmusic);
 
 	read_level_design(stage);
@@ -29,6 +34,8 @@ BattleState::BattleState(string stage, string cmusic){
 
 	for(unsigned i = 0; i < fighters.size(); i++)
 		add_object(fighters[i]);
+
+	add_object(new TimeCounter());
 
 	add_object(new FighterStats(fighters[3], 4, 1, 1147, 679.5));
 	add_object(new FighterStats(fighters[2], 3, 1, 1147, 599.5));
@@ -49,24 +56,28 @@ void BattleState::update(float delta){
 	InputManager inputManager = InputManager::get_instance();
 
 	if(inputManager.key_press(SDLK_ESCAPE)){
+		music.stop();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;
 	}
 
 	if(inputManager.quit_requested()){
+		music.stop();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;
 	}
 
-	background.update(delta);
+	for(int i = 0; i < N_BACKGROUND; i++)
+		background[i].update(delta);
 
 	update_array(delta);
 }
 
 void BattleState::render(){
-	background.render(0, 0);
+	for(int i = 0; i < N_BACKGROUND; i++)
+		background[i].render(0, 0);
 
 	render_array();
 }

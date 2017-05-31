@@ -55,8 +55,11 @@ void Fighter::update(float delta){
 	if(inputManager.is_key_down(InputManager::SPACE_KEY)){
 		remaining_life--;
 
-		if(special < MAX_SPECIAL)
-			special++;
+		special++;
+
+		//FIXME XGH
+		if(special > MAX_SPECIAL)
+			special = MAX_SPECIAL;
 	}
 
 	speed.x = 0;
