@@ -8,10 +8,13 @@
 
 #define HEIGHT 20
 
+int Floor::floor_id = 1;
+
 //TODO reavaliar se precisa ou não de Camera
 Floor::Floor(float x, float y, float width, float crotation){
   rotation = crotation * PI / 180.0;
   box = Rectangle(x, y, width, HEIGHT);
+  id = floor_id++;
 }
 
 Floor::~Floor(){
@@ -33,4 +36,8 @@ void Floor::notify_collision(GameObject &){
 
 bool Floor::is(string type){
 	return type == "floor";
+}
+
+int Floor::get_id(){
+	return id;
 }

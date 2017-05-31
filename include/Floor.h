@@ -5,16 +5,23 @@
 #include "Sprite.h"
 
 class Floor : public GameObject{
-public:
-  Floor(float x, float y, float width, float crotation);
-  ~Floor();
+private:
+	int id;
 
-  void update(float delta);
-  void render();
-  bool is_dead();
+public:
+	Floor(float x, float y, float width, float crotation);
+	~Floor();
+
+	void update(float delta);
+	void render();
+	bool is_dead();
 
 	void notify_collision(GameObject & object);
 	bool is(string type);
+
+	int get_id();
+
+	static int floor_id;
 };
 
 #endif

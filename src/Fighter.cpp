@@ -2,6 +2,7 @@
 
 #include "InputManager.h"
 #include "Camera.h"
+#include "Floor.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -17,6 +18,7 @@
 
 #define PI 3.14159265358979
 
+#define CROUCH_COOLDOWN 10.0
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
@@ -36,6 +38,8 @@ Fighter::Fighter(string name, float x, float y){
 	//FIXME recebe no construtor
 
 	on_floor = false;
+	last_collided_floor = 0;
+	pass_through = false;
 
 	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
@@ -48,6 +52,7 @@ void Fighter::update(float delta){
 
 	speed.x = 0;
 	on_floor = false;
+
 	if(inputManager.is_key_down(SDLK_a)){
 		change_state(LEFT);
 		speed.x = -1;
@@ -56,7 +61,15 @@ void Fighter::update(float delta){
 		change_state(RIGHT);
 		speed.x = 1;
 	}
-	if(inputManager.is_key_down(SDLK_s)){
+
+	// TODO não deixar atravessar a plataforma se não tiver outra embaixo (smash-like)
+	// TODO só poder atravessar se estiver em cima de uma plataforma
+	if(inputManager.key_press(SDLK_s)){
+		if(crouch_timer.get() < CROUCH_COOLDOWN){
+			pass_through = true;
+		}
+
+		crouch_timer.restart();
 		change_state(SLIDING);
 	}
 	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
@@ -68,17 +81,28 @@ void Fighter::update(float delta){
 	}
 
 	sprite[state].update(delta);
+	crouch_timer.update(delta);
 }
 
 void Fighter::notify_collision(GameObject & object){
-	//FIXME tá feio
+	if(pass_through){
+		if(object.is("floor") && ((Floor&)object).get_id() == last_collided_floor){
+			// skip collision checking
+			return;
+		}
+		else{
+			pass_through = false;
+		}
+	}
 
+	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
 	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 30){
 		speed.y = 0;
 		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
 		on_floor = true;
+		last_collided_floor = ((Floor&)object).get_id();
 	}
 }
 
