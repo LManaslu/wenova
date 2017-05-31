@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Sprite.h"
 #include "Vector.h"
+#include "Timer.h"
 
 class Fighter : public GameObject{
 private:
@@ -13,9 +14,11 @@ private:
 	Vector speed;
 	Vector acceleration;
 	float vertical_speed;
-	bool on_floor;
+	int last_collided_floor;
+	bool on_floor, pass_through;
 	float max_speed;
 	void test_limits();
+	Timer crouch_timer;
 
 public:
 
