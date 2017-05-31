@@ -7,7 +7,7 @@
 class EditableFloor : public Floor{
 private:
 	enum FloorState{SELECTED, NOT_SELECTED};
-	Sprite normal_sprite, selected_sprite;
+	Sprite normal_sprite, platform_sprite, selected_sprite;
 	FloorState state;
 	bool deleted;
 	bool selected;
