@@ -120,3 +120,7 @@ string EditableFloor::get_information(){
 
 	return s;
 }
+
+void EditableFloor::set_selected(bool cselected){
+	selected = cselected;
+}

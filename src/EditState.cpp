@@ -52,7 +52,14 @@ void EditState::update(float delta){
 		int x = inputManager.get_mouse_x();
 		int y = inputManager.get_mouse_y();
 		bool is_platform = inputManager.key_press(SDLK_p);
-		add_object(new EditableFloor(x, y, 0, is_platform));
+		for(auto & go : object_array){
+			if(go->is("floor")){
+				((EditableFloor *) go.get())->set_selected(false);
+			}
+		}
+		auto go = new EditableFloor(x, y, 0, is_platform);
+		go->set_selected(true);
+		add_object(go);
 	}
 
 	if(inputManager.is_key_down(CONTROL) and inputManager.key_press(SDLK_c)){
