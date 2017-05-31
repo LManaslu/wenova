@@ -11,10 +11,11 @@
 int Floor::floor_id = 1;
 
 //TODO reavaliar se precisa ou não de Camera
-Floor::Floor(float x, float y, float width, float crotation){
-  rotation = crotation * PI / 180.0;
-  box = Rectangle(x, y, width, HEIGHT);
-  id = floor_id++;
+Floor::Floor(float x, float y, float width, float crotation, bool cplatform){
+	is_platform = cplatform;
+	rotation = crotation * PI / 180.0;
+	box = Rectangle(x, y, width, HEIGHT);
+	id = floor_id++;
 }
 
 Floor::~Floor(){

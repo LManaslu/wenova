@@ -8,8 +8,11 @@ class Floor : public GameObject{
 private:
 	int id;
 
+protected:
+	bool is_platform;
+
 public:
-	Floor(float x, float y, float width, float crotation);
+	Floor(float x, float y, float width, float crotation, bool cplatform);
 	~Floor();
 
 	void update(float delta);

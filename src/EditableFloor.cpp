@@ -9,13 +9,13 @@
 #define LAYER 0
 #define PI 3.14159265358979
 
-EditableFloor::EditableFloor(float x, float y, float crotation) : Floor(x, y, 100, crotation), normal_sprite(Sprite("images/editable_floor.png")), selected_sprite(Sprite("images/selected_editable_floor.png")){
+EditableFloor::EditableFloor(float x, float y, float crotation, bool cplatform) : Floor(x, y, 100, crotation, cplatform), normal_sprite(Sprite("images/editable_floor.png")), selected_sprite(Sprite("images/selected_editable_floor.png")){
 	box = Rectangle(x, y, normal_sprite.get_width(), normal_sprite.get_height());
 	deleted = false;
 	selected = false;
 }
 
-EditableFloor::EditableFloor(float x, float y, float width, float crotation) : EditableFloor(x, y, crotation){
+EditableFloor::EditableFloor(float x, float y, float width, float crotation, bool cplatform) : EditableFloor(x, y, crotation, cplatform){
 	normal_sprite.set_scale_x(width / normal_sprite.get_width());
 	selected_sprite.set_scale_x(width / selected_sprite.get_width());
 	box.width = normal_sprite.get_width();
@@ -81,7 +81,7 @@ void EditableFloor::update(float delta){
 		}
 	}
 
-	//printf("%f, %f, %.f, %f, %f\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI);
+	printf("%f, %f, %.f, %f, %f %d\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI, (int) is_platform);
 }
 
 void EditableFloor::render(){
@@ -105,7 +105,7 @@ bool EditableFloor::is(string type){
 
 string EditableFloor::get_information(){
 	char info[500];
-	sprintf(info, "%.f %.f %.f %.f", box.x, box.y, box.width, rotation * 180 / PI);
+	sprintf(info, "%f %f %f %f %d", box.x, box.y, box.width, rotation * 180 / PI, (int) is_platform);
 	string s(info);
 	for(auto & c : s) c += 10;
 
