@@ -6,6 +6,9 @@ FighterStats::FighterStats(string p_type, Fighter *p_fighter){
 	fighter = p_fighter;
 
 	if(type == "Timer"){
+  		text = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "100", 
+						{0, 0, 0, 255}, 640, 664);
+		remaining_seconds = 100;
 		sp = Sprite("hud/time_board.png");
 		box = Rectangle(640, 664, sp.get_width(), sp.get_height());
 	}else if(type == "Life1"){
@@ -32,6 +35,13 @@ FighterStats::~FighterStats(){
 }
 
 void FighterStats::update(float delta){
+	if(type == "Timer"){
+		timer.update(delta);
+		remaining_seconds = 100 - (timer.get() / 100); 
+		printf("%f\n", timer.get());
+		text->set_text(std::to_string(remaining_seconds));
+	}
+
 	if(fighter)
 		percent_to_draw = (fighter->get_remaining_life() * 1.0) / Fighter::MAX_LIFE;
 
@@ -50,6 +60,9 @@ void FighterStats::render(){
 
 	if(type == "Life3" || type == "Life4")
 		life.render(box.get_draw_x() + 8 + life.get_width() * (1 - percent_to_draw), box.get_draw_y() + 23);
+
+	if(type == "Timer")
+		text->render(640, 664);
 }
 
 bool FighterStats::is_dead(){
