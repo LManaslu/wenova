@@ -13,12 +13,16 @@
 #define HEIGHT 720
 #define CONTROL 1073742048
 
+#define N_BACKGROUND 2
+
 using std::ifstream;
 using std::ofstream;
 using std::stringstream;
+using std::to_string;
 
 EditState::EditState(string cstage) : stage(cstage){
-	background = Sprite("stage_" + stage + "/background.png", 6, 1);
+	for(int i = 0; i < N_BACKGROUND; i++)
+		background[i] = Sprite("stage_" + stage + "/background_" + to_string(i) + ".png", 6, 1);
 
 	test_fighter = new Fighter("flesh", WIDTH/2, HEIGHT/2 - 200);
 	add_object(test_fighter);
@@ -72,7 +76,8 @@ void EditState::update(float delta){
 }
 
 void EditState::render(){
-	background.render(0, 0);
+	for(int i = 0; i < N_BACKGROUND; i++)
+		background[i].render(0, 0);
 
 	render_array();
 }

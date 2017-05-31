@@ -32,6 +32,8 @@ class TimeCounter : public GameObject{
 		Timer timer;
 		Text *text;
 		int remaining_seconds;
+
+		string get_time_string();
 };
 
 #endif

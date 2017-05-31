@@ -8,7 +8,7 @@
 
 class Fighter : public GameObject{
 	private:
-		enum FighterState {IDLE, LEFT, RIGHT, JUMPING, FALLING, SLIDING};
+		enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH};
 		Sprite sprite[10];
 		FighterState state;
 		Vector speed;
@@ -20,6 +20,7 @@ class Fighter : public GameObject{
 		int remaining_life;
 		void test_limits();
 		int special;
+		Timer crouch_timer;
 
 	public:
 		Fighter(string name, float x, float y);

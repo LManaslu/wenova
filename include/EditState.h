@@ -9,7 +9,7 @@
 
 class EditState : public State{
 private:
-	Sprite background;
+	Sprite background[3];
 	Fighter * test_fighter;
 	string stage;
 
