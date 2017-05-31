@@ -8,7 +8,7 @@
 
 class Fighter : public GameObject{
 private:
-	enum FighterState {IDLE, LEFT, RIGHT, JUMPING, FALLING, CROUCH};
+	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH};
 	Sprite sprite[10];
 	FighterState state;
 	Vector speed;

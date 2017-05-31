@@ -10,8 +10,7 @@
 #define LAYER 0
 
 #define IDLE Fighter::FighterState::IDLE
-#define LEFT Fighter::FighterState::LEFT
-#define RIGHT Fighter::FighterState::RIGHT
+#define RUNNING Fighter::FighterState::RUNNING
 #define JUMPING Fighter::FighterState::JUMPING
 #define FALLING Fighter::FighterState::FALLING
 #define CROUCH Fighter::FighterState::CROUCH
@@ -23,8 +22,7 @@
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
 	sprite[IDLE] = Sprite(name + "/idle.png", 8, 30);
-	sprite[LEFT] = Sprite(name + "/left.png", 8, 30);
-	sprite[RIGHT] = Sprite(name + "/right.png", 8, 30);
+	sprite[RUNNING] = Sprite(name + "/running.png", 8, 30);
 	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 30);
 	sprite[FALLING] = Sprite(name + "/falling.png", 7, 30);
 	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 30);
@@ -60,6 +58,17 @@ void Fighter::update(float delta){
 	if(inputManager.is_key_down(SDLK_d)){
 		change_state(RIGHT);
 		speed.x = 1.5;
+	}
+
+	if(state != CROUCH){
+		if(inputManager.is_key_down(SDLK_a)){
+			change_state(RUNNING);
+			speed.x = -1.5;
+		}
+		if(inputManager.is_key_down(SDLK_d)){
+			change_state(RUNNING);
+			speed.x = 1.5;
+		}
 	}
 
 	if(inputManager.is_key_down(SDLK_s)){
@@ -131,7 +140,8 @@ void Fighter::post_collision_update(float delta){
 void Fighter::render(){
 	int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
 	int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
-	sprite[state].render(x, y, rotation);
+	SDL_RendererFlip flip = speed.x < 0 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+	sprite[state].render(x, y, rotation, flip);
 }
 
 bool Fighter::is_dead(){
@@ -159,11 +169,10 @@ void Fighter::change_state(FighterState cstate){
 }
 
 void Fighter::test_limits(){
-	//TODO config
+	//TODO Matar personagem ao cair do cenario
 	if(box.x < 0) box.x = 0;
 	if(box.x > 1280) box.x = 1280;
-	if(box.y < 0) box.y = 0;
-	if(box.y > 720) box.y = 720;
+	if(box.y < 0 or box.y > 720) box.y = 0;
 }
 
 void Fighter::reset_position(float x, float y){
