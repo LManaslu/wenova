@@ -102,23 +102,23 @@ void Game::run(){
 		return;
 	}
 
-	this->calculate_delta_time();
-
 	while(not state_stack.empty()){
 		InputManager::get_instance().update();
+
+		this->calculate_delta_time();
 		get_current_state().update(delta);
 		get_current_state().render();
 
 		SDL_RenderPresent(renderer);
 		manage_stack();
-		SDL_Delay(5);
+		SDL_Delay(10);
 	}
 }
 
 void Game::calculate_delta_time(){
 	int new_frame_start = SDL_GetTicks();
 
-	delta = (new_frame_start - frame_start)/1000.0;
+	delta = std::min((new_frame_start - frame_start)/10.0, 1.0);
 
 	frame_start = new_frame_start;
 }

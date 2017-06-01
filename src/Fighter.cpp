@@ -34,7 +34,7 @@ Fighter::Fighter(string name, float x, float y){
 
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
-	acceleration = Vector(0, 0.1);
+	acceleration = Vector(0, 0.2);
 	max_speed = 5;
 	//FIXME recebe no construtor
 
@@ -49,6 +49,8 @@ Fighter::~Fighter(){
 }
 
 void Fighter::update(float delta){
+	//FIXME tira isso daqui
+	//printf("max_delta: %f\n", delta);
 	InputManager inputManager = InputManager::get_instance();
 
 	//FIXME
@@ -68,18 +70,18 @@ void Fighter::update(float delta){
 	if(state != CROUCH){
 		if(inputManager.is_key_down(SDLK_a)){
 			change_state(RUNNING);
-			speed.x = -3;
+			speed.x = -2;
 		}
 		if(inputManager.is_key_down(SDLK_d)){
 			change_state(RUNNING);
-			speed.x = 3;
+			speed.x = 2;
 		}
 	}
 
 	if(inputManager.is_key_down(SDLK_s)){
 		change_state(CROUCH);
 	}
-	
+
 	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
 		speed.y = -5;
 	}
@@ -103,7 +105,7 @@ void Fighter::notify_collision(GameObject & object){
 
 	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
-	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 30){
+	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 10){
 		speed.y = 0;
 		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
@@ -188,7 +190,7 @@ void Fighter::test_limits(){
 	if(box.y < 0 or box.y > 720){
 		box.y = 0;
 		pass_through = false;
-	} 
+	}
 }
 
 void Fighter::reset_position(float x, float y){
