@@ -39,15 +39,15 @@ void MenuState::update(float delta){
 	green_ship.update(delta);
 	red_ship.update(delta);
 
-	InputManager input_manager = InputManager::get_instance();
+	InputManager * input_manager = InputManager::get_instance();
 
 	// handling general inputs
-	if(input_manager.quit_requested()){
+	if(input_manager->quit_requested()){
 		m_quit_requested = true;
 		return;
 	}
 
-	if(input_manager.key_press(SDLK_ESCAPE)){
+	if(input_manager->key_press(SDLK_ESCAPE)){
 		if(start_pressed){
 			start_pressed = false;
 			current_option = 0;
@@ -59,22 +59,22 @@ void MenuState::update(float delta){
 	}
 
 	// handling options input
-	if(input_manager.key_press(SDLK_LEFT) && current_option != 0){
+	if(input_manager->key_press(SDLK_LEFT) && current_option != 0){
 		current_option--;
 	}
 
-	if(input_manager.key_press(SDLK_RIGHT) && current_option != (int)options.size() - 1){
+	if(input_manager->key_press(SDLK_RIGHT) && current_option != (int)options.size() - 1){
 		current_option++;
 	}
 
-	if(input_manager.is_key_down(SDLK_w) and input_manager.is_key_down(SDLK_r) and input_manager.is_key_down(SDLK_c)){
+	if(input_manager->is_key_down(SDLK_w) and input_manager->is_key_down(SDLK_r) and input_manager->is_key_down(SDLK_c)){
 		m_quit_requested = true;
 		Game::get_instance().push(new EditState("1"));
 		return;
 	}
 
 	// TODO when press space switch case in options
-	if(input_manager.key_press(SDLK_RETURN)){
+	if(input_manager->key_press(SDLK_RETURN)){
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;

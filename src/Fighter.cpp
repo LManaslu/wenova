@@ -51,10 +51,10 @@ Fighter::~Fighter(){
 void Fighter::update(float delta){
 	//FIXME tira isso daqui
 	//printf("max_delta: %f\n", delta);
-	InputManager inputManager = InputManager::get_instance();
+	InputManager * inputManager = InputManager::get_instance();
 
 	//FIXME
-	if(inputManager.is_key_down(InputManager::SPACE_KEY)){
+	if(inputManager->is_key_down(InputManager::SPACE_KEY)){
 		remaining_life--;
 
 		special++;
@@ -66,27 +66,28 @@ void Fighter::update(float delta){
 
 	speed.x = 0;
 	on_floor = false;
+	bool v = inputManager->is_key_down(SDLK_a, true);
 
 	if(state != CROUCH){
-		if(inputManager.is_key_down(SDLK_a)){
+		if(v){
 			change_state(RUNNING);
 			speed.x = -2;
 		}
-		if(inputManager.is_key_down(SDLK_d)){
+		if(inputManager->is_key_down(SDLK_d, true)){
 			change_state(RUNNING);
 			speed.x = 2;
 		}
 	}
 
-	if(inputManager.is_key_down(SDLK_s)){
+	if(inputManager->is_key_down(SDLK_s)){
 		change_state(CROUCH);
 	}
 
-	if(inputManager.is_key_down(SDLK_SPACE) && speed.y == 0){
+	if(inputManager->is_key_down(SDLK_SPACE) && speed.y == 0){
 		speed.y = -5;
 	}
 
-	if(speed.x == 0 && speed.y == 0 && not inputManager.is_key_down(SDLK_s)){
+	if(speed.x == 0 && speed.y == 0 && not inputManager->is_key_down(SDLK_s)){
 		change_state(IDLE);
 	}
 
@@ -116,10 +117,10 @@ void Fighter::notify_collision(GameObject & object){
 }
 
 void Fighter::post_collision_update(float delta){
-	InputManager inputManager = InputManager::get_instance();
+	InputManager * inputManager = InputManager::get_instance();
 
 	// check pass through when double crouching
-	if(inputManager.key_press(SDLK_s)){
+	if(inputManager->key_press(SDLK_s)){
 		if(crouch_timer.get() < CROUCH_COOLDOWN){
 			pass_through = true;
 		}

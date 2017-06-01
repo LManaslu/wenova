@@ -53,16 +53,16 @@ BattleState::~BattleState(){
 }
 
 void BattleState::update(float delta){
-	InputManager inputManager = InputManager::get_instance();
+	InputManager * inputManager = InputManager::get_instance();
 
-	if(inputManager.key_press(SDLK_ESCAPE)){
+	if(inputManager->key_press(SDLK_ESCAPE)){
 		music.stop();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;
 	}
 
-	if(inputManager.quit_requested()){
+	if(inputManager->quit_requested()){
 		music.stop();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
