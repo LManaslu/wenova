@@ -27,11 +27,11 @@ EditableFloor::~EditableFloor(){
 }
 
 void EditableFloor::update(float delta){
-	InputManager inputManager = InputManager::get_instance();
+	InputManager * inputManager = InputManager::get_instance();
 
-	if(inputManager.mouse_press(InputManager::LEFT_MOUSE_BUTTON)){
-		int x = inputManager.get_mouse_x();
-      	int y = inputManager.get_mouse_y();
+	if(inputManager->mouse_press(InputManager::LEFT_MOUSE_BUTTON)){
+		int x = inputManager->get_mouse_x();
+      	int y = inputManager->get_mouse_y();
 		Rectangle mouse = Rectangle(x, y, 1, 1);
 		if(Collision::is_colliding(box, mouse, rotation, 0)){
 			selected = true;
@@ -43,45 +43,45 @@ void EditableFloor::update(float delta){
 
 	if(selected){
 		float value = 0.5 * delta;
-		if(inputManager.is_key_down(SDLK_RIGHT)){
+		if(inputManager->is_key_down(SDLK_RIGHT)){
 			box.x += value;
 		}
-		if(inputManager.is_key_down(SDLK_LEFT)){
+		if(inputManager->is_key_down(SDLK_LEFT)){
 			box.x -= value;
 		}
-		if(inputManager.is_key_down(SDLK_UP)){
+		if(inputManager->is_key_down(SDLK_UP)){
 			box.y -= value;
 		}
-		if(inputManager.is_key_down(SDLK_DOWN)){
+		if(inputManager->is_key_down(SDLK_DOWN)){
 			box.y += value;
 		}
 
-		if(inputManager.is_key_down(SDLK_z)){
+		if(inputManager->is_key_down(SDLK_z)){
 			rotation += 0.01 * value;
 		}
-		if(inputManager.is_key_down(SDLK_x)){
+		if(inputManager->is_key_down(SDLK_x)){
 			rotation -= 0.01 * value;
 		}
-		if(inputManager.is_key_down(SDLK_r)){
+		if(inputManager->is_key_down(SDLK_r)){
 			rotation = 0;
 		}
-		if(inputManager.key_press(SDLK_k)){
+		if(inputManager->key_press(SDLK_k)){
 			is_platform = !is_platform;
 		}
 
-		if(inputManager.is_key_down(SDLK_PERIOD)){
+		if(inputManager->is_key_down(SDLK_PERIOD)){
 			normal_sprite.update_scale_x(0.005 * value);
 			platform_sprite.update_scale_x(0.005 * value);
 			selected_sprite.update_scale_x(0.005 * value);
 			box.width = normal_sprite.get_width();
 		}
-		if(inputManager.is_key_down(SDLK_COMMA)){
+		if(inputManager->is_key_down(SDLK_COMMA)){
 			normal_sprite.update_scale_x(-0.005 * value);
 			platform_sprite.update_scale_x(-0.005 * value);
 			selected_sprite.update_scale_x(-0.005 * value);
 			box.width = normal_sprite.get_width();
 		}
-		if(inputManager.is_key_down(SDLK_DELETE)){
+		if(inputManager->is_key_down(SDLK_DELETE)){
 			deleted = true;
 		}
 	}

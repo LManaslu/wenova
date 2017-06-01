@@ -20,14 +20,14 @@ void Camera::unfollow(){
 }
 
 void Camera::update(float delta){
-	InputManager inputManager = InputManager::get_instance();
+	InputManager * inputManager = InputManager::get_instance();
 
 	if(focus == nullptr){
 		bool directions[] = {
-			inputManager.is_key_down(InputManager::LEFT_ARROW_KEY),
-			inputManager.is_key_down(InputManager::UP_ARROW_KEY),
-			inputManager.is_key_down(InputManager::RIGHT_ARROW_KEY),
-			inputManager.is_key_down(InputManager::DOWN_ARROW_KEY)
+			inputManager->is_key_down(InputManager::LEFT_ARROW_KEY),
+			inputManager->is_key_down(InputManager::UP_ARROW_KEY),
+			inputManager->is_key_down(InputManager::RIGHT_ARROW_KEY),
+			inputManager->is_key_down(InputManager::DOWN_ARROW_KEY)
 		};
 
 		speed.x = 0;

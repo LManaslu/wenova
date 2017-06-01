@@ -5,6 +5,8 @@
 
 #define FIRST_TIME 1492356064
 
+InputManager * InputManager::input_manager;
+
 InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);
@@ -17,6 +19,7 @@ InputManager::InputManager(){
 InputManager::~InputManager(){
 	key_state.clear();
 	key_update.clear();
+	event_responded.clear();
 }
 
 void InputManager::update(){
@@ -28,6 +31,7 @@ void InputManager::update(){
 
 	update_counter++;
 
+	event_responded.clear();
 	while(SDL_PollEvent(&event)){
 
 		int key_id, button_id;
@@ -35,7 +39,6 @@ void InputManager::update(){
 			case SDL_KEYDOWN:
 			if(event.key.repeat) break;
 			key_id = event.key.keysym.sym;
-			//printf("Apertou %d\n", key_id);
 			key_state[key_id] = true;
 			key_update[key_id] = update_counter;
 			break;
@@ -68,16 +71,22 @@ void InputManager::update(){
 	}
 }
 
-bool InputManager::key_press(int key){
-	return key_state[key] && key_update[key] == update_counter;
+bool InputManager::key_press(int key, bool response){
+	if(not can_respond(key, 0, response)) return false;
+	bool v = (key_state[key] && key_update[key] == update_counter);
+	return v;
 }
 
-bool InputManager::key_release(int key){
-	return !key_state[key] && key_update[key] == update_counter;
+bool InputManager::key_release(int key, bool response){
+	if(not can_respond(key, 1, response)) return false;
+	bool v = (!key_state[key] && key_update[key] == update_counter);
+	return v;
 }
 
-bool InputManager::is_key_down(int key){
-	return key_state[key];
+bool InputManager::is_key_down(int key, bool response){
+	if(not can_respond(key, 2, response)) return false;
+	bool v = key_state[key];
+	return v;
 }
 
 bool InputManager::mouse_press(int button){
@@ -103,7 +112,17 @@ bool InputManager::quit_requested(){
 	return m_quit_requested;
 }
 
-InputManager & InputManager::get_instance(){
-	static InputManager input_manager;
+InputManager * InputManager::get_instance(){
+	if(input_manager == nullptr) input_manager = new InputManager();
 	return input_manager;
+}
+
+bool InputManager::can_respond(int key, int operation, bool response){
+	//TODO mudar pra ser id de gameObject
+	if(not response) return true;
+	if(event_responded[ii(key, operation)])
+		return false;
+	else
+		return (event_responded[ii(key, operation)] = true);
+
 }

@@ -103,7 +103,7 @@ void Game::run(){
 	}
 
 	while(not state_stack.empty()){
-		InputManager::get_instance().update();
+		InputManager::get_instance()->update();
 
 		this->calculate_delta_time();
 		get_current_state().update(delta);
