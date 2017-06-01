@@ -43,6 +43,7 @@ public:
   	void set_scale_x(float scale);
   	void set_scale_y(float scale);
   	void update_scale_x(float scale);
+	void restart_count();
 };
 
 #endif

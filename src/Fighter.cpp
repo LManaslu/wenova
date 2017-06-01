@@ -34,8 +34,8 @@ Fighter::Fighter(string name, float x, float y){
 
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
-	acceleration = Vector(0, 0.2);
-	max_speed = 5;
+	acceleration = Vector(0, 0.1);
+	max_speed = 9;
 	//FIXME recebe no construtor
 
 	on_floor = false;
@@ -70,11 +70,11 @@ void Fighter::update(float delta){
 
 	if(state != CROUCH){
 		if(v){
-			change_state(RUNNING);
+			if(state == IDLE) change_state(RUNNING);
 			speed.x = -2;
 		}
 		if(inputManager->is_key_down(SDLK_d, true)){
-			change_state(RUNNING);
+			if(state == IDLE) change_state(RUNNING);
 			speed.x = 2;
 		}
 	}
@@ -129,7 +129,8 @@ void Fighter::post_collision_update(float delta){
 		change_state(CROUCH);
 	}
 
-	speed.y += std::min(!on_floor * acceleration.y * delta, max_speed);
+	speed.y = std::min(speed.y + !on_floor * acceleration.y * delta, max_speed);
+	printf("speed+= %.3f\n", speed.y);
 	box.x += speed.x * delta;
 	if(not on_floor) box.y += speed.y * delta;
 
@@ -171,7 +172,7 @@ bool Fighter::is(string type){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
-	//TODO Dar restart no count da sprite
+	sprite[state].restart_count();
 	float old_width = sprite[state].get_width();
 	float old_height = sprite[state].get_height();
 	state = cstate;

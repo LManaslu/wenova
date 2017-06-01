@@ -105,3 +105,7 @@ void Sprite::set_scale_y(float scale){
 void Sprite::update_scale_x(float scale){
 	scale_x += scale;
 }
+
+void Sprite::restart_count(){
+	current_frame = 0;
+}
