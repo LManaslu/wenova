@@ -65,7 +65,7 @@ void EditableFloor::update(float delta){
 		if(inputManager.is_key_down(SDLK_r)){
 			rotation = 0;
 		}
-		if(inputManager.key_press(SDLK_c)){
+		if(inputManager.key_press(SDLK_k)){
 			is_platform = !is_platform;
 		}
 
