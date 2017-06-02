@@ -195,8 +195,8 @@ void Fighter::change_state(FighterState cstate){
 
 void Fighter::test_limits(){
 	//TODO Matar personagem ao cair do cenario
-	if(box.x < 0) box.x = 0;
-	if(box.x > 1280) box.x = 1280;
+	if(box.x < box.width / 2) box.x = box.width / 2;
+	if(box.x > 1280 - box.width / 2) box.x = 1280 - box.width / 2;
 	if(box.y < 0 or box.y > 720){
 		box.y = 0;
 		pass_through = false;
