@@ -15,6 +15,9 @@
 #define FALLING Fighter::FighterState::FALLING
 #define CROUCH Fighter::FighterState::CROUCH
 
+#define LEFT Fighter::Orientation::LEFT
+#define RIGHT Fighter::Orientation::RIGHT
+
 #define PI 3.14159265358979
 
 #define CROUCH_COOLDOWN 100.0
@@ -34,23 +37,23 @@ Fighter::Fighter(string name, float x, float y){
 
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
+	//FIXME recebe no construtor
 	acceleration = Vector(0, 0.1);
 	max_speed = 9;
-	//FIXME recebe no construtor
+
+	orientation = RIGHT;
 
 	on_floor = false;
 	last_collided_floor = 0;
 	pass_through = false;
 
-	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
+	box = Rectangle(x, y, sprite[RUNNING].get_width(), sprite[RUNNING].get_height());
 }
 
 Fighter::~Fighter(){
 }
 
 void Fighter::update(float delta){
-	//FIXME tira isso daqui
-	//printf("max_delta: %f\n", delta);
 	InputManager * inputManager = InputManager::get_instance();
 
 	//FIXME
@@ -66,16 +69,17 @@ void Fighter::update(float delta){
 
 	speed.x = 0;
 	on_floor = false;
-	bool v = inputManager->is_key_down(SDLK_a, true);
 
 	if(state != CROUCH){
-		if(v){
+		if(inputManager->is_key_down(SDLK_a, true)){
 			if(state == IDLE) change_state(RUNNING);
 			speed.x = -2;
+			orientation = LEFT;
 		}
 		if(inputManager->is_key_down(SDLK_d, true)){
 			if(state == IDLE) change_state(RUNNING);
 			speed.x = 2;
+			orientation = RIGHT;
 		}
 	}
 
@@ -95,21 +99,23 @@ void Fighter::update(float delta){
 }
 
 void Fighter::notify_collision(GameObject & object){
-	if(pass_through){
-		if(object.is("platform")){
-			if(((Floor&)object).get_id() == last_collided_floor)
-				return;
-			else
-				pass_through = false;
-		}
-	}
-
 	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
 	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 10){
+		if(pass_through){
+			if(object.is("platform")){
+				if(((Floor&)object).get_id() == last_collided_floor)
+					return;
+				else
+					pass_through = false;
+			}
+		}
+
+
 		speed.y = 0;
 		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
+		if(state != IDLE and state != CROUCH) change_state(RUNNING);
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
 		pass_through = false;
@@ -121,6 +127,7 @@ void Fighter::post_collision_update(float delta){
 
 	// check pass through when double crouching
 	if(inputManager->key_press(SDLK_s)){
+		//FIXME só checa se tiver no chão
 		if(crouch_timer.get() < CROUCH_COOLDOWN){
 			pass_through = true;
 		}
@@ -130,7 +137,6 @@ void Fighter::post_collision_update(float delta){
 	}
 
 	speed.y = std::min(speed.y + !on_floor * acceleration.y * delta, max_speed);
-	printf("speed+= %.3f\n", speed.y);
 	box.x += speed.x * delta;
 	if(not on_floor) box.y += speed.y * delta;
 
@@ -149,7 +155,7 @@ void Fighter::render(){
 	int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
 	int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
 
-	SDL_RendererFlip flip = speed.x < 0 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+	SDL_RendererFlip flip = (orientation == LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 	sprite[state].render(x, y, rotation, flip);
 }
 
@@ -182,6 +188,8 @@ void Fighter::change_state(FighterState cstate){
 	float x = box.x - (new_width - old_width) * 0.5;
 	float y = box.y - (new_height - old_height) * 0.5;
 
+	box.x = x;
+	box.y = y;
 	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
 

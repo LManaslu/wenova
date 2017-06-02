@@ -9,8 +9,10 @@
 class Fighter : public GameObject{
 	private:
 		enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH};
+		enum Orientation {LEFT, RIGHT};
 		Sprite sprite[10];
 		FighterState state;
+		Orientation orientation;
 		Vector speed;
 		Vector acceleration;
 		float vertical_speed;
