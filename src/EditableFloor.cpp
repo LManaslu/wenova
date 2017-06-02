@@ -9,7 +9,7 @@
 #define LAYER 0
 #define PI 3.14159265358979
 
-EditableFloor::EditableFloor(float x, float y, float crotation, bool cplatform) : Floor(x, y, 100, crotation, cplatform), normal_sprite(Sprite("images/editable_floor.png")), platform_sprite(Sprite("images/editable_platform.png")), selected_sprite(Sprite("images/selected_editable_floor.png")) {
+EditableFloor::EditableFloor(float x, float y, float crotation, bool cplatform) : Floor(x, y, 100, crotation, cplatform), normal_sprite(Sprite("edit_state/floor/editable_floor.png")), platform_sprite(Sprite("edit_state/floor/editable_platform.png")), selected_sprite(Sprite("edit_state/floor/selected_editable_floor.png")) {
 	box = Rectangle(x, y, normal_sprite.get_width(), normal_sprite.get_height());
 	deleted = false;
 	selected = false;
