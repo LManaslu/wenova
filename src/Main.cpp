@@ -2,7 +2,7 @@
 #include "MenuState.h"
 
 int main(int, char **){
-	Game game("Wenova - Rise of Conquerors", 1280, 720);
+	Game game("Wenova - Rise of Conquerors", 1024, 768);
 
 	State * state =  new MenuState();
 	game.push(state);
