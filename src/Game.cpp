@@ -39,6 +39,8 @@ Game::Game(string title, int width, int height){
 		exit(-1);
 	}
 
+	update_resolution(width, height);
+
 	int mix_flags = MIX_INIT_OGG;
 	int sdl_mix = Mix_Init(mix_flags);
 	if(sdl_mix != mix_flags){
@@ -145,4 +147,25 @@ void Game::manage_stack(){
 		get_current_state().load_assets();
 		stored_state = nullptr;
 	}
+}
+
+void Game::update_resolution(int width, int height){
+	SDL_RenderClear(renderer);
+	SDL_RenderSetLogicalSize(renderer, 1280, 720);
+
+	float original_ratio = 1280.0 / 720;
+	float new_ratio = (1.0 * width) / height;
+	float offset_x, offset_y, w, h;
+
+	if(original_ratio < new_ratio){
+		h = height; w = height * original_ratio;
+		offset_y = 0;
+		offset_x =  (720 / h) * (w - width) / 2;
+	}else{
+		w = width; h = width / original_ratio;
+		offset_x = 0;
+		offset_y = (1280 / w) * (h - height) / 2;
+	}
+	//printf("Resolution: %d %d, %f %f, %f %f, s: %f, %f\n", width, height, w, h, offset_x, offset_y, w / 1280, h /720);
+	InputManager::get_instance()->set_mouse_scale(1280 / w, offset_x, offset_y);
 }
