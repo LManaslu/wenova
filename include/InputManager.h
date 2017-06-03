@@ -6,12 +6,15 @@
 #include <unordered_map>
 #include <map>
 #include <utility>
+#include <algorithm>
 
 #define ii pair<int, int>
 
 using std::unordered_map;
 using std::map;
 using std::pair;
+using std::min;
+using std::max;
 
 class InputManager{
 private:
@@ -31,6 +34,9 @@ private:
 	int mouse_y;
 
 	bool can_respond(int key, int operation, bool response);
+	int offset_x;
+	int offset_y;
+	float scale;
 
 public:
 	InputManager();
@@ -52,6 +58,8 @@ public:
 	bool quit_requested();
 
 	static InputManager * get_instance();
+
+	void set_mouse_scale(float scale, int offset_x, int offset_y);
 
 	// FIXME not being used
 	static const int LEFT_ARROW_KEY = SDLK_LEFT;

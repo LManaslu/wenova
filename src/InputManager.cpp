@@ -1,5 +1,8 @@
 #include "InputManager.h"
 
+#include "Game.h"
+
+#include <SDL2/SDL_render.h>
 #include <cstring>
 #include <ctime>
 
@@ -25,15 +28,19 @@ InputManager::~InputManager(){
 void InputManager::update(){
 	SDL_Event event;
 
-	SDL_GetMouseState(&mouse_x, &mouse_y);
-
 	m_quit_requested = false;
 
 	update_counter++;
 
 	event_responded.clear();
-	while(SDL_PollEvent(&event)){
+	SDL_GetMouseState(&mouse_x, &mouse_y);
+	mouse_x = mouse_x * scale + offset_x;
+	mouse_y = mouse_y * scale + offset_y;
+	mouse_x = max(0, mouse_x); mouse_x = min(mouse_x, 1280);
+	mouse_y = max(0, mouse_y); mouse_y = min(mouse_y, 720);
 
+
+	while(SDL_PollEvent(&event)){
 		int key_id, button_id;
 		switch (event.type) {
 			case SDL_KEYDOWN:
@@ -124,5 +131,10 @@ bool InputManager::can_respond(int key, int operation, bool response){
 		return false;
 	else
 		return (event_responded[ii(key, operation)] = true);
+}
 
+void InputManager::set_mouse_scale(float cscale, int coffset_x, int coffset_y){
+	scale = cscale;
+	offset_x = coffset_x;
+	offset_y = coffset_y;
 }
