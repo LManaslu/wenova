@@ -42,25 +42,31 @@ void EditableFloor::update(float delta){
 
 
 	if(selected){
-		float value = 0.5 * delta;
+		static float acceleration = 1;
+		float value = 0.5 * delta * acceleration;
+		bool moved = false;
 		if(inputManager->is_key_down(SDLK_RIGHT)){
-			box.x += value;
+			box.x += value; moved = true;
 		}
 		if(inputManager->is_key_down(SDLK_LEFT)){
-			box.x -= value;
+			box.x -= value; moved = true;
 		}
 		if(inputManager->is_key_down(SDLK_UP)){
-			box.y -= value;
+			box.y -= value; moved = true;
 		}
 		if(inputManager->is_key_down(SDLK_DOWN)){
-			box.y += value;
+			box.y += value; moved = true;
 		}
+		if(box.x < 0) box.x = 0;
+		if(box.x > 1280) box.x = 1280;
+		if(box.y < 0) box.y = 0;
+		if(box.y > 720) box.y = 720;
 
 		if(inputManager->is_key_down(SDLK_z)){
-			rotation += 0.01 * value;
+			rotation += 0.01 * value / acceleration;
 		}
 		if(inputManager->is_key_down(SDLK_x)){
-			rotation -= 0.01 * value;
+			rotation -= 0.01 * value / acceleration;
 		}
 		if(inputManager->is_key_down(SDLK_r)){
 			rotation = 0;
@@ -74,13 +80,19 @@ void EditableFloor::update(float delta){
 			platform_sprite.update_scale_x(0.005 * value);
 			selected_sprite.update_scale_x(0.005 * value);
 			box.width = normal_sprite.get_width();
+			moved = true;
 		}
 		if(inputManager->is_key_down(SDLK_COMMA)){
 			normal_sprite.update_scale_x(-0.005 * value);
 			platform_sprite.update_scale_x(-0.005 * value);
 			selected_sprite.update_scale_x(-0.005 * value);
 			box.width = normal_sprite.get_width();
+			moved = true;
 		}
+		if(moved) acceleration += 0.2;
+		else	acceleration = 1;
+		if(acceleration > 4) acceleration = 4;
+
 		if(inputManager->is_key_down(SDLK_DELETE)){
 			deleted = true;
 		}
