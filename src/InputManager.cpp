@@ -13,6 +13,8 @@ InputManager * InputManager::input_manager;
 InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);
+	memset(joystick_state, false, sizeof joystick_state);
+	memset(joystick_update, 0, sizeof joystick_update);
 	m_quit_requested = false;
 	update_counter = 0;
 	mouse_x = 0;
@@ -41,7 +43,7 @@ void InputManager::update(){
 
 
 	while(SDL_PollEvent(&event)){
-		int key_id, button_id;
+		int key_id, button_id, joystick_id;
 		switch (event.type) {
 			case SDL_KEYDOWN:
 			if(event.key.repeat) break;
@@ -66,6 +68,34 @@ void InputManager::update(){
 			button_id = event.button.button;
 			mouse_state[button_id] = false;
 			mouse_update[button_id] = update_counter;
+			break;
+
+			case SDL_JOYBUTTONDOWN:
+			button_id = event.jbutton.button + 4;
+			joystick_id = event.cdevice.which;
+			joystick_state[joystick_id][button_id] = true;
+			joystick_update[joystick_id][button_id] = update_counter;
+			printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			break;
+
+			case SDL_JOYBUTTONUP:
+			button_id = event.jbutton.button + 4;
+			joystick_id = event.cdevice.which;
+			joystick_state[joystick_id][button_id] = false;
+			joystick_update[joystick_id][button_id] = update_counter;
+			printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			break;
+
+			case SDL_JOYHATMOTION:
+			button_id = event.jhat.value;
+			joystick_id = event.cdevice.which;
+			printf("apertou d-pad: %d, joystick: %d\n", button_id, joystick_id);
+			for(int i = 0; i < 4; i++) {
+				if(button_id & (1<<i)) {
+					joystick_state[joystick_id][i] = true;
+					joystick_update[joystick_id][i] = update_counter;
+				}
+			}
 			break;
 
 			case SDL_QUIT:
@@ -105,6 +135,17 @@ bool InputManager::mouse_release(int button){
 }
 bool InputManager::is_mouse_down(int button){
 	return mouse_state[button];
+}
+
+bool InputManager::joystick_button_press(int button, int joystick){
+	return joystick_state[joystick][button] && joystick_update[joystick][button] == update_counter;
+}
+
+bool InputManager::joystick_button_release(int button, int joystick){
+	return !joystick_state[joystick][button] && joystick_update[joystick][button] == update_counter;
+}
+bool InputManager::is_joystick_button_down(int button, int joystick){
+	return joystick_state[joystick][button];
 }
 
 int InputManager::get_mouse_x(){

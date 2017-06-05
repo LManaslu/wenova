@@ -23,6 +23,10 @@ private:
 	bool mouse_state[6];
 	int mouse_update[6];
 
+	bool joystick_state[4][30];
+	int joystick_update[4][30];
+
+
 	unordered_map<int, bool> key_state;
 	unordered_map<int, int> key_update;
 	map<ii, int> event_responded;
@@ -52,12 +56,18 @@ public:
 	bool mouse_release(int button);
 	bool is_mouse_down(int button);
 
+	bool joystick_button_press(int button, int joystick);
+	bool joystick_button_release(int button, int joystick);
+	bool is_joystick_button_down(int button, int joystick);
+
 	int get_mouse_x();
 	int get_mouse_y();
 
 	bool quit_requested();
 
 	static InputManager * get_instance();
+	enum JoystickButton {UP, RIGHT, DOWN, LEFT, A, B, Y, X, LB, RB, LT, RT, SELECT, START, L3 = 11, R3};
+
 
 	void set_mouse_scale(float scale, int offset_x, int offset_y);
 
