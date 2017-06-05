@@ -30,7 +30,7 @@ private:
 
 	void calculate_delta_time();
 	void manage_stack();
-	void update_resolution(int width, int height);
+	void update_resolution();
 
 public:
 	Game(string title, int width, int height);

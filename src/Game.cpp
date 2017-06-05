@@ -14,7 +14,7 @@ Game::Game(string title, int width, int height){
 
 	srand(time(nullptr));
 
-	int sdl_init = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
+	int sdl_init = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK);
 	if(sdl_init){
 		printf("%s\n", SDL_GetError());
 		exit(-1);
@@ -33,13 +33,15 @@ Game::Game(string title, int width, int height){
 		exit(-1);
 	}
 
+	// SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(renderer == nullptr){
 		printf("%s\n", SDL_GetError());
 		exit(-1);
 	}
 
-	update_resolution(width, height);
+	update_resolution();
 
 	int mix_flags = MIX_INIT_OGG;
 	int sdl_mix = Mix_Init(mix_flags);
@@ -58,6 +60,13 @@ Game::Game(string title, int width, int height){
 	if(ttf_init){
 		printf("%s\n", TTF_GetError());
 		exit(-1);
+	}
+
+	if(SDL_NumJoysticks() < 1) {
+		printf("Warning no joysticks connected!\n");
+	}
+	for(int i = 0; i < SDL_NumJoysticks(); i++) {
+		SDL_JoystickOpen(i);
 	}
 
 	stored_state = nullptr;
@@ -149,9 +158,15 @@ void Game::manage_stack(){
 	}
 }
 
-void Game::update_resolution(int width, int height){
+void Game::update_resolution() {
+	int width, height;
+
 	SDL_RenderClear(renderer);
 	SDL_RenderSetLogicalSize(renderer, 1280, 720);
+
+	SDL_GetWindowSize(window, &width, &height);
+
+	printf("W: %d, H: %d\n", width, height);
 
 	float original_ratio = 1280.0 / 720;
 	float new_ratio = (1.0 * width) / height;
