@@ -104,6 +104,7 @@ void Sprite::set_scale_y(float scale){
 
 void Sprite::update_scale_x(float scale){
 	scale_x += scale;
+	if(scale_x < 0.05) scale_x = 0.05;
 }
 
 void Sprite::restart_count(){
