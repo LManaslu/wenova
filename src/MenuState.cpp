@@ -59,11 +59,11 @@ void MenuState::update(float delta){
 	}
 
 	// handling options input
-	if(input_manager->key_press(SDLK_LEFT) && current_option != 0){
+	if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::JoystickButton::LEFT, 0)) && current_option != 0){
 		current_option--;
 	}
 
-	if(input_manager->key_press(SDLK_RIGHT) && current_option != (int)options.size() - 1){
+	if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::JoystickButton::RIGHT, 0)) && current_option != (int)options.size() - 1){
 		current_option++;
 	}
 
@@ -74,7 +74,8 @@ void MenuState::update(float delta){
 	}
 
 	// TODO when press space switch case in options
-	if(input_manager->key_press(SDLK_RETURN)){
+
+	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::JoystickButton::START, 0)) {
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;
