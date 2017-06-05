@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <vector>
 
 #define LAYER 0
 
@@ -18,9 +19,14 @@
 #define LEFT Fighter::Orientation::LEFT
 #define RIGHT Fighter::Orientation::RIGHT
 
+#define ii pair<int, int>
+
 #define PI 3.14159265358979
 
 #define CROUCH_COOLDOWN 100.0
+
+using std::pair;
+using std::vector;
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y){
@@ -53,16 +59,37 @@ Fighter::Fighter(string name, float x, float y){
 Fighter::~Fighter(){
 }
 
-void Fighter::update(float delta){
+void Fighter::process_input(){
 	InputManager * inputManager = InputManager::get_instance();
 
+	vector< pair<int, int> > buttons = {
+		ii(JUMP_BUTTON, SDLK_SPACE),
+		ii(UP_BUTTON, SDLK_w),
+		ii(DOWN_BUTTON, SDLK_s),
+		ii(LEFT_BUTTON, SDLK_a),
+		ii(RIGHT_BUTTON, SDLK_d),
+		ii(ATTACK_BUTTON, SDLK_x),
+		ii(SKILL1_BUTTON, SDLK_o),
+		ii(SKILL2_BUTTON, SDLK_p),
+		ii(BLOCK_BUTTON, SDLK_l)
+	};
+
+	for(ii button : buttons){
+		pressed[button.first] = inputManager->key_press(button.second, true);
+		is_holding[button.first] = inputManager->is_key_down(button.second, true);
+		released[button.first] = inputManager->key_release(button.second, true);
+	}
+}
+
+void Fighter::update(float delta){
+	process_input();
+
 	//FIXME
-	if(inputManager->is_key_down(InputManager::SPACE_KEY)){
+	if(pressed[JUMP_BUTTON]){
 		remaining_life--;
 
 		special++;
 
-		//FIXME XGH
 		if(special > MAX_SPECIAL)
 			special = MAX_SPECIAL;
 	}
@@ -71,27 +98,27 @@ void Fighter::update(float delta){
 	on_floor = false;
 
 	if(state != CROUCH){
-		if(inputManager->is_key_down(SDLK_a, true)){
+		if(is_holding[LEFT_BUTTON]){
 			if(state == IDLE) change_state(RUNNING);
 			speed.x = -2;
 			orientation = LEFT;
 		}
-		if(inputManager->is_key_down(SDLK_d, true)){
+		if(is_holding[RIGHT_BUTTON]){
 			if(state == IDLE) change_state(RUNNING);
 			speed.x = 2;
 			orientation = RIGHT;
 		}
 	}
 
-	if(inputManager->is_key_down(SDLK_s)){
+	if(is_holding[DOWN_BUTTON]){
 		change_state(CROUCH);
 	}
 
-	if(inputManager->is_key_down(SDLK_SPACE) && speed.y == 0){
+	if(pressed[JUMP_BUTTON] && speed.y == 0){
 		speed.y = -5;
 	}
 
-	if(speed.x == 0 && speed.y == 0 && not inputManager->is_key_down(SDLK_s)){
+	if(speed.x == 0 && speed.y == 0 && not is_holding[DOWN_BUTTON]){
 		change_state(IDLE);
 	}
 
@@ -123,10 +150,8 @@ void Fighter::notify_collision(GameObject & object){
 }
 
 void Fighter::post_collision_update(float delta){
-	InputManager * inputManager = InputManager::get_instance();
-
 	// check pass through when double crouching
-	if(inputManager->key_press(SDLK_s)){
+	if(pressed[DOWN_BUTTON]){
 		//FIXME só checa se tiver no chão
 		if(crouch_timer.get() < CROUCH_COOLDOWN){
 			pass_through = true;
