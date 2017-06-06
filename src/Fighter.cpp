@@ -76,15 +76,15 @@ void Fighter::process_input(){
 	};
 
 	vector< pair<int, int> > joystick_buttons = {
-		ii(JUMP_BUTTON, InputManager::JoystickButton::A),
-		ii(UP_BUTTON, InputManager::JoystickButton::UP),
-		ii(DOWN_BUTTON, InputManager::JoystickButton::DOWN),
-		ii(LEFT_BUTTON, InputManager::JoystickButton::LEFT),
-		ii(RIGHT_BUTTON, InputManager::JoystickButton::RIGHT),
-		ii(ATTACK_BUTTON, InputManager::JoystickButton::B),
-		ii(SKILL1_BUTTON, InputManager::JoystickButton::LT),
-		ii(SKILL2_BUTTON, InputManager::JoystickButton::RT),
-		ii(BLOCK_BUTTON, InputManager::JoystickButton::RB)
+		ii(JUMP_BUTTON, InputManager::A),
+		ii(UP_BUTTON, InputManager::UP),
+		ii(DOWN_BUTTON, InputManager::DOWN),
+		ii(LEFT_BUTTON, InputManager::LEFT),
+		ii(RIGHT_BUTTON, InputManager::RIGHT),
+		ii(ATTACK_BUTTON, InputManager::B),
+		ii(SKILL1_BUTTON, InputManager::LT),
+		ii(SKILL2_BUTTON, InputManager::RT),
+		ii(BLOCK_BUTTON, InputManager::RB)
 	};
 
 	if(joystick_id != -1){
