@@ -75,7 +75,7 @@ void InputManager::update(){
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			//printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
 			case SDL_JOYBUTTONUP:
@@ -83,18 +83,16 @@ void InputManager::update(){
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
 			joystick_update[joystick_id][button_id] = update_counter;
-			printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			//printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
 			case SDL_JOYHATMOTION:
 			button_id = event.jhat.value;
 			joystick_id = event.cdevice.which;
-			printf("apertou d-pad: %d, joystick: %d\n", button_id, joystick_id);
+			//printf("apertou d-pad: %d, joystick: %d\n", button_id, joystick_id);
 			for(int i = 0; i < 4; i++) {
-				if(button_id & (1<<i)) {
-					joystick_state[joystick_id][i] = true;
-					joystick_update[joystick_id][i] = update_counter;
-				}
+				joystick_state[joystick_id][i] = button_id & (1<<i);
+				joystick_update[joystick_id][i] = update_counter;
 			}
 			break;
 

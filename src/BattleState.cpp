@@ -27,10 +27,11 @@ BattleState::BattleState(string stage, string cmusic){
 
 	music.play();
 
-	fighters.push_back(new Fighter("flesh", 100, 100));
-	fighters.push_back(new Fighter("flesh", 200, 100));
-	fighters.push_back(new Fighter("flesh", 300, 100));
-	fighters.push_back(new Fighter("flesh", 400, 100));
+	int joystick_id = (SDL_NumJoysticks() == 0 ? -1 : 0);
+	fighters.push_back(new Fighter("flesh", 100, 100, joystick_id));
+	fighters.push_back(new Fighter("flesh", 200, 100, 1));
+	fighters.push_back(new Fighter("flesh", 300, 100, 2));
+	fighters.push_back(new Fighter("flesh", 400, 100, 3));
 
 	for(unsigned i = 0; i < fighters.size(); i++)
 		add_object(fighters[i]);
