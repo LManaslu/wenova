@@ -21,6 +21,7 @@ class Fighter : public GameObject{
 		int last_collided_floor;
 		float max_speed;
 		int remaining_life;
+		int joystick_id;
 
 		void test_limits();
 
@@ -34,7 +35,7 @@ class Fighter : public GameObject{
 		void process_input();
 
 	public:
-		Fighter(string name, float x, float y);
+		Fighter(string name, float x, float y, int cjoystick_id);
 		~Fighter();
 
 		void update(float delta);

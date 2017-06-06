@@ -66,7 +66,8 @@ public:
 	bool quit_requested();
 
 	static InputManager * get_instance();
-	enum JoystickButton {UP, RIGHT, DOWN, LEFT, A, B, Y, X, LB, RB, LT, RT, SELECT, START, L3 = 11, R3};
+	//FIXME varia de PC pra PC e de controle pra controle
+	enum JoystickButton {UP, RIGHT, DOWN, LEFT, Y, A, B, X, LB, RB, LT, RT, SELECT, START, L3 = 11, R3};
 
 
 	void set_mouse_scale(float scale, int offset_x, int offset_y);

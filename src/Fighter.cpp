@@ -16,8 +16,8 @@
 #define FALLING Fighter::FighterState::FALLING
 #define CROUCH Fighter::FighterState::CROUCH
 
-#define LEFT Fighter::Orientation::LEFT
-#define RIGHT Fighter::Orientation::RIGHT
+#define FIGHTER_LEFT Fighter::Orientation::LEFT
+#define FIGHTER_RIGHT Fighter::Orientation::RIGHT
 
 #define ii pair<int, int>
 
@@ -29,7 +29,7 @@ using std::pair;
 using std::vector;
 
 //TODO reavaliar se precisa ou não de Camera
-Fighter::Fighter(string name, float x, float y){
+Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[IDLE] = Sprite(name + "/idle.png", 8, 10);
 	sprite[RUNNING] = Sprite(name + "/running.png", 8, 10);
 	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
@@ -37,6 +37,7 @@ Fighter::Fighter(string name, float x, float y){
 	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 20);
 
 	state = IDLE;
+	joystick_id = cjoystick_id;
 
 	remaining_life = MAX_LIFE;
 	special = 0;
@@ -60,7 +61,7 @@ Fighter::~Fighter(){
 }
 
 void Fighter::process_input(){
-	InputManager * inputManager = InputManager::get_instance();
+	InputManager * input_manager = InputManager::get_instance();
 
 	vector< pair<int, int> > buttons = {
 		ii(JUMP_BUTTON, SDLK_SPACE),
@@ -74,10 +75,30 @@ void Fighter::process_input(){
 		ii(BLOCK_BUTTON, SDLK_l)
 	};
 
-	for(ii button : buttons){
-		pressed[button.first] = inputManager->key_press(button.second, true);
-		is_holding[button.first] = inputManager->is_key_down(button.second, true);
-		released[button.first] = inputManager->key_release(button.second, true);
+	vector< pair<int, int> > joystick_buttons = {
+		ii(JUMP_BUTTON, InputManager::JoystickButton::A),
+		ii(UP_BUTTON, InputManager::JoystickButton::UP),
+		ii(DOWN_BUTTON, InputManager::JoystickButton::DOWN),
+		ii(LEFT_BUTTON, InputManager::JoystickButton::LEFT),
+		ii(RIGHT_BUTTON, InputManager::JoystickButton::RIGHT),
+		ii(ATTACK_BUTTON, InputManager::JoystickButton::B),
+		ii(SKILL1_BUTTON, InputManager::JoystickButton::LT),
+		ii(SKILL2_BUTTON, InputManager::JoystickButton::RT),
+		ii(BLOCK_BUTTON, InputManager::JoystickButton::RB)
+	};
+
+	if(joystick_id != -1){
+		for(ii button : joystick_buttons){
+			pressed[button.first] = input_manager->joystick_button_press(button.second, joystick_id);
+			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, joystick_id);
+			released[button.first] = input_manager->joystick_button_release(button.second, joystick_id);
+		}
+	}else{
+		for(ii button : buttons){
+			pressed[button.first] = input_manager->key_press(button.second, true);
+			is_holding[button.first] = input_manager->is_key_down(button.second, true);
+			released[button.first] = input_manager->key_release(button.second, true);
+		}
 	}
 }
 
@@ -101,12 +122,12 @@ void Fighter::update(float delta){
 		if(is_holding[LEFT_BUTTON]){
 			if(state == IDLE) change_state(RUNNING);
 			speed.x = -2;
-			orientation = LEFT;
+			orientation = FIGHTER_LEFT;
 		}
 		if(is_holding[RIGHT_BUTTON]){
 			if(state == IDLE) change_state(RUNNING);
 			speed.x = 2;
-			orientation = RIGHT;
+			orientation = FIGHTER_RIGHT;
 		}
 	}
 
@@ -180,7 +201,7 @@ void Fighter::render(){
 	int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
 	int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
 
-	SDL_RendererFlip flip = (orientation == LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+	SDL_RendererFlip flip = (orientation == FIGHTER_LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 	sprite[state].render(x, y, rotation, flip);
 }
 

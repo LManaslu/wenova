@@ -24,7 +24,8 @@ EditState::EditState(string cstage) : stage(cstage){
 	for(int i = 0; i < N_BACKGROUND; i++)
 		background[i] = Sprite("stage_" + stage + "/background_" + to_string(i) + ".png");
 
-	test_fighter = new Fighter("edit_state/test_fighter", WIDTH/2, HEIGHT/2 - 200);
+	int joystick_id = (SDL_NumJoysticks() == 0 ? -1 : 0);
+	test_fighter = new Fighter("edit_state/test_fighter", WIDTH/2, HEIGHT/2 - 200, joystick_id);
 	add_object(test_fighter);
 
 	read_level_design();
