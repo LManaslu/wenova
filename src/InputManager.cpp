@@ -19,6 +19,7 @@ InputManager::InputManager(){
 	update_counter = 0;
 	mouse_x = 0;
 	mouse_y = 0;
+
 }
 
 InputManager::~InputManager(){
@@ -44,6 +45,7 @@ void InputManager::update(){
 
 	while(SDL_PollEvent(&event)){
 		int key_id, button_id, joystick_id;
+		//printf("%d\n", event.type);
 		switch (event.type) {
 			case SDL_KEYDOWN:
 			if(event.key.repeat) break;
@@ -70,31 +72,37 @@ void InputManager::update(){
 			mouse_update[button_id] = update_counter;
 			break;
 
-			case SDL_JOYBUTTONDOWN:
-			button_id = event.jbutton.button + 4;
+			case SDL_CONTROLLERAXISMOTION:
+			SDL_Log("Controller axis %s changed to %d\n", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)event.caxis.axis), event.caxis.value);
+			break;
+
+			case SDL_CONTROLLERBUTTONDOWN:
+			button_id = event.jbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			//printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
-			case SDL_JOYBUTTONUP:
-			button_id = event.jbutton.button + 4;
+			case SDL_CONTROLLERBUTTONUP:
+			button_id = event.jbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
 			joystick_update[joystick_id][button_id] = update_counter;
-			//printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
+			/*
 			case SDL_JOYHATMOTION:
 			button_id = event.jhat.value;
 			joystick_id = event.cdevice.which;
-			//printf("apertou d-pad: %d, joystick: %d\n", button_id, joystick_id);
+			printf("apertou d-pad: %d, joystick: %d\n", button_id, joystick_id);
 			for(int i = 0; i < 4; i++) {
 				joystick_state[joystick_id][i] = button_id & (1<<i);
 				joystick_update[joystick_id][i] = update_counter;
 			}
 			break;
+			*/
 
 			case SDL_QUIT:
 			m_quit_requested = true;

@@ -14,7 +14,7 @@ Game::Game(string title, int width, int height){
 
 	srand(time(nullptr));
 
-	int sdl_init = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK);
+	int sdl_init = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
 	if(sdl_init){
 		printf("%s\n", SDL_GetError());
 		exit(-1);
@@ -63,10 +63,23 @@ Game::Game(string title, int width, int height){
 	}
 
 	if(SDL_NumJoysticks() < 1) {
-		printf("Warning no joysticks connected!\n");
+		printf("Warning: No joysticks connected!\n");
 	}
-	for(int i = 0; i < SDL_NumJoysticks(); i++) {
-		SDL_JoystickOpen(i);
+
+	int n_controller = 0;
+
+	//TODO descobrir se esse arquivo ajuda ou atrapalha
+	//provavelmente atrapalha
+	//SDL_GameControllerAddMappingsFromFile("res/joysticks/gamecontrollerdb.txt");
+	for(int i = 0; i < SDL_NumJoysticks(); ++i){
+
+		if(SDL_IsGameController(i)){
+			SDL_GameControllerOpen(i);
+			n_controller++;
+		}else{
+			printf("Erro: Joystick não funciona como game controller\n");
+			exit(11);
+		}
 	}
 
 	stored_state = nullptr;
