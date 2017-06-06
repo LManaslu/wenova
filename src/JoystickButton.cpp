@@ -22,7 +22,6 @@ void JoystickButton::update(float delta){
 }
 
 void JoystickButton::render(){
-	printf("Rendering %f %f %f %f\n", box.get_draw_x(), box.get_draw_y(), sprite.get_width(), sprite.get_height());
 	sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
 
 	if(pressed)
