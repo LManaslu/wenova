@@ -18,26 +18,26 @@
 
 JoystickConfigState::JoystickConfigState(int joystick_id){
 	//D-Pad
-	add_object(new JoystickButton(DOWN_X, DOWN_Y - 100, "UP", InputManager::JoystickButton::UP, joystick_id, "up"));
-	add_object(new JoystickButton(DOWN_X + 50, DOWN_Y - 50, "RIGHT", InputManager::JoystickButton::RIGHT, joystick_id, "right"));
-	add_object(new JoystickButton(DOWN_X, DOWN_Y, "DOWN", InputManager::JoystickButton::DOWN, joystick_id, "down"));
-	add_object(new JoystickButton(DOWN_X - 50, DOWN_Y - 50, "LEFT", InputManager::JoystickButton::LEFT, joystick_id, "left"));
+	add_object(new JoystickButton(DOWN_X, DOWN_Y - 100, "UP", InputManager::UP, joystick_id, "up"));
+	add_object(new JoystickButton(DOWN_X + 50, DOWN_Y - 50, "RIGHT", InputManager::RIGHT, joystick_id, "right"));
+	add_object(new JoystickButton(DOWN_X, DOWN_Y, "DOWN", InputManager::DOWN, joystick_id, "down"));
+	add_object(new JoystickButton(DOWN_X - 50, DOWN_Y - 50, "LEFT", InputManager::LEFT, joystick_id, "left"));
 
 	//ABXY
-	add_object(new JoystickButton(A_X - 75, A_Y - 75, "X", InputManager::JoystickButton::X, joystick_id, "button"));
-	add_object(new JoystickButton(A_X, A_Y, "A", InputManager::JoystickButton::A, joystick_id, "button"));
-	add_object(new JoystickButton(A_X + 75, A_Y - 75, "B", InputManager::JoystickButton::B, joystick_id, "button"));
-	add_object(new JoystickButton(A_X, A_Y - 150, "Y", InputManager::JoystickButton::Y, joystick_id, "button"));
+	add_object(new JoystickButton(A_X - 75, A_Y - 75, "X", InputManager::X, joystick_id, "button"));
+	add_object(new JoystickButton(A_X, A_Y, "A", InputManager::A, joystick_id, "button"));
+	add_object(new JoystickButton(A_X + 75, A_Y - 75, "B", InputManager::B, joystick_id, "button"));
+	add_object(new JoystickButton(A_X, A_Y - 150, "Y", InputManager::Y, joystick_id, "button"));
 
 	//Triggers
-	add_object(new JoystickButton(LB_X, LB_Y, "LB", InputManager::JoystickButton::LB, joystick_id, "trigger"));
-	add_object(new JoystickButton(LB_X + 500, LB_Y, "RB", InputManager::JoystickButton::RB, joystick_id, "trigger"));
-	add_object(new JoystickButton(LB_X, LB_Y - 75, "LT", InputManager::JoystickButton::LT, joystick_id, "back_trigger"));
-	add_object(new JoystickButton(LB_X + 500, LB_Y - 75, "RT", InputManager::JoystickButton::RT, joystick_id, "back_trigger"));
+	add_object(new JoystickButton(LB_X, LB_Y, "LB", InputManager::LB, joystick_id, "trigger"));
+	add_object(new JoystickButton(LB_X + 500, LB_Y, "RB", InputManager::RB, joystick_id, "trigger"));
+	add_object(new JoystickButton(LB_X, LB_Y - 75, "LT", InputManager::LT, joystick_id, "back_trigger"));
+	add_object(new JoystickButton(LB_X + 500, LB_Y - 75, "RT", InputManager::RT, joystick_id, "back_trigger"));
 
 	//Select e start
-	add_object(new JoystickButton(SELECT_X, SELECT_Y, "select", InputManager::JoystickButton::SELECT, joystick_id, "select_start"));
-	add_object(new JoystickButton(MIDDLE_X + 75, SELECT_Y, "start", InputManager::JoystickButton::START, joystick_id, "select_start"));
+	add_object(new JoystickButton(SELECT_X, SELECT_Y, "select", InputManager::SELECT, joystick_id, "select_start"));
+	add_object(new JoystickButton(MIDDLE_X + 75, SELECT_Y, "start", InputManager::START, joystick_id, "select_start"));
 }
 
 void JoystickConfigState::update(float delta){

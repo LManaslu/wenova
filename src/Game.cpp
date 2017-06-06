@@ -75,6 +75,7 @@ Game::Game(string title, int width, int height){
 
 		if(SDL_IsGameController(i)){
 			SDL_GameControllerOpen(i);
+			printf("Controle %d conectado\n", i);
 			n_controller++;
 		}else{
 			printf("Erro: Joystick não funciona como game controller\n");
