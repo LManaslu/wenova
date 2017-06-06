@@ -16,7 +16,7 @@ JoystickButton::~JoystickButton(){
 
 }
 
-void JoystickButton::update(float delta){
+void JoystickButton::update(float){
 	InputManager * input_manager = InputManager::get_instance();
 	pressed = input_manager->is_joystick_button_down(button_id, joystick_id);
 }
@@ -32,7 +32,7 @@ bool JoystickButton::is_dead(){
 	return false;
 }
 
-void JoystickButton::notify_collision(GameObject & object){
+void JoystickButton::notify_collision(GameObject &){
 
 }
 
