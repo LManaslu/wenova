@@ -69,24 +69,22 @@ public:
 
 	static InputManager * get_instance();
 	//FIXME varia de PC pra PC e de controle pra controle
-	enum JoystickButton {
-		UP = SDL_CONTROLLER_BUTTON_DPAD_UP,
-		RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
-		DOWN = SDL_CONTROLLER_BUTTON_DPAD_DOWN,
-		LEFT = SDL_CONTROLLER_BUTTON_DPAD_LEFT,
-		A = SDL_CONTROLLER_BUTTON_A,
-		B = SDL_CONTROLLER_BUTTON_B,
-		X = SDL_CONTROLLER_BUTTON_X,
-		Y = SDL_CONTROLLER_BUTTON_Y,
-		LB = SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
-		RB = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
-		LT = 1001,//FIXME achar numero dele
-		RT = 1002,
-		SELECT = SDL_CONTROLLER_BUTTON_BACK,
-		START = SDL_CONTROLLER_BUTTON_START,
-		L3 = SDL_CONTROLLER_BUTTON_LEFTSTICK,
-		R3 = SDL_CONTROLLER_BUTTON_RIGHTSTICK
-	};
+	static const int UP = SDL_CONTROLLER_BUTTON_DPAD_UP;
+	static const int RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
+	static const int DOWN = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
+	static const int LEFT = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
+	static const int A = SDL_CONTROLLER_BUTTON_A;
+	static const int B = SDL_CONTROLLER_BUTTON_B;
+	static const int X = SDL_CONTROLLER_BUTTON_X;
+	static const int Y = SDL_CONTROLLER_BUTTON_Y;
+	static const int LB = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+	static const int RB = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+	static const int LT = 1001;//FIXME achar numero dele
+	static const int RT = 1002;
+	static const int SELECT = SDL_CONTROLLER_BUTTON_BACK;
+	static const int START = SDL_CONTROLLER_BUTTON_START;
+	static const int L3 = SDL_CONTROLLER_BUTTON_LEFTSTICK;
+	static const int R3 = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
 
 
 	void set_mouse_scale(float scale, int offset_x, int offset_y);

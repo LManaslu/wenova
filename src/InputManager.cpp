@@ -73,6 +73,7 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERAXISMOTION:
+			mouse_state[button_id] = true;
 			SDL_Log("Controller axis %s changed to %d\n", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)event.caxis.axis), event.caxis.value);
 			break;
 
