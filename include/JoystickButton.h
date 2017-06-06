@@ -8,9 +8,15 @@ class JoystickButton : public GameObject{
 private:
 	bool pressed;
 	Sprite sprite;
+	Sprite pressed_sprite;
+
+	int button_id;
+	int joystick_id;
+	string label;
+	//TODO text com label escrito
 
 public:
-	JoystickButton(int cbutton, int cjoystick_id);
+	JoystickButton(int x, int y, string clabel, int cbutton, int cjoystick_id, string csprite);
 
 	~JoystickButton();
 
@@ -19,6 +25,7 @@ public:
 	bool is_dead();
 
 	void notify_collision(GameObject & object);
+	bool is(string type);
 
 };
 

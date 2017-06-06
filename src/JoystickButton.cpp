@@ -1,7 +1,15 @@
 #include "JoystickButton.h"
 
-JoystickButton::JoystickButton(int cbutton, int cjoystick_id){
+#include "InputManager.h"
 
+JoystickButton::JoystickButton(int x, int y, string clabel, int cbutton_id, int cjoystick_id, string csprite){
+	sprite = Sprite("joysticks/" + csprite + ".png");
+	pressed_sprite = Sprite("joysticks/pressed_" + csprite + ".png");
+	box = Rectangle(x, y, sprite.get_width(), sprite.get_height());
+	button_id = cbutton_id;
+	joystick_id = cjoystick_id;
+	rotation = 0;
+	label = clabel;
 }
 
 JoystickButton::~JoystickButton(){
@@ -9,17 +17,26 @@ JoystickButton::~JoystickButton(){
 }
 
 void JoystickButton::update(float delta){
-
+	InputManager * input_manager = InputManager::get_instance();
+	pressed = input_manager->is_joystick_button_down(button_id, joystick_id);
 }
 
 void JoystickButton::render(){
+	printf("Rendering %f %f %f %f\n", box.get_draw_x(), box.get_draw_y(), sprite.get_width(), sprite.get_height());
+	sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
 
+	if(pressed)
+		pressed_sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
 }
 
 bool JoystickButton::is_dead(){
-
+	return false;
 }
 
 void JoystickButton::notify_collision(GameObject & object){
 
+}
+
+bool JoystickButton::is(string type){
+	return type == "JoystickButton";
 }

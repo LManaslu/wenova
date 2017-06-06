@@ -118,6 +118,8 @@ void Game::run(){
 
 		this->calculate_delta_time();
 		get_current_state().update(delta);
+
+		SDL_RenderClear(renderer);
 		get_current_state().render();
 
 		SDL_RenderPresent(renderer);
