@@ -5,8 +5,14 @@
 #include "JoystickButton.h"
 #include "Game.h"
 
+#define A_X 500
+#define A_Y 500
+
 JoystickConfigState::JoystickConfigState(int joystick_id){
-	add_object(new JoystickButton(100, 100, "A", 5, joystick_id, "button"));
+	add_object(new JoystickButton(A_X, A_Y, "A", 5, joystick_id, "button"));
+	add_object(new JoystickButton(A_X + 100, A_Y - 100, "B", 6, joystick_id, "button"));
+	add_object(new JoystickButton(A_X, A_Y - 200, "Y", 7, joystick_id, "button"));
+	add_object(new JoystickButton(A_X - 100, A_Y - 100, "X", 4, joystick_id, "button"));
 }
 
 void JoystickConfigState::update(float delta){
