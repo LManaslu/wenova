@@ -1,6 +1,7 @@
 #include "MenuState.h"
 #include "InputManager.h"
 #include "BattleState.h"
+#include "JoystickConfigState.h"
 #include "EditState.h"
 #include "Game.h"
 #include "Resources.h"
@@ -70,6 +71,12 @@ void MenuState::update(float delta){
 	if(input_manager->is_key_down(SDLK_w) and input_manager->is_key_down(SDLK_r) and input_manager->is_key_down(SDLK_c)){
 		m_quit_requested = true;
 		Game::get_instance().push(new EditState("1"));
+		return;
+	}
+
+	if(input_manager->is_key_down(SDLK_j) and input_manager->is_key_down(SDLK_s)){
+		m_quit_requested = true;
+		Game::get_instance().push(new JoystickConfigState(0));
 		return;
 	}
 
