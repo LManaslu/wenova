@@ -55,7 +55,7 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 void JoystickConfigState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
-	if(input_manager->key_press(SDLK_ESCAPE) or (input_manager->joystick_button_press(InputManager::SELECT, 0) and input_manager->joystick_button_press(InputManager::START, 0))){
+	if(input_manager->key_press(SDLK_ESCAPE) or (input_manager->is_joystick_button_down(InputManager::R3, 0) and input_manager->is_joystick_button_down(InputManager::L3, 0))){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;
