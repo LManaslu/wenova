@@ -80,6 +80,7 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERAXISMOTION:
+			case SDL_JOYAXISMOTION:
 			joystick_id = event.cdevice.which;
 			if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX){
 				joystick_state[joystick_id][RIGHT] = event.caxis.value > 30000;
@@ -103,6 +104,7 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERBUTTONDOWN:
+			case SDL_JOYBUTTONDOWN:
 			button_id = event.jbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
@@ -111,6 +113,7 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERBUTTONUP:
+			case SDL_JOYBUTTONUP:
 			button_id = event.jbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
