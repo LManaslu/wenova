@@ -78,8 +78,10 @@ Game::Game(string title, int width, int height){
 			printf("Controller %d connected\n", i);
 			n_controller++;
 		}else{
-			printf("Error: Joystick is not a game controller\n");
-			exit(11);
+			printf("WARNING: Joystick is not a game controller\n");
+			SDL_JoystickOpen(i);
+
+			//exit(11);
 		}
 	}
 
