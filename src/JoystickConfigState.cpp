@@ -49,7 +49,9 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 		//Select e start
 		add_object(new JoystickButton(offset_x + SELECT_X, offset_y + SELECT_Y, "select", InputManager::SELECT, joystick_id, "select_start"));
 		add_object(new JoystickButton(offset_x + MIDDLE_X + DISTANCE_START, offset_y + SELECT_Y, "start", InputManager::START, joystick_id, "select_start"));
+
 	}
+	InputManager::get_instance()->set_analogic_value(20000);
 }
 
 void JoystickConfigState::update(float delta){

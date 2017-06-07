@@ -8,8 +8,6 @@
 
 #define FIRST_TIME 1492356064
 
-#define ANALOGIC_VALUE 32000
-
 InputManager * InputManager::input_manager;
 
 const int InputManager::UP, InputManager::DOWN, InputManager::RIGHT, InputManager::LEFT;
@@ -81,41 +79,55 @@ void InputManager::update(){
 			mouse_update[button_id] = update_counter;
 			break;
 
+			case SDL_JOYAXISMOTION:
+			//printf("Joy axis changed %d\n", update_counter);
+			break;
+
 			case SDL_CONTROLLERAXISMOTION:
 			//case SDL_JOYAXISMOTION:
 			joystick_id = event.cdevice.which;
 			if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX){
-				joystick_state[joystick_id][RIGHT] = event.caxis.value > ANALOGIC_VALUE;
-				joystick_state[joystick_id][LEFT] = event.caxis.value < -ANALOGIC_VALUE;
+				joystick_state[joystick_id][RIGHT] = event.caxis.value > analogic_value;
+				joystick_state[joystick_id][LEFT] = event.caxis.value < -analogic_value;
 				joystick_update[joystick_id][RIGHT] = update_counter;
 				joystick_update[joystick_id][LEFT] = update_counter;
 			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY){
-				joystick_state[joystick_id][DOWN] = event.caxis.value > ANALOGIC_VALUE;
-				joystick_state[joystick_id][UP] = event.caxis.value < -ANALOGIC_VALUE;
+				joystick_state[joystick_id][DOWN] = event.caxis.value > analogic_value;
+				joystick_state[joystick_id][UP] = event.caxis.value < -analogic_value;
 				joystick_update[joystick_id][DOWN] = update_counter;
 				joystick_update[joystick_id][UP] = update_counter;
 			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT){
-				joystick_state[joystick_id][LT] = event.caxis.value > ANALOGIC_VALUE;
+				joystick_state[joystick_id][LT] = event.caxis.value > trigger_value;
 				joystick_update[joystick_id][LT] = update_counter;
 			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT){
-				joystick_state[joystick_id][RT] = event.caxis.value > ANALOGIC_VALUE;
+				joystick_state[joystick_id][RT] = event.caxis.value > trigger_value;
 				joystick_update[joystick_id][RT] = update_counter;
 			}
+
 			//printf("botao: %d\n", event.caxis.axis);
 			// SDL_Log("Controller axis %s (%d) changed to %d\n", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)event.caxis.axis), event.caxis.axis, event.caxis.value);
 			break;
 
+			case SDL_JOYBUTTONDOWN:
+			//printf("Joy down %d\n", update_counter);
+			break;
+
 			case SDL_CONTROLLERBUTTONDOWN:
+			//printf("Controller down %d\n", update_counter);
 			//case SDL_JOYBUTTONDOWN:
 			button_id = event.cbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			// printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
+			printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
+			break;
+
+			case SDL_JOYBUTTONUP:
+			//printf("Joy up %d\n", update_counter);
 			break;
 
 			case SDL_CONTROLLERBUTTONUP:
-			//case SDL_JOYBUTTONUP:
+			//printf("Controller up %d\n", update_counter);
 			button_id = event.cbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
@@ -203,4 +215,8 @@ void InputManager::set_mouse_scale(float cscale, int coffset_x, int coffset_y){
 	scale = cscale;
 	offset_x = coffset_x;
 	offset_y = coffset_y;
+}
+
+void InputManager::set_analogic_value(int value){
+	analogic_value = value;
 }

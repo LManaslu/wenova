@@ -32,6 +32,8 @@ MenuState::MenuState() : current_option(0) {
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "CONTINUE", RED, FONT_X, FONT_Y));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OPTIONS", RED, FONT_X, FONT_Y));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", RED, FONT_X, FONT_Y));
+
+	InputManager::get_instance()->set_analogic_value(32000);
 }
 
 void MenuState::update(float delta){

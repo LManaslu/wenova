@@ -29,8 +29,7 @@ EditState::EditState(string cstage) : stage(cstage){
 	add_object(test_fighter);
 
 	read_level_design();
-
-	//TODO ler os tiles que já tem e colocar
+	InputManager::get_instance()->set_analogic_value(20000);
 }
 
 void EditState::update(float delta){
