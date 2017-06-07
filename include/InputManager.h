@@ -44,6 +44,9 @@ private:
 	int offset_y;
 	float scale;
 
+	int analogic_value = 20000;
+	int trigger_value = 32000;
+
 public:
 	InputManager();
 	~InputManager();
@@ -69,6 +72,9 @@ public:
 
 	static InputManager * get_instance();
 
+	void set_mouse_scale(float scale, int offset_x, int offset_y);
+	void set_analogic_value(int value);
+
 	static const int UP = SDL_CONTROLLER_BUTTON_DPAD_UP;
 	static const int RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
 	static const int DOWN = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
@@ -87,7 +93,6 @@ public:
 	static const int R3 = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
 
 
-	void set_mouse_scale(float scale, int offset_x, int offset_y);
 
 	// FIXME not being used
 	static const int LEFT_ARROW_KEY = SDLK_LEFT;

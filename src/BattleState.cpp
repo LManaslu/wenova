@@ -44,6 +44,8 @@ BattleState::BattleState(string stage, string cmusic){
 	add_object(new FighterStats(fighters[0], 1, 0, 133, 599.5));
 
 	add_object(new TimeCounter());
+
+	InputManager::get_instance()->set_analogic_value(20000);
 }
 
 BattleState::~BattleState(){
