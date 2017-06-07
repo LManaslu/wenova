@@ -70,8 +70,13 @@ Game::Game(string title, int width, int height){
 
 	//TODO descobrir se esse arquivo ajuda ou atrapalha
 	//provavelmente atrapalha
-	//SDL_GameControllerAddMappingsFromFile("res/joysticks/gamecontrollerdb.txt");
+	SDL_GameControllerAddMappingsFromFile("res/joysticks/gamecontrollerdb.txt");
 	for(int i = 0; i < SDL_NumJoysticks(); ++i){
+
+		char guid[64];
+
+		SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(i), guid, sizeof (guid));
+		printf("Guid = %s\n", guid);
 
 		if(SDL_IsGameController(i)){
 			SDL_GameControllerOpen(i);

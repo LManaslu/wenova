@@ -102,21 +102,21 @@ void InputManager::update(){
 				joystick_update[joystick_id][RT] = update_counter;
 			}
 			//printf("botao: %d\n", event.caxis.axis);
-			//SDL_Log("Controller axis %s changed to %d\n", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)event.caxis.axis), event.caxis.value);
+			// SDL_Log("Controller axis %s (%d) changed to %d\n", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)event.caxis.axis), event.caxis.axis, event.caxis.value);
 			break;
 
 			case SDL_CONTROLLERBUTTONDOWN:
 			//case SDL_JOYBUTTONDOWN:
-			button_id = event.jbutton.button;
+			button_id = event.cbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			//printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			// printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
 			case SDL_CONTROLLERBUTTONUP:
 			//case SDL_JOYBUTTONUP:
-			button_id = event.jbutton.button;
+			button_id = event.cbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
 			joystick_update[joystick_id][button_id] = update_counter;
