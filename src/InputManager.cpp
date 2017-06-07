@@ -10,11 +10,14 @@
 
 InputManager * InputManager::input_manager;
 
+const int InputManager::UP, InputManager::DOWN, InputManager::RIGHT, InputManager::LEFT;
+const int InputManager::A, InputManager::B, InputManager::X, InputManager::Y;
+const int InputManager::LB, InputManager::RB, InputManager::START, InputManager::SELECT;
+const int InputManager::LT, InputManager::RT;
+
 InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);
-	memset(joystick_state, false, sizeof joystick_state);
-	memset(joystick_update, 0, sizeof joystick_update);
 	m_quit_requested = false;
 	update_counter = 0;
 	mouse_x = 0;
@@ -23,6 +26,10 @@ InputManager::InputManager(){
 }
 
 InputManager::~InputManager(){
+	for(int i = 0; i < 4; ++i){
+		joystick_state[i].clear();
+		joystick_update[i].clear();
+	}
 	key_state.clear();
 	key_update.clear();
 	event_responded.clear();
@@ -73,8 +80,26 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERAXISMOTION:
-			mouse_state[button_id] = true;
-			SDL_Log("Controller axis %s changed to %d\n", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)event.caxis.axis), event.caxis.value);
+			joystick_id = event.cdevice.which;
+			if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX){
+				joystick_state[joystick_id][RIGHT] = event.caxis.value > 30000;
+				joystick_state[joystick_id][LEFT] = event.caxis.value < -30000;
+				joystick_update[joystick_id][RIGHT] = update_counter;
+				joystick_update[joystick_id][LEFT] = update_counter;
+			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY){
+				joystick_state[joystick_id][DOWN] = event.caxis.value > 30000;
+				joystick_state[joystick_id][UP] = event.caxis.value < -30000;
+				joystick_update[joystick_id][DOWN] = update_counter;
+				joystick_update[joystick_id][UP] = update_counter;
+			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT){
+				joystick_state[joystick_id][LT] = event.caxis.value > 30000;
+				joystick_update[joystick_id][LT] = update_counter;
+			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT){
+				joystick_state[joystick_id][RT] = event.caxis.value > 30000;
+				joystick_update[joystick_id][RT] = update_counter;
+			}
+			//printf("botao: %d\n", event.caxis.axis);
+			//SDL_Log("Controller axis %s changed to %d\n", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)event.caxis.axis), event.caxis.value);
 			break;
 
 			case SDL_CONTROLLERBUTTONDOWN:
@@ -82,7 +107,7 @@ void InputManager::update(){
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			//printf("apertou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
 			case SDL_CONTROLLERBUTTONUP:
@@ -90,20 +115,8 @@ void InputManager::update(){
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
 			joystick_update[joystick_id][button_id] = update_counter;
-			printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
+			//printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
-
-			/*
-			case SDL_JOYHATMOTION:
-			button_id = event.jhat.value;
-			joystick_id = event.cdevice.which;
-			printf("apertou d-pad: %d, joystick: %d\n", button_id, joystick_id);
-			for(int i = 0; i < 4; i++) {
-				joystick_state[joystick_id][i] = button_id & (1<<i);
-				joystick_update[joystick_id][i] = update_counter;
-			}
-			break;
-			*/
 
 			case SDL_QUIT:
 			m_quit_requested = true;

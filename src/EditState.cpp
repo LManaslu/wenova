@@ -36,7 +36,7 @@ EditState::EditState(string cstage) : stage(cstage){
 void EditState::update(float delta){
 	InputManager * inputManager = InputManager::get_instance();
 
-	if(inputManager->key_press(SDLK_ESCAPE)){
+	if(inputManager->key_press(SDLK_ESCAPE) or inputManager->joystick_button_press(InputManager::SELECT, 0)){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;
