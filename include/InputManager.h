@@ -23,8 +23,8 @@ private:
 	bool mouse_state[6];
 	int mouse_update[6];
 
-	bool joystick_state[4][30];
-	int joystick_update[4][30];
+	unordered_map<int, bool> joystick_state[4];
+	unordered_map<int, int> joystick_update[4];
 
 
 	unordered_map<int, bool> key_state;
@@ -68,7 +68,7 @@ public:
 	bool quit_requested();
 
 	static InputManager * get_instance();
-	//FIXME varia de PC pra PC e de controle pra controle
+
 	static const int UP = SDL_CONTROLLER_BUTTON_DPAD_UP;
 	static const int RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
 	static const int DOWN = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
@@ -79,8 +79,8 @@ public:
 	static const int Y = SDL_CONTROLLER_BUTTON_Y;
 	static const int LB = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
 	static const int RB = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
-	static const int LT = 1001;//FIXME achar numero dele
-	static const int RT = 1002;
+	static const int LT = 0x20;
+	static const int RT = 0x21; //Valor arbitrário, mas tá certo
 	static const int SELECT = SDL_CONTROLLER_BUTTON_BACK;
 	static const int START = SDL_CONTROLLER_BUTTON_START;
 	static const int L3 = SDL_CONTROLLER_BUTTON_LEFTSTICK;
