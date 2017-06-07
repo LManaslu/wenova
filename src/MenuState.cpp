@@ -68,13 +68,14 @@ void MenuState::update(float delta){
 		current_option++;
 	}
 
-	if(input_manager->is_key_down(SDLK_w) and input_manager->is_key_down(SDLK_r) and input_manager->is_key_down(SDLK_c)){
+	if((input_manager->is_key_down(SDLK_w) and input_manager->is_key_down(SDLK_r) and input_manager->is_key_down(SDLK_c)) ||
+		(input_manager->is_joystick_button_down(InputManager::LB, 0) and input_manager->is_joystick_button_down(InputManager::RT, 0) and input_manager->is_joystick_button_down(InputManager::Y, 0))){
 		m_quit_requested = true;
 		Game::get_instance().push(new EditState("1"));
 		return;
 	}
 
-	if(input_manager->is_key_down(SDLK_j) and input_manager->is_key_down(SDLK_s)){
+	if((input_manager->is_key_down(SDLK_j) and input_manager->is_key_down(SDLK_s)) or input_manager->joystick_button_press(InputManager::SELECT, 0)){
 		m_quit_requested = true;
 		Game::get_instance().push(new JoystickConfigState(0));
 		return;
@@ -82,7 +83,7 @@ void MenuState::update(float delta){
 
 	// TODO when press space switch case in options
 
-	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0)) {
+	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0) || input_manager->joystick_button_press(InputManager::A, 0)) {
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;
