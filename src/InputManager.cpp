@@ -8,6 +8,8 @@
 
 #define FIRST_TIME 1492356064
 
+#define ANALOGIC_VALUE 32000
+
 InputManager * InputManager::input_manager;
 
 const int InputManager::UP, InputManager::DOWN, InputManager::RIGHT, InputManager::LEFT;
@@ -80,23 +82,23 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERAXISMOTION:
-			case SDL_JOYAXISMOTION:
+			//case SDL_JOYAXISMOTION:
 			joystick_id = event.cdevice.which;
 			if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX){
-				joystick_state[joystick_id][RIGHT] = event.caxis.value > 30000;
-				joystick_state[joystick_id][LEFT] = event.caxis.value < -30000;
+				joystick_state[joystick_id][RIGHT] = event.caxis.value > ANALOGIC_VALUE;
+				joystick_state[joystick_id][LEFT] = event.caxis.value < -ANALOGIC_VALUE;
 				joystick_update[joystick_id][RIGHT] = update_counter;
 				joystick_update[joystick_id][LEFT] = update_counter;
 			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY){
-				joystick_state[joystick_id][DOWN] = event.caxis.value > 30000;
-				joystick_state[joystick_id][UP] = event.caxis.value < -30000;
+				joystick_state[joystick_id][DOWN] = event.caxis.value > ANALOGIC_VALUE;
+				joystick_state[joystick_id][UP] = event.caxis.value < -ANALOGIC_VALUE;
 				joystick_update[joystick_id][DOWN] = update_counter;
 				joystick_update[joystick_id][UP] = update_counter;
 			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT){
-				joystick_state[joystick_id][LT] = event.caxis.value > 30000;
+				joystick_state[joystick_id][LT] = event.caxis.value > ANALOGIC_VALUE;
 				joystick_update[joystick_id][LT] = update_counter;
 			}else if(event.caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT){
-				joystick_state[joystick_id][RT] = event.caxis.value > 30000;
+				joystick_state[joystick_id][RT] = event.caxis.value > ANALOGIC_VALUE;
 				joystick_update[joystick_id][RT] = update_counter;
 			}
 			//printf("botao: %d\n", event.caxis.axis);
@@ -104,7 +106,7 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERBUTTONDOWN:
-			case SDL_JOYBUTTONDOWN:
+			//case SDL_JOYBUTTONDOWN:
 			button_id = event.jbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
@@ -113,7 +115,7 @@ void InputManager::update(){
 			break;
 
 			case SDL_CONTROLLERBUTTONUP:
-			case SDL_JOYBUTTONUP:
+			//case SDL_JOYBUTTONUP:
 			button_id = event.jbutton.button;
 			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
