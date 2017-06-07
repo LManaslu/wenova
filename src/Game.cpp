@@ -68,8 +68,6 @@ Game::Game(string title, int width, int height){
 
 	int n_controller = 0;
 
-	//TODO descobrir se esse arquivo ajuda ou atrapalha
-	//provavelmente atrapalha
 	SDL_GameControllerAddMappingsFromFile("res/joysticks/gamecontrollerdb.txt");
 	for(int i = 0; i < SDL_NumJoysticks(); ++i){
 
@@ -125,7 +123,6 @@ void Game::push(State * state){
 }
 
 void Game::run(){
-	//TODO condição de saída do loop
 	if(stored_state != nullptr){
 		state_stack.emplace(stored_state);
 		get_current_state().load_assets();
