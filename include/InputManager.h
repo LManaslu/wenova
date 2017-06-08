@@ -32,6 +32,8 @@ private:
 	map<ii, int> event_responded;
 
 	unordered_map<int, int> button_map;
+	unordered_map<int, int> controllers_id;
+	SDL_GameController * controllers[4];
 
 	bool m_quit_requested;
 	int update_counter;
@@ -74,6 +76,7 @@ public:
 
 	void set_mouse_scale(float scale, int offset_x, int offset_y);
 	void set_analogic_value(int value);
+	void connect_joysticks();
 
 	static const int UP = SDL_CONTROLLER_BUTTON_DPAD_UP;
 	static const int RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
