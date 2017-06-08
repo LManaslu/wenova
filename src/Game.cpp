@@ -66,27 +66,7 @@ Game::Game(string title, int width, int height){
 		printf("Warning: No joysticks connected!\n");
 	}
 
-	int n_controller = 0;
-
 	SDL_GameControllerAddMappingsFromFile("res/joysticks/gamecontrollerdb.txt");
-	for(int i = 0; i < SDL_NumJoysticks(); ++i){
-
-		char guid[64];
-
-		SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(i), guid, sizeof (guid));
-		printf("Guid = %s\n", guid);
-
-		if(SDL_IsGameController(i)){
-			SDL_GameControllerOpen(i);
-			printf("Controller %d connected\n", i);
-			n_controller++;
-		}else{
-			printf("WARNING: Joystick is not a game controller\n");
-			SDL_JoystickOpen(i);
-
-			//exit(11);
-		}
-	}
 
 	stored_state = nullptr;
 }
