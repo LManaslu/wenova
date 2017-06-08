@@ -18,6 +18,8 @@ const int InputManager::LT, InputManager::RT;
 InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);
+
+	for(int i = 0; i < 4; ++i) controllers[i] = nullptr;
 	m_quit_requested = false;
 	update_counter = 0;
 	mouse_x = 0;
@@ -51,7 +53,8 @@ void InputManager::update(){
 
 
 	while(SDL_PollEvent(&event)){
-		int key_id, button_id, joystick_id;
+		int key_id, button_id;
+		int joystick_id = controllers_id[event.cdevice.which];
 		//printf("%d\n", event.type);
 		switch (event.type) {
 			case SDL_KEYDOWN:
@@ -85,7 +88,6 @@ void InputManager::update(){
 
 			case SDL_CONTROLLERAXISMOTION:
 			//case SDL_JOYAXISMOTION:
-			joystick_id = event.cdevice.which;
 			if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX){
 				joystick_state[joystick_id][RIGHT] = event.caxis.value > analogic_value;
 				joystick_state[joystick_id][LEFT] = event.caxis.value < -analogic_value;
@@ -116,20 +118,28 @@ void InputManager::update(){
 			//printf("Controller down %d\n", update_counter);
 			//case SDL_JOYBUTTONDOWN:
 			button_id = event.cbutton.button;
-			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
+			//printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
 			case SDL_JOYBUTTONUP:
 			//printf("Joy up %d\n", update_counter);
 			break;
 
+			case SDL_CONTROLLERDEVICEADDED:
+			connect_joysticks();
+			//printf("Conectou %d\n", event.cdevice.which);
+			break;
+
+			case SDL_CONTROLLERDEVICEREMOVED:
+			connect_joysticks();
+			//printf("Desconectou %d\n", event.cdevice.which);
+			break;
+
 			case SDL_CONTROLLERBUTTONUP:
 			//printf("Controller up %d\n", update_counter);
 			button_id = event.cbutton.button;
-			joystick_id = event.cdevice.which;
 			joystick_state[joystick_id][button_id] = false;
 			joystick_update[joystick_id][button_id] = update_counter;
 			//printf("soltou joystick: %d, joystick: %d %d\n", button_id, joystick_id, joystick_button_press(button_id, joystick_id));
@@ -219,4 +229,39 @@ void InputManager::set_mouse_scale(float cscale, int coffset_x, int coffset_y){
 
 void InputManager::set_analogic_value(int value){
 	analogic_value = value;
+}
+
+void InputManager::connect_joysticks(){
+	int max = SDL_NumJoysticks();
+	if(max > 4) max = 4;
+	int n_controller = 0;
+
+	for(int i = 0; i < max; ++i){
+		if(controllers[i] != nullptr){
+			SDL_GameControllerClose(controllers[i]);
+			controllers[i] = nullptr;
+		}
+	}
+
+
+	for(int i = 0; i < max; ++i){
+		char guid[64];
+		SDL_JoystickGetGUIDString(SDL_JoystickGetDeviceGUID(i), guid, sizeof (guid));
+		//printf("Guid = %s\n", guid);
+
+		if(SDL_IsGameController(i)){
+			controllers[i] = SDL_GameControllerOpen(i);
+
+			SDL_Joystick *j = SDL_GameControllerGetJoystick(controllers[i]);
+			int instance_id = SDL_JoystickInstanceID(j);
+			printf("Controller %d (%d real) connected\n", i, instance_id);
+			controllers_id[instance_id] = i;
+			n_controller++;
+		}else{
+			printf("WARNING: Joystick is not a game controller\n");
+			SDL_JoystickOpen(i);
+
+			//exit(11);
+		}
+	}
 }
