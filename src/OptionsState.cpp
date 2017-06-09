@@ -34,8 +34,7 @@ void OptionsState::update(float delta){
 	}
 
 	// positions
-	// FIXME make loop
-  for(int i=0; i<options_text.size();i++){
+  for(int i=0; i<options_text.size(); i++){
     Text* cur_text = options_text[i];
 
     int prev_text_size = (i ? options[options_text[i-1]->get_text()].size() : 1);
@@ -62,7 +61,6 @@ void OptionsState::update(float delta){
 }
 
 void OptionsState::build_options(){
-	// FIXME arrumar posições
 	options_text.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "SCREEN RESOLUTION", WHITE, 100, 200));
 	options_text.back()->set_pos(100, 200, false, false);
 	options_text.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "FULLSCREEN", WHITE));
@@ -82,7 +80,7 @@ void OptionsState::render(){
 	title->render();
 	back_button->render();
 
-	for(option_text : options_text){
+	for(auto option_text : options_text){
 		option_text->render();
 
 		for(auto option : options[option_text->get_text()]){
@@ -90,7 +88,6 @@ void OptionsState::render(){
 		}
 	}
 }
-
 
 void OptionsState::pause(){
 

@@ -16,7 +16,7 @@ private:
 	Timer text_timer;
 
 public:
-	MenuState();
+	MenuState(bool main_menu = false);
 
 	void update(float delta);
 	void render();
