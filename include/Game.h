@@ -45,6 +45,7 @@ public:
 	void run();
 
 	float get_delta_time();
+	// void update_resolution(int width, int height);
 };
 
 #endif
