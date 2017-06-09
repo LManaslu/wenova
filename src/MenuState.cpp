@@ -1,4 +1,5 @@
 #include "MenuState.h"
+#include "OptionsState.h"
 #include "InputManager.h"
 #include "BattleState.h"
 #include "JoystickConfigState.h"
@@ -16,8 +17,9 @@
 #define FRAME_TIME 7.5
 #define TEXT_TIMER_COOLDOWN 50
 
-MenuState::MenuState() : current_option(0) {
-	start_pressed = false;
+MenuState::MenuState(bool main_menu){
+	current_option = 0;
+	start_pressed = main_menu;
 	show_text = true;
 
 	background = Sprite("menu/background.jpg");
@@ -102,8 +104,9 @@ void MenuState::update(float delta){
 					break;
 
 				case 2:
-					printf("OPTIONS SELECTED\n");
-					break;
+					m_quit_requested = true;
+					Game::get_instance().push(new OptionsState());
+					return;
 
 				case 3:
 					m_quit_requested = true;
