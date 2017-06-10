@@ -14,17 +14,18 @@ private:
 	shared_ptr<SDL_Texture> texture = nullptr;
 	int width;
 	int height;
-	int frame_count;
 	int current_frame;
 	float time_elapsed;
 	float frame_time;
+	int frame_count;
+	int rows, columns;
 	SDL_Rect clip_rect;
 	float scale_x;
 	float scale_y;
 
 public:
 	Sprite();
-	Sprite(string file, int cframe_count = 1, float cframe_time = 1, int cur_frame = 0);
+	Sprite(string file, int cframe_count = 1, float cframe_time = 1, int columns = 0, int cur_frame = 0);
 	~Sprite();
 
 	int get_width();

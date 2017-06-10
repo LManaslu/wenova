@@ -20,7 +20,7 @@ class BattleState : public State{
 	public:
 		BattleState(string stage, string cmusic);
 		~BattleState();
-		
+
 		void update(float delta);
 		void render();
 
