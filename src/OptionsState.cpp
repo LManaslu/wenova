@@ -13,7 +13,7 @@
 #define WHITE { 255, 255, 255, 255 }
 
 OptionsState::OptionsState(){
-	current_option = current_sub_option = 0;
+	current_option = 0;
 	on_submenu = false;
 
 	background = Sprite("menu/background.jpg");
@@ -21,6 +21,9 @@ OptionsState::OptionsState(){
 	title = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, 100);
 
 	build_options();
+
+	// FIXME change default value to value stored in database
+	current_sub_option.assign(options.size(), 0);
 }
 
 void OptionsState::update(float delta){
@@ -43,8 +46,8 @@ void OptionsState::update(float delta){
 			current_option--;
 		}
 		else{
-			if(current_sub_option != 0){
-				current_sub_option--;
+			if(current_sub_option[current_option] != 0){
+				current_sub_option[current_option]--;
 			}
 		}
 	}
@@ -55,8 +58,8 @@ void OptionsState::update(float delta){
 		}
 		else{
 			string text = options[current_option]->get_text();
-			if(current_sub_option != (int)sub_options[text].size() - 1){
-				current_sub_option++;
+			if(current_sub_option[current_option] != (int)sub_options[text].size() - 1){
+				current_sub_option[current_option]++;
 			}
 		}
 	}
@@ -70,13 +73,13 @@ void OptionsState::update(float delta){
 			}
 			else{
 				on_submenu = true;
-				current_sub_option = 0;
+				current_sub_option[current_option] = 0;
 			}
 		}
 		else{
 			if(current_option == 0){ // screen resolution
 				int new_width = 0, new_height = 0;
-				switch(current_sub_option){
+				switch(current_sub_option[current_option]){
 					case 0:
 						new_width = 800;
 						new_height = 600;
@@ -98,7 +101,7 @@ void OptionsState::update(float delta){
 				Game::get_instance().change_resolution(new_width, new_height);
 			}
 			else if(current_option == 1){ // fullscreen
-				bool fullscreen = (current_sub_option == 0 ? true : false);
+				bool fullscreen = (current_sub_option[current_option] == 0 ? true : false);
 				Game::get_instance().set_fullscreen(fullscreen);
 			}
 		}
@@ -150,7 +153,7 @@ void OptionsState::render(){
 		string text = options[i]->get_text();
 		for(int j=0; j<sub_options[text].size(); j++){
 			// TODO get option selected from db
-			if(current_sub_option == j)
+			if(current_sub_option[i] == j)
 				sub_options[text][j]->set_color(RED);
 			else
 				sub_options[text][j]->set_color(WHITE);

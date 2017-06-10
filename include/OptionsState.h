@@ -20,7 +20,8 @@ private:
 	vector<Text*> options;
 	map<string, vector<Text*> > sub_options;
 	Text *title;
-	int current_option, current_sub_option;
+	int current_option;
+	vector<int> current_sub_option;
 	bool on_submenu;
 
 public:
