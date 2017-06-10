@@ -8,8 +8,10 @@
 #define TEXT_OFFSET 8
 #define TEXT_HEIGHT 30
 #define OPTION_OFFSET 70
+#define BACK_BUTTON 2
 
-#define RED { 236, 0, 46, 1 }
+#define DARK_GREEN { 55, 74, 38, 1 }
+#define LIGHT_GREEN { 181, 201, 60, 1 }
 #define WHITE { 255, 255, 255, 255 }
 
 OptionsState::OptionsState(){
@@ -22,7 +24,7 @@ OptionsState::OptionsState(){
 
 	build_options();
 
-	// FIXME change default value to value stored in database
+	// FIXME trocar valor default para valor guardado no banco
 	current_sub_option.assign(options.size(), 0);
 }
 
@@ -143,20 +145,30 @@ void OptionsState::render(){
 	title->render();
 
 	for(int i=0; i<options.size(); i++){
-		if(current_option == i)
-			options[i]->set_color(RED);
-		else
-			options[i]->set_color(WHITE);
+		if(on_submenu && i != BACK_BUTTON){
+			options[i]->set_color(DARK_GREEN);
+		}
+		else{
+			if(current_option == i)
+				options[i]->set_color(LIGHT_GREEN);
+			else
+				options[i]->set_color(WHITE);
+		}
 
 		options[i]->render();
 
 		string text = options[i]->get_text();
 		for(int j=0; j<sub_options[text].size(); j++){
 			// TODO get option selected from db
-			if(current_sub_option[i] == j)
-				sub_options[text][j]->set_color(RED);
-			else
-				sub_options[text][j]->set_color(WHITE);
+			if(on_submenu){
+				if(current_sub_option[i] == j)
+					sub_options[text][j]->set_color(LIGHT_GREEN);
+				else
+					sub_options[text][j]->set_color(WHITE);
+			}
+			else{
+				sub_options[text][j]->set_color(DARK_GREEN);
+			}
 
 			sub_options[text][j]->render();
 		}

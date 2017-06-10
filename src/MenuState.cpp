@@ -8,12 +8,13 @@
 #include "Resources.h"
 
 #define OPTION_OFFSET 50
+
 #define FONT_X 640
 #define FONT_Y 680
-#define RED { 236, 0, 46, 1 }
+
+#define LIGHT_GREEN { 181, 201, 60, 1 }
 #define WHITE { 255, 255, 255, 255 }
 
-// FIXME fix time
 #define FRAME_TIME 7.5
 #define TEXT_TIMER_COOLDOWN 50
 
@@ -28,12 +29,12 @@ MenuState::MenuState(bool main_menu){
 	green_ship = Sprite("menu/green_ship.png", 8, FRAME_TIME, 2);
 	red_ship = Sprite("menu/red_ship.png", 8, FRAME_TIME);
 
-	start_option = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "PRESS START", WHITE, FONT_X, FONT_Y);
+	start_option = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "PRESS START", LIGHT_GREEN, FONT_X, FONT_Y);
 
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "START", RED, FONT_X, FONT_Y));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "CONTINUE", RED, FONT_X, FONT_Y));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OPTIONS", RED, FONT_X, FONT_Y));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", RED, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "START", WHITE, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "CONTINUE", WHITE, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", WHITE, FONT_X, FONT_Y));
 
 	InputManager::get_instance()->set_analogic_value(32000);
 }
@@ -53,14 +54,8 @@ void MenuState::update(float delta){
 	}
 
 	if(input_manager->key_press(SDLK_ESCAPE)){
-		if(start_pressed){
-			start_pressed = false;
-			current_option = 0;
-		}
-		else{
-			m_quit_requested = true;
-			return;
-		}
+		m_quit_requested = true;
+		return;
 	}
 
 	// handling options input
@@ -118,7 +113,7 @@ void MenuState::update(float delta){
 	if(start_pressed){
 		// handling options positioning
 		options[current_option]->set_pos(FONT_X, FONT_Y, true, true);
-		options[current_option]->set_color(WHITE);
+		options[current_option]->set_color(LIGHT_GREEN);
 
 		// positioning options before current option
 		for(int idx = 0; idx < current_option; idx++){
@@ -126,7 +121,7 @@ void MenuState::update(float delta){
 
 			int new_x = next_option->get_x() - options[idx]->get_width() - OPTION_OFFSET;
 			options[idx]->set_pos(new_x, FONT_Y, false, true);
-			options[idx]->set_color(RED);
+			options[idx]->set_color(WHITE);
 		}
 
 		// positioning options after current option
@@ -135,7 +130,7 @@ void MenuState::update(float delta){
 
 			int new_x = prev_option->get_x() + prev_option->get_width() + OPTION_OFFSET;
 			options[idx]->set_pos(new_x, FONT_Y, false, true);
-			options[idx]->set_color(RED);
+			options[idx]->set_color(WHITE);
 		}
 	}
 
