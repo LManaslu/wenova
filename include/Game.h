@@ -20,6 +20,7 @@ private:
 	static Game * instance;
 
 	int frame_start;
+	int width, height;
 	float delta;
 
 	State * stored_state;
@@ -45,7 +46,7 @@ public:
 	void run();
 
 	float get_delta_time();
-	// void update_resolution(int width, int height);
+	void change_resolution(int cwidth, int cheight);
 };
 
 #endif
