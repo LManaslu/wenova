@@ -26,7 +26,7 @@ MenuState::MenuState(bool main_menu){
 	background = Sprite("menu/background.jpg");
 	title = Sprite("menu/title.png", 5, FRAME_TIME);
 	planet = Sprite("menu/planet.png", 8, FRAME_TIME);
-	green_ship = Sprite("menu/green_ship.png", 8, FRAME_TIME, 2);
+	green_ship = Sprite("menu/green_ship.png", 8, FRAME_TIME);
 	red_ship = Sprite("menu/red_ship.png", 8, FRAME_TIME);
 
 	start_option = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "PRESS START", LIGHT_GREEN, FONT_X, FONT_Y);
