@@ -19,7 +19,6 @@ OptionsState::OptionsState(){
 	background = Sprite("menu/background.jpg");
 
 	title = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, 100);
-	back_button = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "BACK", WHITE, FONT_X, FONT_Y);
 
 	build_options();
 }
@@ -64,8 +63,15 @@ void OptionsState::update(float delta){
 
 	if(input_manager->key_press(SDLK_RETURN)) {
 		if(not on_submenu){
-			on_submenu = true;
-			current_sub_option = 0;
+			if(current_option == 2){ // back button
+				m_quit_requested = true;
+				Game::get_instance().push(new MenuState(true));
+				return;
+			}
+			else{
+				on_submenu = true;
+				current_sub_option = 0;
+			}
 		}
 		else{
 			if(current_option == 0){ // screen resolution
@@ -92,13 +98,8 @@ void OptionsState::update(float delta){
 				Game::get_instance().change_resolution(new_width, new_height);
 			}
 			else if(current_option == 1){ // fullscreen
-				// TODO Add fullscreen method on Game
-				switch(current_sub_option){
-					case 1: // on
-						break;
-					case 2: // false
-						break;
-				}
+				bool fullscreen = (current_sub_option == 0 ? true : false);
+				Game::get_instance().set_fullscreen(fullscreen);
 			}
 		}
 	}
@@ -128,27 +129,15 @@ void OptionsState::update(float delta){
 			option->set_pos(x, y);
 		}
 	}
-}
 
-void OptionsState::build_options(){
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "SCREEN RESOLUTION", WHITE, 100, 200));
-	options.back()->set_pos(100, 200, false, false);
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "FULLSCREEN", WHITE));
-
-	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "800 x 600", WHITE));
-	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1024 x 768", WHITE));
-	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1280 x 720", WHITE));
-	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1920 x 1080", WHITE));
-
-	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "ON", WHITE));
-	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OFF", WHITE));
+	// set back button position
+	options.back()->set_pos(FONT_X, FONT_Y, true, true);
 }
 
 void OptionsState::render(){
 	background.render(0, 0);
 
 	title->render();
-	back_button->render();
 
 	for(int i=0; i<options.size(); i++){
 		if(current_option == i)
@@ -169,6 +158,21 @@ void OptionsState::render(){
 			sub_options[text][j]->render();
 		}
 	}
+}
+
+void OptionsState::build_options(){
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "SCREEN RESOLUTION", WHITE, 100, 200));
+	options.back()->set_pos(100, 200, false, false);
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "FULLSCREEN", WHITE));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "BACK", WHITE));
+
+	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "800 x 600", WHITE));
+	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1024 x 768", WHITE));
+	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1280 x 720", WHITE));
+	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1920 x 1080", WHITE));
+
+	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "ON", WHITE));
+	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OFF", WHITE));
 }
 
 void OptionsState::pause(){

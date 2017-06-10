@@ -19,7 +19,7 @@ private:
 	Sprite background;
 	vector<Text*> options;
 	map<string, vector<Text*> > sub_options;
-	Text *title, *back_button;
+	Text *title;
 	int current_option, current_sub_option;
 	bool on_submenu;
 

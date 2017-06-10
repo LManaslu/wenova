@@ -47,6 +47,7 @@ public:
 
 	float get_delta_time();
 	void change_resolution(int cwidth, int cheight);
+	void set_fullscreen(bool on = false);
 };
 
 #endif
