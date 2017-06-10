@@ -4,6 +4,8 @@
 #include "Game.h"
 #include "Resources.h"
 
+#include <cmath>
+
 #define PI 3.14159265358979
 
 Sprite::Sprite(){
@@ -14,10 +16,12 @@ Sprite::Sprite(){
 	current_frame = time_elapsed = 0;
 }
 
-Sprite::Sprite(string file, int cframe_count, float cframe_time, int cur_frame){
+Sprite::Sprite(string file, int cframe_count, float cframe_time, int ccolumns, int cur_frame){
 	frame_count = cframe_count;
 	frame_time = cframe_time;
 	current_frame = cur_frame;
+	columns = (ccolumns ? ccolumns : frame_count);
+	rows = ceil(frame_count / columns);
 	time_elapsed = 0;
 	texture = nullptr;
 	open("res/" + file);
@@ -47,13 +51,14 @@ void Sprite::open(string file){
 	int query_texture = SDL_QueryTexture(texture.get(), nullptr, nullptr,
 	&width, &height);
 
-	width /= frame_count;
+	width /= columns;
+	height /= rows;
 	if(query_texture){
 		printf("Open: %s\n", SDL_GetError());
 		exit(-1);
 	}
 
-	set_clip(current_frame * width, 0, width, height);
+	set_clip((current_frame % columns) * width, (current_frame / columns) * height, width, height);
 }
 
 void Sprite::set_clip(int x, int y, int w, int h){
@@ -62,7 +67,7 @@ void Sprite::set_clip(int x, int y, int w, int h){
 
 void Sprite::set_frame(int frame){
 	current_frame = frame;
-	set_clip(current_frame * width, 0, width, height);
+	set_clip((current_frame % columns) * width, (current_frame / columns) * height, width, height);
 }
 
 void Sprite::set_frame_count(int cframe_count){
@@ -78,7 +83,7 @@ void Sprite::update(float delta){
 	if(time_elapsed >= frame_time){
 		time_elapsed = 0;
 		current_frame =  (current_frame + 1) % frame_count;
-		set_clip(current_frame * width, 0, width, height);
+		set_clip((current_frame % columns) * width, (current_frame / columns) * height, width, height);
 	}
 }
 

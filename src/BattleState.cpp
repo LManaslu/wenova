@@ -17,8 +17,10 @@ using std::stringstream;
 using std::to_string;
 
 BattleState::BattleState(string stage, string cmusic){
-	for(int i = 0; i < N_BACKGROUND; i++)
-		background[i] = Sprite("stage_" + stage + "/background_" + to_string(i) + ".png");
+
+	background[0] = Sprite("stage_" + stage + "/background_" + to_string(0) + ".png");
+	background[1] = Sprite("stage_" + stage + "/background_" + to_string(1) + ".png", 18, 10, 6);
+	background[2] = Sprite("stage_" + stage + "/background_" + to_string(2) + ".png");
 
 	music = Music("stage_" + stage + "/" + cmusic);
 
@@ -72,15 +74,16 @@ void BattleState::update(float delta){
 		return;
 	}
 
-	for(int i = 0; i < N_BACKGROUND; i++)
+	for(int i = 0; i < N_BACKGROUND + 1; i++)
 		background[i].update(delta);
 
 	update_array(delta);
 }
 
 void BattleState::render(){
-	for(int i = 0; i < N_BACKGROUND; i++)
-		background[i].render(0, 0);
+	background[0].render(0, 0);
+	background[1].render(323, 302);
+	background[2].render(0, 0);
 
 	render_array();
 }
