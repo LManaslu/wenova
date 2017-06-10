@@ -7,7 +7,7 @@
 
 Game * Game::instance = nullptr;
 
-Game::Game(string title, int width, int height){
+Game::Game(string title, int cwidth, int cheight){
 	instance = instance ? instance : this;
 	frame_start = SDL_GetTicks();
 	delta = 0;
@@ -27,7 +27,7 @@ Game::Game(string title, int width, int height){
 		exit(-1);
 	}
 
-	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, cwidth, cheight, 0);
 	if(window == nullptr){
 		printf("%s\n", SDL_GetError());
 		exit(-1);
@@ -159,8 +159,6 @@ void Game::manage_stack(){
 }
 
 void Game::update_resolution() {
-	int width, height;
-
 	SDL_RenderClear(renderer);
 	SDL_RenderSetLogicalSize(renderer, 1280, 720);
 
@@ -181,6 +179,12 @@ void Game::update_resolution() {
 		offset_x = 0;
 		offset_y = (1280 / w) * (h - height) / 2;
 	}
-	//printf("Resolution: %d %d, %f %f, %f %f, s: %f, %f\n", width, height, w, h, offset_x, offset_y, w / 1280, h /720);
+
 	InputManager::get_instance()->set_mouse_scale(1280 / w, offset_x, offset_y);
+}
+
+void Game::change_resolution(int cwidth, int cheight){
+	SDL_SetWindowSize(window, cwidth, cheight);
+
+	update_resolution();
 }

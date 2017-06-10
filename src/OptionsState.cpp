@@ -69,24 +69,27 @@ void OptionsState::update(float delta){
 		}
 		else{
 			if(current_option == 0){ // screen resolution
+				int new_width = 0, new_height = 0;
 				switch(current_sub_option){
-					case 1: // 800 x 600
-					printf("800 600\n");
-						Game::get_instance().update_resolution(800, 600);
+					case 0:
+						new_width = 800;
+						new_height = 600;
 						break;
-					case 2: // 1024 x 768
-					printf("1024 768\n");
-						Game::get_instance().update_resolution(1024, 768);
+					case 1:
+						new_width = 1024;
+						new_height = 768;
 						break;
-					case 3: // 1280 x 720
-					printf("1280 720\n");
-						Game::get_instance().update_resolution(1280, 720);
+					case 2:
+						new_width = 1280;
+						new_height = 720;
 						break;
-					case 4: // 1920 x 1080
-					printf("1920 1080\n");
-						Game::get_instance().update_resolution(1920, 1080);
+					case 3:
+						new_width = 1920;
+						new_height = 1080;
 						break;
 				}
+
+				Game::get_instance().change_resolution(new_width, new_height);
 			}
 			else if(current_option == 1){ // fullscreen
 				// TODO Add fullscreen method on Game
