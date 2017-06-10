@@ -28,11 +28,11 @@ OptionsState::OptionsState(){
 	current_sub_option.assign(options.size(), 0);
 }
 
-void OptionsState::update(float delta){
+void OptionsState::update(float){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
-	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE)){
+	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
 		if(on_submenu){
 			on_submenu = false;
 		}
@@ -43,7 +43,7 @@ void OptionsState::update(float delta){
 		}
 	}
 
-	if(input_manager->key_press(SDLK_UP)){
+	if(input_manager->key_press(SDLK_UP)  || input_manager->joystick_button_press(InputManager::UP, 0)){
 		if(not on_submenu && current_option != 0){
 			current_option--;
 		}
@@ -54,8 +54,8 @@ void OptionsState::update(float delta){
 		}
 	}
 
-	if(input_manager->key_press(SDLK_DOWN)){
-		if(not on_submenu && current_option != options.size() - 1){
+	if(input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, 0)){
+		if(not on_submenu && current_option != (int)options.size() - 1){
 			current_option++;
 		}
 		else{
@@ -66,7 +66,7 @@ void OptionsState::update(float delta){
 		}
 	}
 
-	if(input_manager->key_press(SDLK_RETURN)) {
+	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0) || input_manager->joystick_button_press(InputManager::A, 0)) {
 		if(not on_submenu){
 			if(current_option == 2){ // back button
 				m_quit_requested = true;
@@ -110,7 +110,7 @@ void OptionsState::update(float delta){
 	}
 
 	// positions
-	for(int i=0; i<options.size(); i++){
+	for(int i=0; i<(int)options.size(); i++){
 		Text* cur_text = options[i];
 
 		int prev_text_size = (i ? sub_options[options[i-1]->get_text()].size() : 1);
@@ -121,7 +121,7 @@ void OptionsState::update(float delta){
 
 		cur_text->set_pos(text_x, text_y, false, false);
 
-		for(int j=0; j<sub_options[cur_text->get_text()].size(); j++){
+		for(int j=0; j<(int)sub_options[cur_text->get_text()].size(); j++){
 			int x = 800;
 			int y = text_y;
 
@@ -144,8 +144,8 @@ void OptionsState::render(){
 
 	title->render();
 
-	for(int i=0; i<options.size(); i++){
-		if(on_submenu && i != BACK_BUTTON){
+	for(int i=0; i<(int)options.size(); i++){
+		if(on_submenu && i != BACK_BUTTON && i != current_option){
 			options[i]->set_color(DARK_GREEN);
 		}
 		else{
@@ -158,7 +158,7 @@ void OptionsState::render(){
 		options[i]->render();
 
 		string text = options[i]->get_text();
-		for(int j=0; j<sub_options[text].size(); j++){
+		for(int j=0; j<(int)sub_options[text].size(); j++){
 			// TODO get option selected from db
 			if(on_submenu){
 				if(current_sub_option[i] == j)
