@@ -6,10 +6,17 @@
 #include "Text.h"
 #include "Timer.h"
 #include "Fighter.h"
+#include "Vector.h"
+
+#include <vector>
+#include <utility>
+
+using std::vector;
+using std::pair;
 
 class EditState : public State{
 private:
-	Sprite background[3];
+	vector<pair<Sprite, Vector> > backgrounds;
 	Fighter * test_fighter;
 	string stage;
 
