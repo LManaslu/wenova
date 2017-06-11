@@ -106,7 +106,7 @@ void BattleState::read_level_design(string stage){
 	}
 	string s;
 	while(std::getline(level_design, s)){
-		for(auto & c : s) c -= 10;
+		for(auto & c : s) c -= 15;
 		stringstream cim(s);
 		cim >> x >> y >> width >> crotation >> platform;
 		//printf("Battle: %.f %.f %.f %.f\n", x, y, width, crotation);
