@@ -16,6 +16,12 @@
 #define FALLING Fighter::FighterState::FALLING
 #define CROUCH Fighter::FighterState::CROUCH
 
+#define PUNCH_IDLE Fighter::FighterState::PUNCH_IDLE
+#define PUNCH_RUN Fighter::FighterState::PUNCH_RUN
+#define PUNCH_JUMP Fighter::FighterState::PUNCH_JUMP
+#define PUNCH_FALL Fighter::FighterState::PUNCH_FALL
+#define PUNCH_CROUCH Fighter::FighterState::PUNCH_CROUCH
+
 #define FIGHTER_LEFT Fighter::Orientation::LEFT
 #define FIGHTER_RIGHT Fighter::Orientation::RIGHT
 
@@ -24,6 +30,8 @@
 #define PI 3.14159265358979
 
 #define CROUCH_COOLDOWN 100.0
+
+#define PUNCH_DURATION 100.0
 
 using std::pair;
 using std::vector;
@@ -35,6 +43,14 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
 	sprite[FALLING] = Sprite(name + "/falling.png", 7, 10);
 	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 20);
+	//FIXME Trocar sprites
+	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
+	sprite[PUNCH_RUN] = Sprite(name + "/punch_run.png", 6, 40);
+	sprite[PUNCH_JUMP] = Sprite(name + "/punch_jump.png", 6, 40);
+	sprite[PUNCH_FALL] = Sprite(name + "/punch_fall.png", 6, 40);
+	sprite[PUNCH_CROUCH] = Sprite(name + "/punch_crouch.png", 6, 40);
+
+	is_punching = false;
 
 	state = IDLE;
 	joystick_id = cjoystick_id;
@@ -105,7 +121,7 @@ void Fighter::process_input(){
 void Fighter::update(float delta){
 	process_input();
 
-	//FIXME
+	//FIXME - IGOR
 	if(pressed[JUMP_BUTTON]){
 		remaining_life--;
 
@@ -115,35 +131,61 @@ void Fighter::update(float delta){
 			special = MAX_SPECIAL;
 	}
 
+	if(pressed[ATTACK_BUTTON] && not is_punching){
+		is_punching = true;
+		punch_duration.restart();
+	}
+
 	speed.x = 0;
 	on_floor = false;
 
-	if(state != CROUCH){
-		if(is_holding[LEFT_BUTTON]){
-			if(state == IDLE) change_state(RUNNING);
-			speed.x = -2;
-			orientation = FIGHTER_LEFT;
+	if(is_punching && punch_duration.get() < PUNCH_DURATION){
+		if(state == IDLE)
+			change_state(PUNCH_IDLE);
+
+		if(state == RUNNING)
+			change_state(PUNCH_RUN);
+
+		if(state == JUMPING)
+			change_state(PUNCH_JUMP);
+
+		if(state == FALLING)
+			change_state(PUNCH_FALL);
+
+		if(state == CROUCH)
+			change_state(PUNCH_CROUCH);
+	}else{
+		punch_duration.restart();
+		is_punching = false;
+
+		if(state != CROUCH){
+			if(is_holding[LEFT_BUTTON]){
+				if(state == IDLE) change_state(RUNNING);
+				speed.x = -2;
+				orientation = FIGHTER_LEFT;
+			}
+			if(is_holding[RIGHT_BUTTON]){
+				if(state == IDLE) change_state(RUNNING);
+				speed.x = 2;
+				orientation = FIGHTER_RIGHT;
+			}
 		}
-		if(is_holding[RIGHT_BUTTON]){
-			if(state == IDLE) change_state(RUNNING);
-			speed.x = 2;
-			orientation = FIGHTER_RIGHT;
+
+		if(is_holding[DOWN_BUTTON]){
+			change_state(CROUCH);
 		}
-	}
 
-	if(is_holding[DOWN_BUTTON]){
-		change_state(CROUCH);
-	}
+		if(pressed[JUMP_BUTTON] && speed.y == 0){
+			speed.y = -5;
+		}
 
-	if(pressed[JUMP_BUTTON] && speed.y == 0){
-		speed.y = -5;
-	}
-
-	if(speed.x == 0 && speed.y == 0 && not is_holding[DOWN_BUTTON]){
-		change_state(IDLE);
+		if(speed.x == 0 && speed.y == 0 && not is_holding[DOWN_BUTTON]){
+			change_state(IDLE);
+		}
 	}
 
 	sprite[state].update(delta);
+	punch_duration.update(delta);
 }
 
 void Fighter::notify_collision(GameObject & object){
@@ -163,7 +205,7 @@ void Fighter::notify_collision(GameObject & object){
 		speed.y = 0;
 		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
-		if(state != IDLE and state != CROUCH) change_state(RUNNING);
+		if(state == FALLING) change_state(RUNNING);
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
 		pass_through = false;
@@ -188,9 +230,9 @@ void Fighter::post_collision_update(float delta){
 
 	test_limits();
 
-	if(speed.y < 0){
+	if(speed.y < 0 && not is_punching){
 		change_state(JUMPING);
-	}else if(speed.y > 0 && not on_floor){
+	}else if(speed.y > 0 && not on_floor && not is_punching){
 		change_state(FALLING);
 	}
 
