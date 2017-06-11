@@ -7,12 +7,17 @@
 #include "Timer.h"
 #include "Music.h"
 #include "Fighter.h"
+#include "Vector.h"
 
 #include <vector>
+#include <utility>
+
+using std::vector;
+using std::pair;
 
 class BattleState : public State{
 	private:
-		Sprite background[3];
+		vector<pair<Sprite, Vector> > backgrounds;
 		vector <Fighter *> fighters;
 		Music music;
 		void read_level_design(string stage);
