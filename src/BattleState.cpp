@@ -77,9 +77,7 @@ void BattleState::update(float delta){
 }
 
 void BattleState::render(){
-	int xgh = 0;
 	for(auto & background : backgrounds){
-		printf("Render %d\n", xgh++);
 		background.first.render(background.second.x, background.second.y);
 	}
 
@@ -111,23 +109,21 @@ void BattleState::read_level_design(string stage){
 	n_background_line >> n_backgrounds;
 
 	for(int i = 0; i < n_backgrounds; ++i){
-		printf("Processando background %d\n", i);
 		std::getline(level_design, s);
 		for(auto & c : s) c -= 15;
 		stringstream backgrounds_line(s);
 		backgrounds_line >> x >> y >> n_sprites >> speed >> n_columns;
-		printf("Dados: %.f %.f %d %d %d\n", x, y, n_sprites, speed, n_columns);
+		//printf("Dados: %.f %.f %d %d %d\n", x, y, n_sprites, speed, n_columns);
 		Sprite background_sprite("stage_" + stage + "/background_" + to_string(i) + ".png", n_sprites, speed, n_columns);
 		Vector position(x, y);
 		backgrounds.push_back(std::make_pair(background_sprite, position));
-		printf("Pronto %d\n", i);
 	}
 
 
 	while(std::getline(level_design, s)){
 		for(auto & c : s) c -= 15;
-		stringstream cim(s);
-		cim >> x >> y >> width >> crotation >> platform;
+		stringstream floors_line(s);
+		floors_line >> x >> y >> width >> crotation >> platform;
 		//printf("Battle: %.f %.f %.f %.f\n", x, y, width, crotation);
 		add_object(new Floor(x, y, width, crotation, (bool) platform));
  	}
