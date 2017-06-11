@@ -18,10 +18,6 @@ using std::to_string;
 
 BattleState::BattleState(string stage, string cmusic){
 
-	background[0] = Sprite("stage_" + stage + "/background_" + to_string(0) + ".png");
-	background[1] = Sprite("stage_" + stage + "/background_" + to_string(1) + ".png", 18, 10, 6);
-	background[2] = Sprite("stage_" + stage + "/background_" + to_string(2) + ".png");
-
 	music = Music("stage_" + stage + "/" + cmusic);
 
 	read_level_design(stage);
@@ -74,16 +70,18 @@ void BattleState::update(float delta){
 		return;
 	}
 
-	for(int i = 0; i < N_BACKGROUND + 1; i++)
-		background[i].update(delta);
+	for(auto & background : backgrounds)
+		background.first.update(delta);
 
 	update_array(delta);
 }
 
 void BattleState::render(){
-	background[0].render(0, 0);
-	background[1].render(323, 302);
-	background[2].render(0, 0);
+	int xgh = 0;
+	for(auto & background : backgrounds){
+		printf("Render %d\n", xgh++);
+		background.first.render(background.second.x, background.second.y);
+	}
 
 	render_array();
 }
@@ -105,6 +103,27 @@ void BattleState::read_level_design(string stage){
 		exit(-5);
 	}
 	string s;
+	int n_backgrounds, n_sprites, speed, n_columns;
+
+	std::getline(level_design, s);
+	for(auto & c : s) c -= 15;
+	stringstream n_background_line(s);
+	n_background_line >> n_backgrounds;
+
+	for(int i = 0; i < n_backgrounds; ++i){
+		printf("Processando background %d\n", i);
+		std::getline(level_design, s);
+		for(auto & c : s) c -= 15;
+		stringstream backgrounds_line(s);
+		backgrounds_line >> x >> y >> n_sprites >> speed >> n_columns;
+		printf("Dados: %.f %.f %d %d %d\n", x, y, n_sprites, speed, n_columns);
+		Sprite background_sprite("stage_" + stage + "/background_" + to_string(i) + ".png", n_sprites, speed, n_columns);
+		Vector position(x, y);
+		backgrounds.push_back(std::make_pair(background_sprite, position));
+		printf("Pronto %d\n", i);
+	}
+
+
 	while(std::getline(level_design, s)){
 		for(auto & c : s) c -= 15;
 		stringstream cim(s);
