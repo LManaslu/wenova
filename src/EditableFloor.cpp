@@ -123,7 +123,7 @@ string EditableFloor::get_information(){
 	char info[500];
 	sprintf(info, "%f %f %f %f %d", box.x, box.y, box.width, rotation * 180 / PI, (int) is_platform);
 	string s(info);
-	for(auto & c : s) c += 10;
+	for(auto & c : s) c += 15;
 
 	return s;
 }
