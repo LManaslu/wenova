@@ -8,7 +8,7 @@
 
 class Fighter : public GameObject{
 	private:
-		enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH};
+		enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, PUNCH_IDLE, PUNCH_RUN, PUNCH_JUMP, PUNCH_FALL, PUNCH_CROUCH};
 		enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SKILL1_BUTTON, SKILL2_BUTTON, BLOCK_BUTTON};
 		enum Orientation {LEFT, RIGHT};
 		Sprite sprite[10];
@@ -22,6 +22,8 @@ class Fighter : public GameObject{
 		float max_speed;
 		int remaining_life;
 		int joystick_id;
+		Timer punch_duration;
+		bool is_punching;
 
 		void test_limits();
 
