@@ -6,6 +6,7 @@
 #include "EditState.h"
 #include "Game.h"
 #include "Resources.h"
+#include "CharacterSelectState.h"
 
 #define OPTION_OFFSET 50
 
@@ -75,8 +76,6 @@ void MenuState::update(float delta){
 		return;
 	}
 
-	// TODO when press space switch case in options
-
 	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0) || input_manager->joystick_button_press(InputManager::A, 0)) {
 		if(not start_pressed){
 			start_pressed = true;
@@ -86,7 +85,8 @@ void MenuState::update(float delta){
 			switch(current_option){
 				case 0:
 					m_quit_requested = true;
-					Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
+                    // Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
+					Game::get_instance().push(new CharacterSelectState());
 					return;
 
 				case 1:
