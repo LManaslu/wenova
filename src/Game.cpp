@@ -2,17 +2,22 @@
 
 #include "InputManager.h"
 #include "Resources.h"
+#include "Config.h"
 
 #include <cstdlib>
 
 Game * Game::instance = nullptr;
 
-Game::Game(string title, int cwidth, int cheight){
+Game::Game(string title){
 	instance = instance ? instance : this;
 	frame_start = SDL_GetTicks();
 	delta = 0;
 
 	srand(time(nullptr));
+
+	Config::init();
+	int cwidth = Config::get_width();
+	int cheight = Config::get_height();
 
 	int sdl_init = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
 	if(sdl_init){
@@ -33,7 +38,7 @@ Game::Game(string title, int cwidth, int cheight){
 		exit(-1);
 	}
 
-	// SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	if(Config::is_fullscreen()) SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(renderer == nullptr){
@@ -66,7 +71,7 @@ Game::Game(string title, int cwidth, int cheight){
 		printf("Warning: No joysticks connected!\n");
 	}
 
-	SDL_GameControllerAddMappingsFromFile("res/joysticks/gamecontrollerdb.txt");
+	SDL_GameControllerAddMappingsFromFile((RES_FOLDER + "joysticks/gamecontrollerdb.txt").c_str());
 
 	stored_state = nullptr;
 }
@@ -165,6 +170,7 @@ void Game::update_resolution() {
 	SDL_GetWindowSize(window, &width, &height);
 
 	printf("W: %d, H: %d\n", width, height);
+	Config::update_information(width, height, Config::is_fullscreen());
 
 	float original_ratio = 1280.0 / 720;
 	float new_ratio = (1.0 * width) / height;
@@ -189,5 +195,7 @@ void Game::change_resolution(int cwidth, int cheight){
 }
 
 void Game::set_fullscreen(bool on){
+	SDL_GetWindowSize(window, &width, &height);
+	Config::update_information(width, height, (int) on);
 	SDL_SetWindowFullscreen(window, on ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }

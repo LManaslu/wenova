@@ -34,7 +34,7 @@ private:
 	void update_resolution();
 
 public:
-	Game(string title, int width, int height);
+	Game(string title);
 	~Game();
 
 	static Game & get_instance();
