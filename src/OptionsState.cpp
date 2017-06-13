@@ -2,6 +2,7 @@
 #include "MenuState.h"
 #include "InputManager.h"
 #include "Game.h"
+#include "Config.h"
 
 #define FONT_X 640
 #define FONT_Y 680
@@ -10,6 +11,7 @@
 #define OPTION_OFFSET 70
 #define BACK_BUTTON 2
 
+#define DARK_GREY { 80, 80, 80, 1 }
 #define DARK_GREEN { 55, 74, 38, 1 }
 #define LIGHT_GREEN { 181, 201, 60, 1 }
 #define WHITE { 255, 255, 255, 255 }
@@ -24,8 +26,9 @@ OptionsState::OptionsState(){
 
 	build_options();
 
-	// FIXME trocar valor default para valor guardado no banco
-	current_sub_option.assign(options.size(), 0);
+	for(unsigned i = 0; i < options.size(); ++i){
+		current_sub_option.push_back(get_current_sub_option(i));
+	}
 }
 
 void OptionsState::update(float){
@@ -35,6 +38,9 @@ void OptionsState::update(float){
 	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
 		if(on_submenu){
 			on_submenu = false;
+			for(unsigned i = 0; i < options.size(); ++i){
+				current_sub_option[i] = get_current_sub_option(i);
+			}
 		}
 		else{
 			m_quit_requested = true;
@@ -44,8 +50,10 @@ void OptionsState::update(float){
 	}
 
 	if(input_manager->key_press(SDLK_UP)  || input_manager->joystick_button_press(InputManager::UP, 0)){
-		if(not on_submenu && current_option != 0){
-			current_option--;
+		if(not on_submenu){
+			if(current_option != 0){
+				current_option--;
+			}
 		}
 		else{
 			if(current_sub_option[current_option] != 0){
@@ -55,8 +63,10 @@ void OptionsState::update(float){
 	}
 
 	if(input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, 0)){
-		if(not on_submenu && current_option != (int)options.size() - 1){
-			current_option++;
+		if(not on_submenu){
+			if(current_option != (int)options.size() - 1){
+				current_option++;
+			}
 		}
 		else{
 			string text = options[current_option]->get_text();
@@ -75,7 +85,7 @@ void OptionsState::update(float){
 			}
 			else{
 				on_submenu = true;
-				current_sub_option[current_option] = 0;
+				current_sub_option[current_option] = get_current_sub_option(current_option);
 			}
 		}
 		else{
@@ -95,6 +105,10 @@ void OptionsState::update(float){
 						new_height = 720;
 						break;
 					case 3:
+						new_width = 1366;
+						new_height = 768;
+						break;
+					case 4:
 						new_width = 1920;
 						new_height = 1080;
 						break;
@@ -103,7 +117,7 @@ void OptionsState::update(float){
 				Game::get_instance().change_resolution(new_width, new_height);
 			}
 			else if(current_option == 1){ // fullscreen
-				bool fullscreen = (current_sub_option[current_option] == 0 ? true : false);
+				bool fullscreen = (current_sub_option[current_option] == 0 ? false : true);
 				Game::get_instance().set_fullscreen(fullscreen);
 			}
 		}
@@ -146,7 +160,7 @@ void OptionsState::render(){
 
 	for(int i=0; i<(int)options.size(); i++){
 		if(on_submenu && i != BACK_BUTTON && i != current_option){
-			options[i]->set_color(DARK_GREEN);
+			options[i]->set_color(DARK_GREY);
 		}
 		else{
 			if(current_option == i)
@@ -160,14 +174,17 @@ void OptionsState::render(){
 		string text = options[i]->get_text();
 		for(int j=0; j<(int)sub_options[text].size(); j++){
 			// TODO get option selected from db
-			if(on_submenu){
+			if(on_submenu && current_option == i){
 				if(current_sub_option[i] == j)
 					sub_options[text][j]->set_color(LIGHT_GREEN);
 				else
 					sub_options[text][j]->set_color(WHITE);
 			}
 			else{
-				sub_options[text][j]->set_color(DARK_GREEN);
+				if(current_sub_option[i] == j)
+					sub_options[text][j]->set_color(DARK_GREEN);
+				else
+					sub_options[text][j]->set_color(DARK_GREY);
 			}
 
 			sub_options[text][j]->render();
@@ -184,10 +201,11 @@ void OptionsState::build_options(){
 	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "800 x 600", WHITE));
 	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1024 x 768", WHITE));
 	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1280 x 720", WHITE));
+	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1366 x 768", WHITE));
 	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "1920 x 1080", WHITE));
 
-	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "ON", WHITE));
 	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OFF", WHITE));
+	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "ON", WHITE));
 }
 
 void OptionsState::pause(){
@@ -196,4 +214,20 @@ void OptionsState::pause(){
 
 void OptionsState::resume(){
 
+}
+
+int OptionsState::get_current_sub_option(int option){
+	if(option == 0){ //screen resolution
+		int width = Config::get_width();
+		int height = Config::get_height();
+		string resolution = std::to_string(width) + " x " + std::to_string(height);
+		int sub_option = 0;
+		for(auto text : sub_options["SCREEN RESOLUTION"]){
+			if(text->get_text() == resolution) return sub_option;
+			sub_option++;
+		}
+		return 0;
+	}else{ //fullscreen
+		return Config::is_fullscreen();
+	}
 }
