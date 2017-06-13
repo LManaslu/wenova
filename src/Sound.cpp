@@ -1,6 +1,7 @@
 #include "Sound.h"
 
 #include "Resources.h"
+#include "Config.h"
 
 Sound::Sound(){
 	sound = nullptr;
@@ -23,7 +24,7 @@ void Sound::stop(){
 }
 
 void Sound::open(string file){
-	sound = Resources::get_sound("res/" + file);
+	sound = Resources::get_sound(RES_FOLDER + file);
 }
 
 bool Sound::is_open(){

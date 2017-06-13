@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "Game.h"
 #include "Resources.h"
+#include "Config.h"
 
 #include <cmath>
 
@@ -24,7 +25,7 @@ Sprite::Sprite(string file, int cframe_count, float cframe_time, int ccolumns, i
 	rows = ceil(frame_count / columns);
 	time_elapsed = 0;
 	texture = nullptr;
-	open("res/" + file);
+	open(RES_FOLDER + file);
 
 	scale_x = scale_y = 1;
 }

@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Resources.h"
+#include "Config.h"
 
 #define SOLID Text::TextStyle::SOLID
 #define SHADED Text::TextStyle::SHADED
@@ -135,5 +136,5 @@ void Text::remake_texture(){
 }
 
 void Text::open(string file, int size){
-	font = Resources::get_font("res/" + file, size);
+	font = Resources::get_font(RES_FOLDER + file, size);
 }
