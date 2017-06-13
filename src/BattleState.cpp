@@ -9,6 +9,7 @@
 #include "MenuState.h"
 #include "FighterStats.h"
 #include "TimeCounter.h"
+#include "Config.h"
 
 #define N_BACKGROUND 2
 
@@ -95,7 +96,7 @@ void BattleState::resume(){
 void BattleState::read_level_design(string stage){
 	float x, y, width, crotation;
 	int platform;
-	fstream level_design("res/stage_" + stage + "/level_design.dat");
+	fstream level_design(RES_FOLDER + "stage_" + stage + "/level_design.dat");
 	if(not level_design.is_open()){
 		printf("Level design of stage %s can't be opened\n", stage.c_str());
 		exit(-5);
