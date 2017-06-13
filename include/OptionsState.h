@@ -24,6 +24,8 @@ private:
 	vector<int> current_sub_option;
 	bool on_submenu;
 
+	int get_current_sub_option(int option);
+
 public:
 	OptionsState();
 
