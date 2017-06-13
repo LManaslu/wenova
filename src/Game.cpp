@@ -195,7 +195,6 @@ void Game::change_resolution(int cwidth, int cheight){
 }
 
 void Game::set_fullscreen(bool on){
-	SDL_GetWindowSize(window, &width, &height);
 	Config::update_information(width, height, (int) on);
 	SDL_SetWindowFullscreen(window, on ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
