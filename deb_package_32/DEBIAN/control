@@ -1,0 +1,13 @@
+Package: wenova
+Version: 0.4.1
+Architecture: i386
+Maintainer: João Vitor Araujo <joao18araujo@gmail.com>
+Installed-Size: 5800
+Depends: libc6, libsdl2-2.0-0, libsdl2-image-2.0-0, libsdl2-ttf-2.0-0, libsdl2-mixer-2.0-0
+Homepage: https://github.com/LManaslu/Wenova
+Priority: optional
+Section: misc
+Size: 5800
+Original-Maintainer: João Vitor Araujo <joao18araujo@gmail.com>
+Description: Multiplayer fighting game 2x2
+ Game developed by UnB students to the Introduction to Game Development course

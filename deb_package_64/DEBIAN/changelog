@@ -1,0 +1,10 @@
+wenova (0.4-5) unstable; urgency=medium
+
+  * Initial release
+  * Fighter jumping, crouching, idle, falling and running
+  * Joystick implemented
+  * Changeable resolution
+  * First stage with animations
+  * Menu completed
+
+ -- João Vitor Araujo <joao18araujo@gmail.com>  Sun, 11 Jun 2017 11:51:08 -0300
