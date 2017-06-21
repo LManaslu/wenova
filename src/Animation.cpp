@@ -29,7 +29,3 @@ bool Animation::is_dead(){
 void Animation::notify_collision(GameObject &){
 	//nothing to do
 }
-
-bool Animation::is(string type){
-	return type == "animation";
-}

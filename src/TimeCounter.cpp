@@ -43,7 +43,3 @@ bool TimeCounter::is_dead(){
 void TimeCounter::notify_collision(GameObject &){
 
 }
-
-bool TimeCounter::is(string){
-	return false;
-}

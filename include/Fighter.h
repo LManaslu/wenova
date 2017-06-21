@@ -49,7 +49,6 @@ class Fighter : public GameObject{
 		int get_special();
 
 		void notify_collision(GameObject & object);
-		bool is(string type);
 
 		void change_state(FighterState cstate);
 		void reset_position(float x, float y);

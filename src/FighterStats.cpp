@@ -81,7 +81,3 @@ bool FighterStats::is_dead(){
 void FighterStats::notify_collision(GameObject &){
 
 }
-
-bool FighterStats::is(string){
-	return false;
-}

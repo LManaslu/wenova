@@ -259,10 +259,6 @@ int Fighter::get_special(){
 	return special;
 }
 
-bool Fighter::is(string type){
-	return type == "fighter";
-}
-
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 

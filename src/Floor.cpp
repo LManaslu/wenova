@@ -16,6 +16,8 @@ Floor::Floor(float x, float y, float width, float crotation, bool cplatform){
 	rotation = crotation * PI / 180.0;
 	box = Rectangle(x, y, width, HEIGHT);
 	id = floor_id++;
+	tags["floor"] = true;
+	if(is_platform) tags["platform"] = true;
 }
 
 Floor::~Floor(){
@@ -33,14 +35,6 @@ bool Floor::is_dead(){
 }
 
 void Floor::notify_collision(GameObject &){
-}
-
-bool Floor::is(string type){
-	if(type == "platform"){
-		if(is_platform) return true;
-	}
-
-	return type == "floor";
 }
 
 int Floor::get_id(){

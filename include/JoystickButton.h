@@ -25,7 +25,6 @@ public:
 	bool is_dead();
 
 	void notify_collision(GameObject & object);
-	bool is(string type);
 
 };
 
