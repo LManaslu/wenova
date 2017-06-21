@@ -49,7 +49,7 @@ void MenuState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// handling general inputs
-	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE)){
+	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
 		m_quit_requested = true;
 		return;
 	}
