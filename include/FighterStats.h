@@ -22,8 +22,6 @@ class FighterStats : public GameObject{
 
 		void notify_collision(GameObject &object);
 
-		bool is(string type);
-
 	private:
 		Sprite bg;
 		Sprite empty_bg;

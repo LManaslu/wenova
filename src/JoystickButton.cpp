@@ -35,7 +35,3 @@ bool JoystickButton::is_dead(){
 void JoystickButton::notify_collision(GameObject &){
 
 }
-
-bool JoystickButton::is(string type){
-	return type == "JoystickButton";
-}

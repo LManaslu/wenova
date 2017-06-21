@@ -23,8 +23,6 @@ class TimeCounter : public GameObject{
 
 		void notify_collision(GameObject &object);
 
-		bool is(string type);
-
 		static const int total_time = 100;
 
 	private:
