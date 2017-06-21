@@ -3,8 +3,12 @@
 
 #include "Rectangle.h"
 #include <iostream>
+#include <sstream>
+#include <unordered_map>
 
 using std::string;
+using std::stringstream;
+using std::unordered_map;
 
 class GameObject{
 public:
@@ -15,10 +19,19 @@ public:
 	virtual void render() = 0;
 	virtual bool is_dead() = 0;
 	virtual void notify_collision(GameObject & object) = 0;
-	virtual bool is(string type) = 0;
+	virtual bool is(string type) {
+		stringstream types(type);
+		string tag;
+		while(types >> tag) {
+			if(not tags[tag]) return false;
+		}
+		return true;
+	}
 
 	Rectangle box;
 	float rotation = 0;
+
+	unordered_map<string, bool> tags;
 };
 
 #endif
