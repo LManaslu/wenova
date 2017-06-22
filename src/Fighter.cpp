@@ -121,7 +121,9 @@ void Fighter::process_input(){
 void Fighter::update(float delta){
 	process_input();
 
-	//FIXME - IGOR
+	FighterState temporary_state = state;
+
+	//FIXME
 	if(pressed[JUMP_BUTTON]){
 		remaining_life--;
 
@@ -157,19 +159,19 @@ void Fighter::update(float delta){
 
 		if(state != CROUCH){
 			if(is_holding[LEFT_BUTTON]){
-				if(state == IDLE) change_state(RUNNING);
+				temporary_state = RUNNING;
 				speed.x = -2;
 				orientation = FIGHTER_LEFT;
 			}
 			if(is_holding[RIGHT_BUTTON]){
-				if(state == IDLE) change_state(RUNNING);
+				temporary_state = RUNNING;
 				speed.x = 2;
 				orientation = FIGHTER_RIGHT;
 			}
 		}
 
 		if(is_holding[DOWN_BUTTON]){
-			change_state(CROUCH);
+			temporary_state = CROUCH;
 		}
 
 		if(pressed[JUMP_BUTTON] && speed.y == 0){
@@ -177,7 +179,7 @@ void Fighter::update(float delta){
 		}
 
 		if(speed.x == 0 && speed.y == 0 && not is_holding[DOWN_BUTTON]){
-			change_state(IDLE);
+			temporary_state = IDLE;
 		}
 	}
 
@@ -189,7 +191,7 @@ void Fighter::update(float delta){
 		}
 
 		crouch_timer.restart();
-		change_state(CROUCH);
+		temporary_state = CROUCH;
 	}
 
 	speed.y = std::min(speed.y + !on_floor * acceleration.y * delta, max_speed);
@@ -199,14 +201,16 @@ void Fighter::update(float delta){
 	test_limits();
 
 	if(speed.y < 0 && not is_punching){
-		change_state(JUMPING);
+		temporary_state = JUMPING;
 	}else if(speed.y > 0 && not on_floor && not is_punching){
-		change_state(FALLING);
+		temporary_state = FALLING;
 	}
 
 	crouch_timer.update(delta);
 	sprite[state].update(delta);
 	punch_duration.update(delta);
+
+	change_state(temporary_state);
 
 	speed.x = 0;
 	on_floor = false;
@@ -229,7 +233,6 @@ void Fighter::notify_collision(GameObject & object){
 		speed.y = 0;
 		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
-		if(state == FALLING) change_state(RUNNING);
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
 		pass_through = false;
@@ -256,6 +259,7 @@ int Fighter::get_special(){
 	return special;
 }
 
+//only use in the end of update
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
