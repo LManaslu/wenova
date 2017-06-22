@@ -136,9 +136,6 @@ void Fighter::update(float delta){
 		punch_duration.restart();
 	}
 
-	speed.x = 0;
-	on_floor = false;
-
 	if(is_punching && punch_duration.get() < PUNCH_DURATION){
 		if(state == IDLE)
 			change_state(PUNCH_IDLE);
@@ -184,35 +181,6 @@ void Fighter::update(float delta){
 		}
 	}
 
-	sprite[state].update(delta);
-	punch_duration.update(delta);
-}
-
-void Fighter::notify_collision(GameObject & object){
-	//FIXME tá feio
-	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
-	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 10){
-		if(pass_through){
-			if(object.is("platform")){
-				if(((Floor&)object).get_id() == last_collided_floor)
-					return;
-				else
-					pass_through = false;
-			}
-		}
-
-
-		speed.y = 0;
-		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
-
-		if(state == FALLING) change_state(RUNNING);
-		on_floor = true;
-		last_collided_floor = ((Floor&)object).get_id();
-		pass_through = false;
-	}
-}
-
-void Fighter::post_collision_update(float delta){
 	// check pass through when double crouching
 	if(pressed[DOWN_BUTTON]){
 		//FIXME só checa se tiver no chão
@@ -237,6 +205,35 @@ void Fighter::post_collision_update(float delta){
 	}
 
 	crouch_timer.update(delta);
+	sprite[state].update(delta);
+	punch_duration.update(delta);
+
+	speed.x = 0;
+	on_floor = false;
+}
+
+void Fighter::notify_collision(GameObject & object){
+	//FIXME tá feio
+	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
+	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 10){
+		if(pass_through){
+			if(object.is("platform")){
+				if(((Floor&)object).get_id() == last_collided_floor)
+					return;
+				else
+					pass_through = false;
+			}
+		}
+
+
+		speed.y = 0;
+		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+
+		if(state == FALLING) change_state(RUNNING);
+		on_floor = true;
+		last_collided_floor = ((Floor&)object).get_id();
+		pass_through = false;
+	}
 }
 
 void Fighter::render(){
