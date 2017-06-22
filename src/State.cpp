@@ -23,15 +23,6 @@ bool State::quit_requested(){
 }
 
 void State::update_array(float delta){
-	//pre collision update
-	for(unsigned it = 0; it < object_array.size(); ++it){
-		object_array[it]->update(delta);
-		if(object_array[it]->is_dead()){
-			object_array.erase(object_array.begin() + it);
-			break;
-		}
-	}
-
 	//collision tests
 	for(unsigned i = 0; i < object_array.size(); ++i){
 		for(unsigned j = i + 1; j < object_array.size(); ++j){
@@ -44,9 +35,9 @@ void State::update_array(float delta){
 		}
 	}
 
-	//post collision update
+	//update
 	for(unsigned it = 0; it < object_array.size(); ++it){
-		object_array[it]->post_collision_update(delta);
+		object_array[it]->update(delta);
 		if(object_array[it]->is_dead()){
 			object_array.erase(object_array.begin() + it);
 			break;

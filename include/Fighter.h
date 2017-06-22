@@ -41,7 +41,6 @@ class Fighter : public GameObject{
 		~Fighter();
 
 		void update(float delta);
-		void post_collision_update(float delta);
 		void render();
 		bool is_dead();
 
