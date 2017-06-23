@@ -118,8 +118,8 @@ void Sprite::update_scale_x(float scale){
 	if(scale_x < 0.05) scale_x = 0.05;
 }
 
-void Sprite::restart_count(){
-	current_frame = 0;
+void Sprite::restart_count(int cframe){
+	current_frame = cframe;
 	finished = false;
 }
 

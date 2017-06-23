@@ -8,7 +8,7 @@
 
 class Fighter : public GameObject{
 private:
-	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK};
+	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK, JUMP_ATK_DOWN};
 	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SKILL1_BUTTON, SKILL2_BUTTON, BLOCK_BUTTON};
 	enum Orientation {LEFT, RIGHT};
 	Sprite sprite[40];
@@ -23,6 +23,7 @@ private:
 	int remaining_life;
 	int joystick_id;
 	int combo;
+	int n_sprite_start;
 
 	void test_limits();
 
@@ -63,8 +64,9 @@ public:
 	void check_idle_atk_neutral_3(bool change = true);
 	void check_idle_atk_front(bool change = true);
 	void check_idle_atk_up(bool change = true);
-	void check_idle_atk_down(bool change = true);
+	void check_idle_atk_down(bool change = true, bool condition = false);
 	void check_crouch_atk(bool change = true);
+	void check_jump_atk_down(bool change = true);
 	void check_pass_through_platform(bool change = true);
 
 	static const int MAX_LIFE = 500;
