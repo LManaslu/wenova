@@ -31,6 +31,8 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[FALLING] = Sprite(name + "/falling.png", 2, 10);
 	sprite[CROUCH] = Sprite(name + "/crouch.png", 3, 20);
 	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(name + "/idle_atk_neutral_1.png", 4, 10);
+	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(name + "/idle_atk_neutral_2.png", 4, 10);
+	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(name + "/idle_atk_neutral_3.png", 3, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -125,6 +127,23 @@ void Fighter::update(float delta){
 
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
+			printf("Neutral 1\n");
+			if(sprite[state].is_finished()){
+				idle();
+				crouch();
+				idle_atk_neutral_2();
+			}
+		break;
+		case FighterState::IDLE_ATK_NEUTRAL_2:
+			printf("Neutral 2\n");
+			if(sprite[state].is_finished()){
+				idle();
+				crouch();
+				idle_atk_neutral_3();
+			}
+		break;
+		case FighterState::IDLE_ATK_NEUTRAL_3:
+			printf("Neutral 3\n");
 			if(sprite[state].is_finished()){
 				idle();
 				crouch();
@@ -366,5 +385,18 @@ void Fighter::crouch(bool change){
 void Fighter::idle_atk_neutral_1(bool change){
 	if(pressed[ATTACK_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_1;
+	}
+}
+
+void Fighter::idle_atk_neutral_2(bool change){
+	printf("Pressing: %d\n", is_holding[ATTACK_BUTTON]);
+	if(is_holding[ATTACK_BUTTON]){
+		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_2;
+	}
+}
+
+void Fighter::idle_atk_neutral_3(bool change){
+	if(is_holding[ATTACK_BUTTON]){
+		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_3;
 	}
 }
