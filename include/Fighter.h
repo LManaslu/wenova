@@ -63,6 +63,7 @@ public:
 	void idle_atk_neutral_3(bool change = true);
 	void idle_atk_front(bool change = true);
 	void idle_atk_up(bool change = true);
+	void pass_through_platform(bool change = true);
 
 	static const int MAX_LIFE = 500;
 
