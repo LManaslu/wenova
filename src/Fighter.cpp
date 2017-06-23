@@ -177,6 +177,7 @@ void Fighter::update(float delta){
 			idle_atk_neutral_1();
 			idle_atk_front();
 			idle_atk_up();
+			pass_through_platform();
 			fall();
 		break;
 
@@ -202,6 +203,7 @@ void Fighter::update(float delta){
 			crouch();
 			idle_atk_neutral_1();
 			idle_atk_front();
+			pass_through_platform();
 			fall();
 		break;
 
@@ -209,16 +211,6 @@ void Fighter::update(float delta){
 			idle();
 			fall();
 		break;
-	}
-
-	// check pass through when double crouching
-	if(pressed[DOWN_BUTTON]){
-		//FIXME só checa se tiver no chão
-		if(crouch_timer.get() < CROUCH_COOLDOWN){
-			pass_through = true;
-		}
-
-		crouch_timer.restart();
 	}
 
 	speed.y = std::min(speed.y + !on_floor * acceleration.y * delta, max_speed);
@@ -391,5 +383,15 @@ void Fighter::idle_atk_front(bool change){
 void Fighter::idle_atk_up(bool change) {
 	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
 		if(change) temporary_state = FighterState::IDLE_ATK_UP;
+	}
+}
+
+void Fighter::pass_through_platform(bool change) {
+	if(pressed[DOWN_BUTTON]){
+		if(crouch_timer.get() < CROUCH_COOLDOWN){
+			if (change) temporary_state = FighterState::FALLING;
+			pass_through = true;
+		}
+		crouch_timer.restart();
 	}
 }
