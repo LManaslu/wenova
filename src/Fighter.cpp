@@ -35,6 +35,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(name + "/idle_atk_neutral_3.png", 3, 10);
 	sprite[IDLE_ATK_FRONT] = Sprite(name + "/idle_atk_front.png", 5, 10);
 	sprite[IDLE_ATK_UP] = Sprite(name + "/idle_atk_up.png", 5, 10);
+	sprite[IDLE_ATK_DOWN] = Sprite(name + "/idle_atk_down.png", 6, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -149,19 +150,9 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::IDLE_ATK_NEUTRAL_3:
-			if(sprite[state].is_finished()){
-				idle();
-				crouch();
-			}
-		break;
-
 		case FighterState::IDLE_ATK_FRONT:
-			if(sprite[state].is_finished()){
-				idle();
-				crouch();
-			}
-		break;
 		case FighterState::IDLE_ATK_UP:
+		case FighterState::IDLE_ATK_DOWN:
 			if(sprite[state].is_finished()){
 				idle();
 				crouch();
@@ -171,26 +162,27 @@ void Fighter::update(float delta){
 		case FighterState::IDLE:
 			combo = 0;
 			jump();
-			left();
-			right();
+			left(on_floor);
+			right(on_floor);
 			crouch();
 			idle_atk_neutral_1();
 			idle_atk_front();
 			idle_atk_up();
+			idle_atk_down();
 			pass_through_platform();
 			fall();
 		break;
 
 		case FighterState::JUMPING:
-			left(false);
-			right(false);
+			left(on_floor);
+			right(on_floor);
 			fall();
 		break;
 
 		case FighterState::FALLING:
 			idle();
-			left(false);
-			right(false);
+			left(on_floor);
+			right(on_floor);
 			fall();
 			crouch();
 		break;
@@ -346,7 +338,7 @@ void Fighter::idle(bool change){
 }
 
 void Fighter::crouch(bool change){
-	if(is_holding[DOWN_BUTTON] and on_floor){
+	if(is_holding[DOWN_BUTTON] and on_floor and not is_holding[ATTACK_BUTTON]){
    		if(change) temporary_state = FighterState::CROUCH;
     }
 }
@@ -386,8 +378,14 @@ void Fighter::idle_atk_up(bool change) {
 	}
 }
 
+void Fighter::idle_atk_down(bool change) {
+	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]) {
+		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
+	}
+}
+
 void Fighter::pass_through_platform(bool change) {
-	if(pressed[DOWN_BUTTON]){
+	if(pressed[DOWN_BUTTON] and not is_holding[ATTACK_BUTTON]){
 		if(crouch_timer.get() < CROUCH_COOLDOWN){
 			if (change) temporary_state = FighterState::FALLING;
 			pass_through = true;
