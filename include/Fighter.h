@@ -8,11 +8,11 @@
 
 class Fighter : public GameObject{
 private:
-	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, PUNCH_IDLE, PUNCH_RUN, PUNCH_JUMP, PUNCH_FALL, PUNCH_CROUCH};
+	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, };
 	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SKILL1_BUTTON, SKILL2_BUTTON, BLOCK_BUTTON};
 	enum Orientation {LEFT, RIGHT};
-	Sprite sprite[10];
-	FighterState state;
+	Sprite sprite[40];
+	FighterState state, temporary_state;
 	Orientation orientation;
 	Vector speed;
 	Vector acceleration;
@@ -22,8 +22,6 @@ private:
 	float max_speed;
 	int remaining_life;
 	int joystick_id;
-	Timer punch_duration;
-	bool is_punching;
 
 	void test_limits();
 
@@ -51,6 +49,14 @@ public:
 
 	void change_state(FighterState cstate);
 	void reset_position(float x, float y);
+
+	//TODO ver se é pra tá aqui msm
+	void jump(bool change = true);
+	void fall(bool change = true);
+	void left(bool change = true);
+	void right(bool change = true);
+	void idle(bool change = true);
+	void crouch(bool change = true);
 
 	static const int MAX_LIFE = 500;
 
