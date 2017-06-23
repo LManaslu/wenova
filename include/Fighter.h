@@ -52,20 +52,20 @@ public:
 	void reset_position(float x, float y);
 
 	//TODO ver se é pra tá aqui msm
-	void jump(bool change = true);
-	void fall(bool change = true);
-	void left(bool change = true);
-	void right(bool change = true);
-	void idle(bool change = true);
-	void crouch(bool change = true);
-	void idle_atk_neutral_1(bool change = true);
-	void idle_atk_neutral_2(bool change = true);
-	void idle_atk_neutral_3(bool change = true);
-	void idle_atk_front(bool change = true);
-	void idle_atk_up(bool change = true);
-	void idle_atk_down(bool change = true);
+	void check_jump(bool change = true);
+	void check_fall(bool change = true);
+	void check_left(bool change = true);
+	void check_right(bool change = true);
+	void check_idle(bool change = true);
+	void check_crouch(bool change = true);
+	void check_idle_atk_neutral_1(bool change = true);
+	void check_idle_atk_neutral_2(bool change = true);
+	void check_idle_atk_neutral_3(bool change = true);
+	void check_idle_atk_front(bool change = true);
+	void check_idle_atk_up(bool change = true);
+	void check_idle_atk_down(bool change = true);
 	void check_crouch_atk(bool change = true);
-	void pass_through_platform(bool change = true);
+	void check_pass_through_platform(bool change = true);
 
 	static const int MAX_LIFE = 500;
 
