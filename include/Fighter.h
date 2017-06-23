@@ -22,6 +22,7 @@ private:
 	float max_speed;
 	int remaining_life;
 	int joystick_id;
+	int combo;
 
 	void test_limits();
 

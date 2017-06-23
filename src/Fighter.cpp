@@ -132,6 +132,8 @@ void Fighter::update(float delta){
 				idle();
 				crouch();
 				idle_atk_neutral_2();
+			}else if(pressed[ATTACK_BUTTON]){
+				combo++;
 			}
 		break;
 		case FighterState::IDLE_ATK_NEUTRAL_2:
@@ -140,6 +142,8 @@ void Fighter::update(float delta){
 				idle();
 				crouch();
 				idle_atk_neutral_3();
+			}else if(pressed[ATTACK_BUTTON]){
+				combo++;
 			}
 		break;
 		case FighterState::IDLE_ATK_NEUTRAL_3:
@@ -150,6 +154,7 @@ void Fighter::update(float delta){
 			}
 		break;
 		case FighterState::IDLE:
+			combo = 0;
 			jump();
 			left();
 			right();
@@ -176,6 +181,7 @@ void Fighter::update(float delta){
 			right(false);
 			idle();
 			crouch();
+			idle_atk_neutral_1();
 			fall();
 		break;
 		case FighterState::CROUCH:
@@ -390,13 +396,15 @@ void Fighter::idle_atk_neutral_1(bool change){
 
 void Fighter::idle_atk_neutral_2(bool change){
 	printf("Pressing: %d\n", is_holding[ATTACK_BUTTON]);
-	if(is_holding[ATTACK_BUTTON]){
+	if(combo){
+		combo--;
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_2;
 	}
 }
 
 void Fighter::idle_atk_neutral_3(bool change){
-	if(is_holding[ATTACK_BUTTON]){
+	if(combo){
+		combo--;
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_3;
 	}
 }
