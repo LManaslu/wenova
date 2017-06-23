@@ -8,7 +8,7 @@
 
 class Fighter : public GameObject{
 private:
-	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN};
+	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK};
 	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SKILL1_BUTTON, SKILL2_BUTTON, BLOCK_BUTTON};
 	enum Orientation {LEFT, RIGHT};
 	Sprite sprite[40];
@@ -64,6 +64,7 @@ public:
 	void idle_atk_front(bool change = true);
 	void idle_atk_up(bool change = true);
 	void idle_atk_down(bool change = true);
+	void check_crouch_atk(bool change = true);
 	void pass_through_platform(bool change = true);
 
 	static const int MAX_LIFE = 500;
