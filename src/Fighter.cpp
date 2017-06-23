@@ -25,11 +25,11 @@ using std::vector;
 Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	printf("In construtor\n");
 
-	sprite[IDLE] = Sprite(name + "/idle.png", 8, 10);
+	sprite[IDLE] = Sprite(name + "/idle.png", 12, 10);
 	sprite[RUNNING] = Sprite(name + "/running.png", 8, 10);
 	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
 	sprite[FALLING] = Sprite(name + "/falling.png", 2, 10);
-	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 20);
+	sprite[CROUCH] = Sprite(name + "/crouch.png", 3, 20);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -128,6 +128,7 @@ void Fighter::update(float delta){
 			left();
 			right();
 			crouch();
+			fall();
 		break;
 		case FighterState::JUMPING:
 			left(false);
@@ -148,6 +149,7 @@ void Fighter::update(float delta){
 			right(false);
 			idle();
 			crouch();
+			fall();
 		break;
 		case FighterState::CROUCH:
 			idle();
