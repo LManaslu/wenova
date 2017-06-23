@@ -10,21 +10,6 @@
 
 #define LAYER 0
 
-#define IDLE Fighter::FighterState::IDLE
-#define RUNNING Fighter::FighterState::RUNNING
-#define JUMPING Fighter::FighterState::JUMPING
-#define FALLING Fighter::FighterState::FALLING
-#define CROUCH Fighter::FighterState::CROUCH
-
-#define PUNCH_IDLE Fighter::FighterState::PUNCH_IDLE
-#define PUNCH_RUN Fighter::FighterState::PUNCH_RUN
-#define PUNCH_JUMP Fighter::FighterState::PUNCH_JUMP
-#define PUNCH_FALL Fighter::FighterState::PUNCH_FALL
-#define PUNCH_CROUCH Fighter::FighterState::PUNCH_CROUCH
-
-#define FIGHTER_LEFT Fighter::Orientation::LEFT
-#define FIGHTER_RIGHT Fighter::Orientation::RIGHT
-
 #define ii pair<int, int>
 
 #define PI 3.14159265358979
@@ -38,21 +23,23 @@ using std::vector;
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y, int cjoystick_id){
+	printf("In construtor\n");
+
 	sprite[IDLE] = Sprite(name + "/idle.png", 8, 10);
 	sprite[RUNNING] = Sprite(name + "/running.png", 8, 10);
 	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
-	sprite[FALLING] = Sprite(name + "/falling.png", 7, 10);
+	sprite[FALLING] = Sprite(name + "/falling.png", 2, 10);
 	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 20);
 	//FIXME Trocar sprites
+	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
 	sprite[PUNCH_RUN] = Sprite(name + "/punch_run.png", 6, 40);
 	sprite[PUNCH_JUMP] = Sprite(name + "/punch_jump.png", 6, 40);
 	sprite[PUNCH_FALL] = Sprite(name + "/punch_fall.png", 6, 40);
 	sprite[PUNCH_CROUCH] = Sprite(name + "/punch_crouch.png", 6, 40);
+	*/
 
-	is_punching = false;
-
-	state = IDLE;
+	state = FighterState::IDLE;
 	joystick_id = cjoystick_id;
 
 	remaining_life = MAX_LIFE;
@@ -71,6 +58,8 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	pass_through = false;
 
 	box = Rectangle(x, y, sprite[RUNNING].get_width(), sprite[RUNNING].get_height());
+
+	printf("Out construtor\n");
 }
 
 Fighter::~Fighter(){
@@ -121,7 +110,7 @@ void Fighter::process_input(){
 void Fighter::update(float delta){
 	process_input();
 
-	FighterState temporary_state = state;
+	temporary_state = state;
 
 	//FIXME
 	if(pressed[JUMP_BUTTON]){
@@ -133,7 +122,40 @@ void Fighter::update(float delta){
 			special = MAX_SPECIAL;
 	}
 
-	if(pressed[ATTACK_BUTTON] && not is_punching){
+	switch(state){
+		case FighterState::IDLE:
+			jump();
+			left();
+			right();
+			crouch();
+		break;
+		case FighterState::JUMPING:
+			left(false);
+			right(false);
+			fall();
+		break;
+		case FighterState::FALLING:
+			idle();
+			left(false);
+			right(false);
+			fall();
+			crouch();
+		break;
+
+		case FighterState::RUNNING:
+			jump();
+			left(false);
+			right(false);
+			idle();
+			crouch();
+		break;
+		case FighterState::CROUCH:
+			idle();
+			fall();
+		break;
+	}
+
+	/*if(pressed[ATTACK_BUTTON] && not is_punching){
 		is_punching = true;
 		punch_duration.restart();
 	}
@@ -181,7 +203,7 @@ void Fighter::update(float delta){
 		if(speed.x == 0 && speed.y == 0 && not is_holding[DOWN_BUTTON]){
 			temporary_state = IDLE;
 		}
-	}
+	}*/
 
 	// check pass through when double crouching
 	if(pressed[DOWN_BUTTON]){
@@ -191,7 +213,6 @@ void Fighter::update(float delta){
 		}
 
 		crouch_timer.restart();
-		temporary_state = CROUCH;
 	}
 
 	speed.y = std::min(speed.y + !on_floor * acceleration.y * delta, max_speed);
@@ -200,15 +221,9 @@ void Fighter::update(float delta){
 
 	test_limits();
 
-	if(speed.y < 0 && not is_punching){
-		temporary_state = JUMPING;
-	}else if(speed.y > 0 && not on_floor && not is_punching){
-		temporary_state = FALLING;
-	}
-
 	crouch_timer.update(delta);
 	sprite[state].update(delta);
-	punch_duration.update(delta);
+	//punch_duration.update(delta);
 
 	change_state(temporary_state);
 
@@ -243,7 +258,7 @@ void Fighter::render(){
 	int x = box.get_draw_x()  + 0 * Camera::pos[LAYER].x;
 	int y = box.get_draw_y() + 0 * Camera::pos[LAYER].x;
 
-	SDL_RendererFlip flip = (orientation == FIGHTER_LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+	SDL_RendererFlip flip = (orientation == Orientation::LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 	sprite[state].render(x, y, rotation, flip);
 }
 
@@ -262,6 +277,8 @@ int Fighter::get_special(){
 //only use in the end of update
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
+
+	printf("%d pra %d\n", state, cstate);
 
 	sprite[state].restart_count();
 	float old_width = sprite[state].get_width();
@@ -292,4 +309,46 @@ void Fighter::reset_position(float x, float y){
 	box.x = x;
 	box.y = y;
 	speed.y = 0;
+}
+
+void Fighter::jump(bool change){
+	if(pressed[JUMP_BUTTON]){
+		if(change) temporary_state = FighterState::JUMPING;
+		speed.y = -5;
+		on_floor = false;
+	}
+}
+
+void Fighter::fall(bool change){
+	if(speed.y > 0){
+		if(change) temporary_state = FighterState::FALLING;
+	}
+}
+
+void Fighter::left(bool change){
+	if(is_holding[LEFT_BUTTON]){
+		if(change) temporary_state = FighterState::RUNNING;
+		speed.x = -2;
+		orientation = Orientation::LEFT;
+	}
+}
+
+void Fighter::right(bool change){
+	if(is_holding[RIGHT_BUTTON]){
+		if(change) temporary_state = FighterState::RUNNING;
+		speed.x = 2;
+		orientation = Orientation::RIGHT;
+	}
+}
+
+void Fighter::idle(bool change){
+	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON]){
+		if(change) temporary_state = FighterState::IDLE;
+	}
+}
+
+void Fighter::crouch(bool change){
+	if(is_holding[DOWN_BUTTON] and on_floor){
+   		if(change) temporary_state = FighterState::CROUCH;
+    }
 }
