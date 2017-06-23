@@ -132,9 +132,9 @@ void Fighter::update(float delta){
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
-				idle_atk_neutral_2();
+				check_idle();
+				check_crouch();
+				check_idle_atk_neutral_2();
 			}else if(pressed[ATTACK_BUTTON]){
 				combo++;
 			}
@@ -142,9 +142,9 @@ void Fighter::update(float delta){
 
 		case FighterState::IDLE_ATK_NEUTRAL_2:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
-				idle_atk_neutral_3();
+				check_idle();
+				check_crouch();
+				check_idle_atk_neutral_3();
 			}else if(pressed[ATTACK_BUTTON]){
 				combo++;
 			}
@@ -156,55 +156,55 @@ void Fighter::update(float delta){
 		case FighterState::IDLE_ATK_DOWN:
 		case FighterState::CROUCH_ATK:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
+				check_idle();
+				check_crouch();
 			}
 		break;
 
 		case FighterState::IDLE:
 			combo = 0;
-			jump();
-			left(on_floor);
-			right(on_floor);
-			crouch();
-			idle_atk_neutral_1();
-			idle_atk_front();
-			idle_atk_up();
-			idle_atk_down();
-			pass_through_platform();
-			fall();
+			check_jump();
+			check_left(on_floor);
+			check_right(on_floor);
+			check_crouch();
+			check_idle_atk_neutral_1();
+			check_idle_atk_front();
+			check_idle_atk_up();
+			check_idle_atk_down();
+			check_pass_through_platform();
+			check_fall();
 		break;
 
 		case FighterState::JUMPING:
-			left(on_floor);
-			right(on_floor);
-			fall();
+			check_left(on_floor);
+			check_right(on_floor);
+			check_fall();
 		break;
 
 		case FighterState::FALLING:
-			idle();
-			left(on_floor);
-			right(on_floor);
-			fall();
-			crouch();
+			check_idle();
+			check_left(on_floor);
+			check_right(on_floor);
+			check_fall();
+			check_crouch();
 		break;
 
 		case FighterState::RUNNING:
-			jump();
-			left(false);
-			right(false);
-			idle();
-			crouch();
-			idle_atk_neutral_1();
-			idle_atk_front();
-			pass_through_platform();
-			fall();
+			check_jump();
+			check_left(false);
+			check_right(false);
+			check_idle();
+			check_crouch();
+			check_idle_atk_neutral_1();
+			check_idle_atk_front();
+			check_pass_through_platform();
+			check_fall();
 		break;
 
 		case FighterState::CROUCH:
-			idle();
+			check_idle();
 			check_crouch_atk();
-			fall();
+			check_fall();
 		break;
 	}
 
@@ -304,7 +304,7 @@ void Fighter::reset_position(float x, float y){
 	speed.y = 0;
 }
 
-void Fighter::jump(bool change){
+void Fighter::check_jump(bool change){
 	if(pressed[JUMP_BUTTON]){
 		if(change) temporary_state = FighterState::JUMPING;
 		speed.y = -5;
@@ -312,13 +312,13 @@ void Fighter::jump(bool change){
 	}
 }
 
-void Fighter::fall(bool change){
+void Fighter::check_fall(bool change){
 	if(speed.y > 0){
 		if(change) temporary_state = FighterState::FALLING;
 	}
 }
 
-void Fighter::left(bool change){
+void Fighter::check_left(bool change){
 	if(is_holding[LEFT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
 		speed.x = -2;
@@ -326,7 +326,7 @@ void Fighter::left(bool change){
 	}
 }
 
-void Fighter::right(bool change){
+void Fighter::check_right(bool change){
 	if(is_holding[RIGHT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
 		speed.x = 2;
@@ -334,26 +334,26 @@ void Fighter::right(bool change){
 	}
 }
 
-void Fighter::idle(bool change){
+void Fighter::check_idle(bool change){
 	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE;
 	}
 }
 
-void Fighter::crouch(bool change){
+void Fighter::check_crouch(bool change){
 	if(is_holding[DOWN_BUTTON] and on_floor and not is_holding[ATTACK_BUTTON]){
    		if(change) temporary_state = FighterState::CROUCH;
     }
 }
 
-void Fighter::idle_atk_neutral_1(bool change){
+void Fighter::check_idle_atk_neutral_1(bool change){
 	if(pressed[ATTACK_BUTTON]){
 		speed.y = 0;
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_1;
 	}
 }
 
-void Fighter::idle_atk_neutral_2(bool change){
+void Fighter::check_idle_atk_neutral_2(bool change){
 	printf("Pressing: %d\n", is_holding[ATTACK_BUTTON]);
 	if(combo){
 		combo--;
@@ -361,33 +361,33 @@ void Fighter::idle_atk_neutral_2(bool change){
 	}
 }
 
-void Fighter::idle_atk_neutral_3(bool change){
+void Fighter::check_idle_atk_neutral_3(bool change){
 	if(combo){
 		combo--;
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_3;
 	}
 }
 
-void Fighter::idle_atk_front(bool change){
+void Fighter::check_idle_atk_front(bool change){
 	if(pressed[ATTACK_BUTTON] and (is_holding[LEFT_BUTTON] or is_holding[RIGHT_BUTTON])){
 		if(change) temporary_state = FighterState::IDLE_ATK_FRONT;
 		orientation = is_holding[LEFT_BUTTON] ? Orientation::LEFT : Orientation::RIGHT;
 	}
 }
 
-void Fighter::idle_atk_up(bool change) {
+void Fighter::check_idle_atk_up(bool change) {
 	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
 		if(change) temporary_state = FighterState::IDLE_ATK_UP;
 	}
 }
 
-void Fighter::idle_atk_down(bool change) {
+void Fighter::check_idle_atk_down(bool change) {
 	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]) {
 		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
 	}
 }
 
-void Fighter::pass_through_platform(bool change) {
+void Fighter::check_pass_through_platform(bool change) {
 	if(pressed[DOWN_BUTTON] and not is_holding[ATTACK_BUTTON]){
 		if(crouch_timer.get() < CROUCH_COOLDOWN){
 			if (change) temporary_state = FighterState::FALLING;
