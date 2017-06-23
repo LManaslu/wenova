@@ -45,7 +45,7 @@ public:
   	void set_scale_x(float scale);
   	void set_scale_y(float scale);
   	void update_scale_x(float scale);
-	void restart_count();
+	void restart_count(int cframe = 0);
 	bool is_finished();
 };
 

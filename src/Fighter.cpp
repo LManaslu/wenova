@@ -37,6 +37,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[IDLE_ATK_UP] = Sprite(name + "/idle_atk_up.png", 5, 10);
 	sprite[IDLE_ATK_DOWN] = Sprite(name + "/idle_atk_down.png", 6, 10);
 	sprite[CROUCH_ATK] = Sprite(name + "/crouch_atk.png", 3, 10);
+	sprite[JUMP_ATK_DOWN] = Sprite(name + "/jump_atk_down.png", 4, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -63,6 +64,8 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	on_floor = false;
 	last_collided_floor = 0;
 	pass_through = false;
+
+	n_sprite_start = 0;
 
 	box = Rectangle(x, y, sprite[RUNNING].get_width(), sprite[RUNNING].get_height());
 
@@ -161,6 +164,14 @@ void Fighter::update(float delta){
 			}
 		break;
 
+		case FighterState::JUMP_ATK_DOWN:
+			if(on_floor){
+				printf("Mudando valor\n");
+				n_sprite_start = 2;
+				check_idle_atk_down(true, true);
+			}
+		break;
+
 		case FighterState::IDLE:
 			combo = 0;
 			check_jump();
@@ -178,6 +189,7 @@ void Fighter::update(float delta){
 		case FighterState::JUMPING:
 			check_left(on_floor);
 			check_right(on_floor);
+			check_jump_atk_down();
 			check_fall();
 		break;
 
@@ -271,14 +283,13 @@ int Fighter::get_special(){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
-	printf("%d pra %d\n", state, cstate);
-
-	sprite[state].restart_count();
 	float old_width = sprite[state].get_width();
 	float old_height = sprite[state].get_height();
 	state = cstate;
 	float new_width = sprite[state].get_width();
 	float new_height = sprite[state].get_height();
+	sprite[state].restart_count(n_sprite_start);
+	n_sprite_start = 0;
 
 	float x = box.x - (new_width - old_width) * 0.5;
 	float y = box.y - (new_height - old_height) * 0.5;
@@ -381,8 +392,8 @@ void Fighter::check_idle_atk_up(bool change) {
 	}
 }
 
-void Fighter::check_idle_atk_down(bool change) {
-	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]) {
+void Fighter::check_idle_atk_down(bool change, bool condition) {
+	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON] or condition) {
 		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
 	}
 }
@@ -400,5 +411,11 @@ void Fighter::check_pass_through_platform(bool change) {
 void Fighter::check_crouch_atk(bool change){
 	if(pressed[ATTACK_BUTTON]){
 		if(change) temporary_state = FighterState::CROUCH_ATK;
+	}
+}
+
+void Fighter::check_jump_atk_down(bool change){
+	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
+		if(change) temporary_state = FighterState::JUMP_ATK_DOWN;
 	}
 }
