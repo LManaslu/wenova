@@ -36,6 +36,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[IDLE_ATK_FRONT] = Sprite(name + "/idle_atk_front.png", 5, 10);
 	sprite[IDLE_ATK_UP] = Sprite(name + "/idle_atk_up.png", 5, 10);
 	sprite[IDLE_ATK_DOWN] = Sprite(name + "/idle_atk_down.png", 6, 10);
+	sprite[CROUCH_ATK] = Sprite(name + "/crouch_atk.png", 3, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -153,6 +154,7 @@ void Fighter::update(float delta){
 		case FighterState::IDLE_ATK_FRONT:
 		case FighterState::IDLE_ATK_UP:
 		case FighterState::IDLE_ATK_DOWN:
+		case FighterState::CROUCH_ATK:
 			if(sprite[state].is_finished()){
 				idle();
 				crouch();
@@ -201,6 +203,7 @@ void Fighter::update(float delta){
 
 		case FighterState::CROUCH:
 			idle();
+			check_crouch_atk();
 			fall();
 		break;
 	}
@@ -391,5 +394,11 @@ void Fighter::pass_through_platform(bool change) {
 			pass_through = true;
 		}
 		crouch_timer.restart();
+	}
+}
+
+void Fighter::check_crouch_atk(bool change){
+	if(pressed[ATTACK_BUTTON]){
+		if(change) temporary_state = FighterState::CROUCH_ATK;
 	}
 }
