@@ -22,6 +22,7 @@ private:
 	SDL_Rect clip_rect;
 	float scale_x;
 	float scale_y;
+	bool finished;
 
 public:
 	Sprite();
@@ -45,6 +46,7 @@ public:
   	void set_scale_y(float scale);
   	void update_scale_x(float scale);
 	void restart_count();
+	bool is_finished();
 };
 
 #endif

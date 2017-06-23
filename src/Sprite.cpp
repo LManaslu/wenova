@@ -83,7 +83,12 @@ void Sprite::update(float delta){
 	time_elapsed += delta;
 	if(time_elapsed >= frame_time){
 		time_elapsed = 0;
-		current_frame =  (current_frame + 1) % frame_count;
+
+		current_frame = current_frame + 1;
+		if(current_frame == frame_count){
+			finished = true;
+			current_frame = 0;
+		}
 		set_clip((current_frame % columns) * width, (current_frame / columns) * height, width, height);
 	}
 }
@@ -115,4 +120,9 @@ void Sprite::update_scale_x(float scale){
 
 void Sprite::restart_count(){
 	current_frame = 0;
+	finished = false;
+}
+
+bool Sprite::is_finished(){
+	return finished;
 }
