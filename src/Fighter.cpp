@@ -30,6 +30,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
 	sprite[FALLING] = Sprite(name + "/falling.png", 2, 10);
 	sprite[CROUCH] = Sprite(name + "/crouch.png", 3, 20);
+	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(name + "/idle_atk_neutral_1.png", 4, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -123,12 +124,19 @@ void Fighter::update(float delta){
 	}
 
 	switch(state){
+		case FighterState::IDLE_ATK_NEUTRAL_1:
+			if(sprite[state].is_finished()){
+				idle();
+				crouch();
+			}
+		break;
 		case FighterState::IDLE:
 			jump();
 			left();
 			right();
 			crouch();
 			fall();
+			idle_atk_neutral_1();
 		break;
 		case FighterState::JUMPING:
 			left(false);
@@ -353,4 +361,10 @@ void Fighter::crouch(bool change){
 	if(is_holding[DOWN_BUTTON] and on_floor){
    		if(change) temporary_state = FighterState::CROUCH;
     }
+}
+
+void Fighter::idle_atk_neutral_1(bool change){
+	if(pressed[ATTACK_BUTTON]){
+		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_1;
+	}
 }
