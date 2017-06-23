@@ -33,6 +33,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(name + "/idle_atk_neutral_1.png", 4, 10);
 	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(name + "/idle_atk_neutral_2.png", 4, 10);
 	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(name + "/idle_atk_neutral_3.png", 3, 10);
+	sprite[IDLE_ATK_FRONT] = Sprite(name + "/idle_atk_front.png", 5, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -89,7 +90,7 @@ void Fighter::process_input(){
 		ii(DOWN_BUTTON, InputManager::DOWN),
 		ii(LEFT_BUTTON, InputManager::LEFT),
 		ii(RIGHT_BUTTON, InputManager::RIGHT),
-		ii(ATTACK_BUTTON, InputManager::B),
+		ii(ATTACK_BUTTON, InputManager::X),
 		ii(SKILL1_BUTTON, InputManager::LT),
 		ii(SKILL2_BUTTON, InputManager::RT),
 		ii(BLOCK_BUTTON, InputManager::RB)
@@ -127,7 +128,6 @@ void Fighter::update(float delta){
 
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
-			printf("Neutral 1\n");
 			if(sprite[state].is_finished()){
 				idle();
 				crouch();
@@ -136,8 +136,8 @@ void Fighter::update(float delta){
 				combo++;
 			}
 		break;
+
 		case FighterState::IDLE_ATK_NEUTRAL_2:
-			printf("Neutral 2\n");
 			if(sprite[state].is_finished()){
 				idle();
 				crouch();
@@ -146,13 +146,21 @@ void Fighter::update(float delta){
 				combo++;
 			}
 		break;
+
 		case FighterState::IDLE_ATK_NEUTRAL_3:
-			printf("Neutral 3\n");
 			if(sprite[state].is_finished()){
 				idle();
 				crouch();
 			}
 		break;
+
+		case FighterState::IDLE_ATK_FRONT:
+			if(sprite[state].is_finished()){
+				idle();
+				crouch();
+			}
+		break;
+
 		case FighterState::IDLE:
 			combo = 0;
 			jump();
@@ -161,12 +169,15 @@ void Fighter::update(float delta){
 			crouch();
 			fall();
 			idle_atk_neutral_1();
+			idle_atk_front();
 		break;
+
 		case FighterState::JUMPING:
 			left(false);
 			right(false);
 			fall();
 		break;
+
 		case FighterState::FALLING:
 			idle();
 			left(false);
@@ -182,63 +193,15 @@ void Fighter::update(float delta){
 			idle();
 			crouch();
 			idle_atk_neutral_1();
+			idle_atk_front();
 			fall();
 		break;
+
 		case FighterState::CROUCH:
 			idle();
 			fall();
 		break;
 	}
-
-	/*if(pressed[ATTACK_BUTTON] && not is_punching){
-		is_punching = true;
-		punch_duration.restart();
-	}
-
-	if(is_punching && punch_duration.get() < PUNCH_DURATION){
-		if(state == IDLE)
-			change_state(PUNCH_IDLE);
-
-		if(state == RUNNING)
-			change_state(PUNCH_RUN);
-
-		if(state == JUMPING)
-			change_state(PUNCH_JUMP);
-
-		if(state == FALLING)
-			change_state(PUNCH_FALL);
-
-		if(state == CROUCH)
-			change_state(PUNCH_CROUCH);
-	}else{
-		punch_duration.restart();
-		is_punching = false;
-
-		if(state != CROUCH){
-			if(is_holding[LEFT_BUTTON]){
-				temporary_state = RUNNING;
-				speed.x = -2;
-				orientation = FIGHTER_LEFT;
-			}
-			if(is_holding[RIGHT_BUTTON]){
-				temporary_state = RUNNING;
-				speed.x = 2;
-				orientation = FIGHTER_RIGHT;
-			}
-		}
-
-		if(is_holding[DOWN_BUTTON]){
-			temporary_state = CROUCH;
-		}
-
-		if(pressed[JUMP_BUTTON] && speed.y == 0){
-			speed.y = -5;
-		}
-
-		if(speed.x == 0 && speed.y == 0 && not is_holding[DOWN_BUTTON]){
-			temporary_state = IDLE;
-		}
-	}*/
 
 	// check pass through when double crouching
 	if(pressed[DOWN_BUTTON]){
@@ -406,5 +369,12 @@ void Fighter::idle_atk_neutral_3(bool change){
 	if(combo){
 		combo--;
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_3;
+	}
+}
+
+void Fighter::idle_atk_front(bool change){
+	if(pressed[ATTACK_BUTTON] and (is_holding[LEFT_BUTTON] or is_holding[RIGHT_BUTTON])){
+		if(change) temporary_state = FighterState::IDLE_ATK_FRONT;
+		orientation = is_holding[LEFT_BUTTON] ? Orientation::LEFT : Orientation::RIGHT;
 	}
 }
