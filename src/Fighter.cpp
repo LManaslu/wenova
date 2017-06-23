@@ -38,6 +38,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[IDLE_ATK_DOWN] = Sprite(name + "/idle_atk_down.png", 6, 10);
 	sprite[CROUCH_ATK] = Sprite(name + "/crouch_atk.png", 3, 10);
 	sprite[JUMP_ATK_DOWN] = Sprite(name + "/jump_atk_down.png", 4, 10);
+	sprite[JUMP_ATK_UP] = Sprite(name + "/jump_atk_up.png", 4, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -172,7 +173,18 @@ void Fighter::update(float delta){
 			}
 		break;
 
+		case FighterState::JUMP_ATK_UP:
+			if(sprite[state].is_finished()){
+				speed.y = 0.1;
+				check_fall();
+				check_idle();
+				check_left(false);
+				check_right(false);
+			}
+		break;
+
 		case FighterState::IDLE:
+			printf("Mudou pra idle\n");
 			combo = 0;
 			check_jump();
 			check_left(on_floor);
@@ -191,6 +203,7 @@ void Fighter::update(float delta){
 			check_right(on_floor);
 			check_jump_atk_down();
 			check_fall();
+			check_jump_atk_up();
 		break;
 
 		case FighterState::FALLING:
@@ -199,7 +212,9 @@ void Fighter::update(float delta){
 			check_right(on_floor);
 			check_fall();
 			check_crouch();
+			check_jump_atk_up();
 		break;
+
 
 		case FighterState::RUNNING:
 			check_jump();
@@ -417,5 +432,15 @@ void Fighter::check_crouch_atk(bool change){
 void Fighter::check_jump_atk_down(bool change){
 	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::JUMP_ATK_DOWN;
+	}
+}
+
+void Fighter::check_jump_atk_up(bool change) {
+	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
+		if(combo) return;
+		pass_through = false;
+		combo++;
+		speed.y = -5; 
+		if(change) temporary_state = FighterState::JUMP_ATK_UP;
 	}
 }
