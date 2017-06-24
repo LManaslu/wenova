@@ -18,9 +18,9 @@ FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side, 
 	if(side == 0){
 		empty_bg = Sprite("hud/left_empty_background.png");
 		life = Sprite("hud/left_life.png");
-		special = Sprite("hud/left_special_bar.png"); 
+		special = Sprite("hud/left_special_bar.png");
 	}
-	
+
 	//Right
 	if(side == 1){
 		empty_bg = Sprite("hud/right_empty_background.png");
@@ -75,7 +75,7 @@ void FighterStats::render(){
 }
 
 bool FighterStats::is_dead(){
-	return false;
+	return fighter->is_dead();
 }
 
 void FighterStats::notify_collision(GameObject &){

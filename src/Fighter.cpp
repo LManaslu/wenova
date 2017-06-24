@@ -55,6 +55,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 
 	remaining_life = MAX_LIFE;
 	special = 0;
+	attack_damage = 0;
 
 	vertical_speed = rotation = 0;
 	speed = Vector(0, 0);
@@ -135,6 +136,7 @@ void Fighter::update(float delta){
 
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
+			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -145,6 +147,7 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::IDLE_ATK_NEUTRAL_2:
+			attack_damage = 5 * (sprite[state].get_current_frame() == 1);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -154,11 +157,26 @@ void Fighter::update(float delta){
 			}
 		break;
 
-		case FighterState::IDLE_ATK_NEUTRAL_3:
-		case FighterState::IDLE_ATK_FRONT:
-		case FighterState::IDLE_ATK_UP:
-		case FighterState::IDLE_ATK_DOWN:
-		case FighterState::CROUCH_ATK:
+		case FighterState::IDLE_ATK_FRONT: //2
+			attack_damage = 10 * (sprite[state].get_current_frame() == 2);
+			if(sprite[state].is_finished()){
+				check_idle();
+				check_crouch();
+			}
+		break;
+
+		case FighterState::IDLE_ATK_DOWN: //3
+			attack_damage = 10 * (sprite[state].get_current_frame() == 3);
+			if(sprite[state].is_finished()){
+				check_idle();
+				check_crouch();
+			}
+		break;
+
+		case FighterState::IDLE_ATK_NEUTRAL_3: //1
+		case FighterState::IDLE_ATK_UP: //1
+		case FighterState::CROUCH_ATK: //1
+			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -166,6 +184,7 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::JUMP_ATK_DOWN:
+			attack_damage = 3;
 			if(on_floor){
 				n_sprite_start = 2;
 				check_idle_atk_down(true, true);
@@ -173,6 +192,7 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::JUMP_ATK_UP:
+			attack_damage = 7 * (sprite[state].get_current_frame() == 1);
 			if(sprite[state].is_finished()){
 				speed.y = 0.1;
 				check_fall();
@@ -183,6 +203,7 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::STUNT:
+			attack_damage = 0;
 			if(sprite[state].is_finished()){
 				check_fall();
 				check_idle();
@@ -190,6 +211,7 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::IDLE:
+			attack_damage = 0;
 			combo = 0;
 			check_jump();
 			check_left(on_floor);
@@ -205,6 +227,7 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::JUMPING:
+			attack_damage = 0;
 			check_left(on_floor);
 			check_right(on_floor);
 			check_jump_atk_down();
@@ -213,6 +236,7 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::FALLING:
+			attack_damage = 0;
 			check_idle();
 			check_left(on_floor);
 			check_right(on_floor);
@@ -224,6 +248,7 @@ void Fighter::update(float delta){
 
 
 		case FighterState::RUNNING:
+			attack_damage = 0;
 			check_jump();
 			check_left(false);
 			check_right(false);
@@ -237,11 +262,13 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::DEFENDING:
+			attack_damage = 0;
 			check_idle();
 			check_fall();
 		break;
 
 		case FighterState::CROUCH:
+			attack_damage = 0;
 			check_idle();
 			check_crouch_atk();
 			check_fall();
@@ -287,7 +314,10 @@ void Fighter::notify_collision(GameObject & object){
 	}
 	if(object.is("player")){
 		Fighter & fighter = (Fighter &) object;
-		if(fighter.is_attacking()) check_stunt();
+		if(fighter.is_attacking()){
+			remaining_life -= fighter.get_attack_damage();
+			check_stunt();
+		}
 	}
 
 	change_state(temporary_state);
@@ -302,7 +332,7 @@ void Fighter::render(){
 }
 
 bool Fighter::is_dead(){
-	return false;
+	return remaining_life <= 0;
 }
 
 int Fighter::get_remaining_life(){
@@ -477,5 +507,9 @@ void Fighter::check_stunt(bool change){
 }
 
 bool Fighter::is_attacking(){
-	return state >= IDLE_ATK_NEUTRAL_1 and state <= JUMP_ATK_DOWN;
+	return attack_damage > 0;
+}
+
+int Fighter::get_attack_damage(){
+	return attack_damage;
 }

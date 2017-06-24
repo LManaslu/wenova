@@ -24,6 +24,7 @@ private:
 	int joystick_id;
 	int combo;
 	int n_sprite_start;
+	int attack_damage;
 
 	void test_limits();
 
@@ -73,6 +74,7 @@ public:
 	void check_stunt(bool change = true);
 
 	bool is_attacking();
+	int get_attack_damage();
 
 	static const int MAX_LIFE = 500;
 
