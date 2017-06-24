@@ -38,10 +38,6 @@ void State::update_array(float delta){
 	//update
 	for(unsigned it = 0; it < object_array.size(); ++it){
 		object_array[it]->update(delta);
-		if(object_array[it]->is_dead()){
-			object_array.erase(object_array.begin() + it);
-			break;
-		}
 	}
 
 	//death check
