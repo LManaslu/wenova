@@ -20,6 +20,7 @@ using std::vector;
 
 Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	partner = cpartner;
+
 	state = FighterState::IDLE;
 	id = cid;
 	remaining_life = MAX_LIFE / 2;
@@ -103,6 +104,7 @@ void Fighter::update(float delta){
 void Fighter::notify_collision(GameObject & object){
 	int partner_id = (partner ? partner->get_id() : INVALID_ID);
 	int not_in_ultimate = (tags["in_ultimate"] ? 0 : 1);
+
 	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
 	if(object.is("floor") && speed.y >= 0 && abs(floor_y - (box.y + box.height * 0.5)) < 10){
@@ -267,5 +269,21 @@ string Fighter::get_path(){
 void Fighter::play_sound(){
 	if(sound[state].is_open()){
 		sound[state].play(0);
+	}
+}
+
+void Fighter::jump_atk_down_fallloop(bool change){
+	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
+		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_FALLLOOP;
+	}
+}
+
+void Fighter::jump_atk_down_dmg(bool change){
+	if(grab){
+//	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON] && collided_after_atk_down_fallloop){
+		if(change){
+			temporary_state = FighterState::JUMP_ATK_DOWN_DMG;
+			printf("entrei\n");
+		}
 	}
 }
