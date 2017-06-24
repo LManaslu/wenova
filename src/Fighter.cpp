@@ -316,7 +316,11 @@ void Fighter::notify_collision(GameObject & object){
 		Fighter & fighter = (Fighter &) object;
 		if(fighter.is_attacking()){
 			remaining_life -= fighter.get_attack_damage();
+			special += fighter.get_attack_damage() / 3;
 			check_stunt();
+		}else if(is_attacking()){
+			special += attack_damage / 2;
+			if(special > MAX_SPECIAL) special = MAX_SPECIAL;
 		}
 	}
 
