@@ -11,6 +11,7 @@ private:
 	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK, JUMP_ATK_UP, JUMP_ATK_DOWN, DEFENDING, STUNT};
 	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SKILL1_BUTTON, SKILL2_BUTTON, BLOCK_BUTTON};
 	enum Orientation {LEFT, RIGHT};
+	enum AttackDirection{ATK_DOWN = 1, ATK_LEFT = 2, ATK_UP = 4, ATK_RIGHT = 8};
 	Sprite sprite[40];
 	FighterState state, temporary_state;
 	Orientation orientation;
@@ -25,6 +26,7 @@ private:
 	int combo;
 	int n_sprite_start;
 	int attack_damage;
+	int attack_mask;
 
 	void test_limits();
 
@@ -75,6 +77,7 @@ public:
 
 	bool is_attacking();
 	int get_attack_damage();
+	int get_attack_mask();
 
 	static const int MAX_LIFE = 500;
 

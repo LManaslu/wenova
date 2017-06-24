@@ -62,6 +62,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	//FIXME recebe no construtor
 	acceleration = Vector(0, 0.1);
 	max_speed = 9;
+	attack_mask = 0;
 
 	orientation = RIGHT;
 
@@ -127,6 +128,7 @@ void Fighter::update(float delta){
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
 			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
+			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -138,6 +140,7 @@ void Fighter::update(float delta){
 
 		case FighterState::IDLE_ATK_NEUTRAL_2:
 			attack_damage = 5 * (sprite[state].get_current_frame() == 1);
+			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -149,6 +152,7 @@ void Fighter::update(float delta){
 
 		case FighterState::IDLE_ATK_FRONT: //2
 			attack_damage = 10 * (sprite[state].get_current_frame() == 2);
+			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -157,16 +161,24 @@ void Fighter::update(float delta){
 
 		case FighterState::IDLE_ATK_DOWN: //3
 			attack_damage = 10 * (sprite[state].get_current_frame() == 3);
+			attack_mask = AttackDirection::ATK_DOWN;
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
 			}
 		break;
+		case FighterState::CROUCH_ATK: //1
+		attack_damage = 3 * (sprite[state].get_current_frame() == 1);
+		attack_mask = ((orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT) | AttackDirection::ATK_DOWN);
+		if(sprite[state].is_finished()){
+			check_idle();
+			check_crouch();
+		}
 
 		case FighterState::IDLE_ATK_NEUTRAL_3: //1
 		case FighterState::IDLE_ATK_UP: //1
-		case FighterState::CROUCH_ATK: //1
 			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
+			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -174,7 +186,8 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::JUMP_ATK_DOWN:
-			attack_damage = 3;
+			attack_damage = 2;
+			attack_mask = AttackDirection::ATK_DOWN;
 			if(on_floor){
 				n_sprite_start = 2;
 				check_idle_atk_down(true, true);
@@ -183,6 +196,7 @@ void Fighter::update(float delta){
 
 		case FighterState::JUMP_ATK_UP:
 			attack_damage = 7 * (sprite[state].get_current_frame() == 1);
+			attack_mask = AttackDirection::ATK_UP;
 			if(sprite[state].is_finished()){
 				speed.y = 0.1;
 				check_fall();
@@ -194,6 +208,7 @@ void Fighter::update(float delta){
 
 		case FighterState::STUNT:
 			attack_damage = 0;
+			attack_mask = 0;
 			if(sprite[state].is_finished()){
 				check_fall();
 				check_idle();
@@ -202,6 +217,7 @@ void Fighter::update(float delta){
 
 		case FighterState::IDLE:
 			attack_damage = 0;
+			attack_mask = 0;
 			combo = 0;
 			check_jump();
 			check_left(on_floor);
@@ -218,6 +234,7 @@ void Fighter::update(float delta){
 
 		case FighterState::JUMPING:
 			attack_damage = 0;
+			attack_mask = 0;
 			check_left(on_floor);
 			check_right(on_floor);
 			check_jump_atk_down();
@@ -227,6 +244,7 @@ void Fighter::update(float delta){
 
 		case FighterState::FALLING:
 			attack_damage = 0;
+			attack_mask = 0;
 			check_idle();
 			check_left(on_floor);
 			check_right(on_floor);
@@ -239,6 +257,7 @@ void Fighter::update(float delta){
 
 		case FighterState::RUNNING:
 			attack_damage = 0;
+			attack_mask = 0;
 			check_jump();
 			check_left(false);
 			check_right(false);
@@ -253,12 +272,14 @@ void Fighter::update(float delta){
 
 		case FighterState::DEFENDING:
 			attack_damage = 0;
+			attack_mask = 0;
 			check_idle();
 			check_fall();
 		break;
 
 		case FighterState::CROUCH:
 			attack_damage = 0;
+			attack_mask = 0;
 			check_idle();
 			check_crouch_atk();
 			check_fall();
@@ -301,13 +322,20 @@ void Fighter::notify_collision(GameObject & object){
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
 		pass_through = false;
-	}
-	if(object.is("player")){
+	}else if(object.is("player")){
 		Fighter & fighter = (Fighter &) object;
 		if(fighter.is_attacking()){
-			remaining_life -= fighter.get_attack_damage();
-			special += fighter.get_attack_damage() / 3;
-			check_stunt();
+			int left = AttackDirection::ATK_LEFT * (fighter.box.x > box.x);
+			int right = AttackDirection::ATK_RIGHT * (fighter.box.x <= box.x);
+			int up = AttackDirection::ATK_UP * (fighter.box.y > box.y);
+			int down = AttackDirection::ATK_DOWN * (fighter.box.y <= box.y);
+			int position_mask = left | right | up | down;
+			printf("%d x %d\n", position_mask, fighter.get_attack_mask());
+			if(position_mask & fighter.get_attack_mask()){
+				remaining_life -= fighter.get_attack_damage();
+				special += fighter.get_attack_damage() / 3;
+				check_stunt();
+			}
 		}else if(is_attacking()){
 			special += attack_damage / 2;
 			if(special > MAX_SPECIAL) special = MAX_SPECIAL;
@@ -511,4 +539,8 @@ bool Fighter::is_attacking(){
 
 int Fighter::get_attack_damage(){
 	return attack_damage;
+}
+
+int Fighter::get_attack_mask(){
+	return attack_mask;
 }
