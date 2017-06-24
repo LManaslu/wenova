@@ -38,6 +38,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[JUMP_ATK_DOWN] = Sprite(name + "/jump_atk_down.png", 4, 10);
 	sprite[JUMP_ATK_UP] = Sprite(name + "/jump_atk_up.png", 4, 10);
 	sprite[DEFENDING] = Sprite(name + "/defending.png", 2, 10);
+	sprite[STUNT] = Sprite(name + "/stunt.png", 2, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -49,6 +50,8 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 
 	state = FighterState::IDLE;
 	joystick_id = cjoystick_id;
+
+	tags["player"] = true;
 
 	remaining_life = MAX_LIFE;
 	special = 0;
@@ -179,6 +182,13 @@ void Fighter::update(float delta){
 			}
 		break;
 
+		case FighterState::STUNT:
+			if(sprite[state].is_finished()){
+				check_fall();
+				check_idle();
+			}
+		break;
+
 		case FighterState::IDLE:
 			combo = 0;
 			check_jump();
@@ -275,6 +285,12 @@ void Fighter::notify_collision(GameObject & object){
 		last_collided_floor = ((Floor&)object).get_id();
 		pass_through = false;
 	}
+	if(object.is("player")){
+		Fighter & fighter = (Fighter &) object;
+		if(fighter.is_attacking()) check_stunt();
+	}
+
+	change_state(temporary_state);
 }
 
 void Fighter::render(){
@@ -301,6 +317,7 @@ int Fighter::get_special(){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
+	printf("Mudou de %d pra %d\n", state, cstate);
 	float old_width = sprite[state].get_width();
 	float old_height = sprite[state].get_height();
 	state = cstate;
@@ -451,4 +468,14 @@ void Fighter::check_defense(bool change){
 	if(is_holding[BLOCK_BUTTON] and on_floor){
    		if(change) temporary_state = FighterState::DEFENDING;
     }
+}
+
+void Fighter::check_stunt(bool change){
+	printf("Entrou aqui\n");
+	speed.x = 0;
+	if(change) temporary_state = FighterState::STUNT;
+}
+
+bool Fighter::is_attacking(){
+	return state >= IDLE_ATK_NEUTRAL_1 and state <= JUMP_ATK_DOWN;
 }
