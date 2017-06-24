@@ -23,8 +23,6 @@ using std::vector;
 
 //TODO reavaliar se precisa ou não de Camera
 Fighter::Fighter(string name, float x, float y, int cjoystick_id){
-	printf("In construtor\n");
-
 	sprite[IDLE] = Sprite(name + "/idle.png", 12, 10);
 	sprite[RUNNING] = Sprite(name + "/running.png", 8, 10);
 	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
@@ -69,8 +67,6 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	n_sprite_start = 0;
 
 	box = Rectangle(x, y, sprite[RUNNING].get_width(), sprite[RUNNING].get_height());
-
-	printf("Out construtor\n");
 }
 
 Fighter::~Fighter(){
@@ -167,7 +163,6 @@ void Fighter::update(float delta){
 
 		case FighterState::JUMP_ATK_DOWN:
 			if(on_floor){
-				printf("Mudando valor\n");
 				n_sprite_start = 2;
 				check_idle_atk_down(true, true);
 			}
@@ -184,7 +179,6 @@ void Fighter::update(float delta){
 		break;
 
 		case FighterState::IDLE:
-			printf("Mudou pra idle\n");
 			combo = 0;
 			check_jump();
 			check_left(on_floor);
@@ -213,6 +207,7 @@ void Fighter::update(float delta){
 			check_fall();
 			check_crouch();
 			check_jump_atk_up();
+			check_jump_atk_down();
 		break;
 
 
@@ -380,7 +375,6 @@ void Fighter::check_idle_atk_neutral_1(bool change){
 }
 
 void Fighter::check_idle_atk_neutral_2(bool change){
-	printf("Pressing: %d\n", is_holding[ATTACK_BUTTON]);
 	if(combo){
 		combo--;
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_2;
@@ -440,7 +434,7 @@ void Fighter::check_jump_atk_up(bool change) {
 		if(combo) return;
 		pass_through = false;
 		combo++;
-		speed.y = -5; 
+		speed.y = -5;
 		if(change) temporary_state = FighterState::JUMP_ATK_UP;
 	}
 }
