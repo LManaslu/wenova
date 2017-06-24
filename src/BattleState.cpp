@@ -32,15 +32,15 @@ BattleState::BattleState(string stage, string cmusic){
 	fighters.push_back(new Fighter("blood", 300, 100, 2));
 	fighters.push_back(new Fighter("blood", 400, 100, 3));
 
-	for(unsigned i = 0; i < fighters.size(); i++)
-		add_object(fighters[i]);
-
 	add_object(new TimeCounter());
 
 	add_object(new FighterStats(fighters[3], 4, 1, 1147, 679.5));
 	add_object(new FighterStats(fighters[2], 3, 1, 1147, 599.5));
 	add_object(new FighterStats(fighters[1], 2, 0, 133, 679.5));
 	add_object(new FighterStats(fighters[0], 1, 0, 133, 599.5));
+
+	for(unsigned i = 0; i < fighters.size(); i++)
+		add_object(fighters[i]);
 
 	add_object(new TimeCounter());
 

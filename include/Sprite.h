@@ -47,6 +47,7 @@ public:
   	void update_scale_x(float scale);
 	void restart_count(int cframe = 0);
 	bool is_finished();
+	int get_current_frame();
 };
 
 #endif

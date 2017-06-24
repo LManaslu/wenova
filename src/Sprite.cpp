@@ -126,3 +126,7 @@ void Sprite::restart_count(int cframe){
 bool Sprite::is_finished(){
 	return finished;
 }
+
+int Sprite::get_current_frame(){
+	return current_frame;
+}
