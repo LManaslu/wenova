@@ -86,10 +86,10 @@ void Fighter::process_input(){
 		ii(DOWN_BUTTON, SDLK_s),
 		ii(LEFT_BUTTON, SDLK_a),
 		ii(RIGHT_BUTTON, SDLK_d),
-		ii(ATTACK_BUTTON, SDLK_x),
+		ii(ATTACK_BUTTON, SDLK_l),
 		ii(SKILL1_BUTTON, SDLK_o),
 		ii(SKILL2_BUTTON, SDLK_p),
-		ii(BLOCK_BUTTON, SDLK_l)
+		ii(BLOCK_BUTTON, SDLK_i)
 	};
 
 	vector< pair<int, int> > joystick_buttons = {
@@ -123,16 +123,6 @@ void Fighter::update(float delta){
 	process_input();
 
 	temporary_state = state;
-
-	//FIXME
-	if(pressed[JUMP_BUTTON]){
-		remaining_life--;
-
-		special++;
-
-		if(special > MAX_SPECIAL)
-			special = MAX_SPECIAL;
-	}
 
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
@@ -467,7 +457,7 @@ void Fighter::check_idle_atk_up(bool change) {
 }
 
 void Fighter::check_idle_atk_down(bool change, bool condition) {
-	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON] or condition) {
+	if((pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]) or condition) {
 		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
 	}
 }
