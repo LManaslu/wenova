@@ -37,6 +37,7 @@ Fighter::Fighter(string name, float x, float y, int cjoystick_id){
 	sprite[CROUCH_ATK] = Sprite(name + "/crouch_atk.png", 3, 10);
 	sprite[JUMP_ATK_DOWN] = Sprite(name + "/jump_atk_down.png", 4, 10);
 	sprite[JUMP_ATK_UP] = Sprite(name + "/jump_atk_up.png", 4, 10);
+	sprite[DEFENDING] = Sprite(name + "/defending.png", 2, 10);
 	//FIXME Trocar sprites
 	/*
 	sprite[PUNCH_IDLE] = Sprite(name + "/punch_idle.png", 6, 40);
@@ -184,6 +185,7 @@ void Fighter::update(float delta){
 			check_left(on_floor);
 			check_right(on_floor);
 			check_crouch();
+			check_defense();
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
 			check_idle_atk_up();
@@ -217,9 +219,15 @@ void Fighter::update(float delta){
 			check_right(false);
 			check_idle();
 			check_crouch();
+			check_defense();
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
 			check_pass_through_platform();
+			check_fall();
+		break;
+
+		case FighterState::DEFENDING:
+			check_idle();
 			check_fall();
 		break;
 
@@ -356,7 +364,7 @@ void Fighter::check_right(bool change){
 }
 
 void Fighter::check_idle(bool change){
-	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON]){
+	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON] and not is_holding[BLOCK_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE;
 	}
 }
@@ -437,4 +445,10 @@ void Fighter::check_jump_atk_up(bool change) {
 		speed.y = -5;
 		if(change) temporary_state = FighterState::JUMP_ATK_UP;
 	}
+}
+
+void Fighter::check_defense(bool change){
+	if(is_holding[BLOCK_BUTTON] and on_floor){
+   		if(change) temporary_state = FighterState::DEFENDING;
+    }
 }
