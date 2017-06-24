@@ -351,7 +351,6 @@ int Fighter::get_special(){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
-	printf("Mudou de %d pra %d\n", state, cstate);
 	float old_width = sprite[state].get_width();
 	float old_height = sprite[state].get_height();
 	state = cstate;
@@ -372,9 +371,16 @@ void Fighter::test_limits(){
 	//TODO Matar personagem ao cair do cenario
 	if(box.x < box.width / 2) box.x = box.width / 2;
 	if(box.x > 1280 - box.width / 2) box.x = 1280 - box.width / 2;
-	if(box.y < 0 or box.y > 720){
+	if(box.y < 0){
 		box.y = 0;
 		pass_through = false;
+	}
+
+	if(box.y > 900){
+		remaining_life = 0;
+		//Comentar linha acima e descomentar duas abaixo para não morrer ao cair
+		//box.y = 0;
+		//pass_through = false;
 	}
 }
 
@@ -505,7 +511,6 @@ void Fighter::check_defense(bool change){
 }
 
 void Fighter::check_stunt(bool change){
-	printf("Entrou aqui\n");
 	speed.x = 0;
 	if(change) temporary_state = FighterState::STUNT;
 }
