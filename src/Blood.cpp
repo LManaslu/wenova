@@ -6,7 +6,7 @@
 
 using std::min;
 
-Blood::Blood(string skin, float x, float y, int cjoystick_id) : Fighter(cjoystick_id){
+Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, cpartner){
 	sprite[IDLE] = Sprite("blood/" + skin + "/idle.png", 12, 10);
 	sprite[RUNNING] = Sprite("blood/" + skin + "/running.png", 8, 10);
 	sprite[JUMPING] = Sprite("blood/" + skin + "/jumping.png", 6, 10);
@@ -134,7 +134,6 @@ void Blood::update_machine_state(){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				if(grab){
-					printf("GRAB %d\n", grab);
 					check_special_1_2();
 				}else{
 					check_fall();
@@ -154,6 +153,8 @@ void Blood::update_machine_state(){
 		break;
 
 		case FighterState::SPECIAL_2:
+			remaining_life -= 0.2;
+			if(partner) partner->increment_life(0.2);
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -238,7 +239,7 @@ void Blood::update_machine_state(){
 		break;
 
 		case FighterState::LAST:
-			printf("Invalid blood %d state\n", joystick_id);
+			printf("Invalid blood %d state\n", id);
 			exit(-1);
 		break;
 	}
@@ -382,7 +383,6 @@ void Blood::check_special_1_2(bool change){
 
 void Blood::check_special_2(bool change){
 	if(pressed[SPECIAL2_BUTTON]) {
-		printf("Mudou\n");
 		if(change) temporary_state = FighterState::SPECIAL_2;
 	}
 }
