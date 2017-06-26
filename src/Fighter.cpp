@@ -160,7 +160,7 @@ void Fighter::notify_collision(GameObject & object){
 }
 
 void Fighter::render(){
-	int x = box.get_draw_x();
+	int x = box.get_draw_x() + (orientation == RIGHT ? 0 : -1) * (sprite[state].get_width() - 84);
 	int y = box.get_draw_y();
 
 	SDL_RendererFlip flip = (orientation == Orientation::LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
