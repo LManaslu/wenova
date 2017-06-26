@@ -23,7 +23,7 @@ using std::to_string;
 
 EditState::EditState(string cstage) : stage(cstage){
 	int joystick_id = (SDL_NumJoysticks() == 0 ? -1 : 0);
-	test_fighter = new Blood("edit_state/test_fighter", WIDTH/2, HEIGHT/2 - 200, joystick_id);
+	test_fighter = new Blood("test", WIDTH/2, HEIGHT/2 - 200, joystick_id);
 	add_object(test_fighter);
 
 	read_level_design();
