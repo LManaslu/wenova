@@ -262,7 +262,7 @@ void Blood::check_fall(bool change){
 void Blood::check_left(bool change){
 	if(is_holding[LEFT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
-		speed.x = -2;
+		speed.x = -3;
 		orientation = Orientation::LEFT;
 	}
 }
@@ -270,7 +270,7 @@ void Blood::check_left(bool change){
 void Blood::check_right(bool change){
 	if(is_holding[RIGHT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
-		speed.x = 2;
+		speed.x = 3;
 		orientation = Orientation::RIGHT;
 	}
 }
