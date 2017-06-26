@@ -25,6 +25,7 @@ private:
 	void check_stunt(bool change = true);
 	void check_special_1_1(bool change = true);
 	void check_special_1_2(bool change = true);
+	void check_special_2(bool change = true);
 
 	void update_machine_state();
 
