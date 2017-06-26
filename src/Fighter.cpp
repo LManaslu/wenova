@@ -53,8 +53,8 @@ void Fighter::process_input(){
 		ii(LEFT_BUTTON, SDLK_a),
 		ii(RIGHT_BUTTON, SDLK_d),
 		ii(ATTACK_BUTTON, SDLK_l),
-		ii(SKILL1_BUTTON, SDLK_o),
-		ii(SKILL2_BUTTON, SDLK_p),
+		ii(SPECIAL1_BUTTON, SDLK_o),
+		ii(SPECIAL2_BUTTON, SDLK_p),
 		ii(BLOCK_BUTTON, SDLK_i)
 	};
 
@@ -65,8 +65,8 @@ void Fighter::process_input(){
 		ii(LEFT_BUTTON, InputManager::LEFT),
 		ii(RIGHT_BUTTON, InputManager::RIGHT),
 		ii(ATTACK_BUTTON, InputManager::X),
-		ii(SKILL1_BUTTON, InputManager::LT),
-		ii(SKILL2_BUTTON, InputManager::RT),
+		ii(SPECIAL1_BUTTON, InputManager::LT),
+		ii(SPECIAL2_BUTTON, InputManager::RT),
 		ii(BLOCK_BUTTON, InputManager::RB)
 	};
 
@@ -208,6 +208,10 @@ void Fighter::test_limits(){
 		//box.y = 0;
 		//pass_through = false;
 	}
+}
+
+Fighter::AttackDirection Fighter::get_attack_orientation(){
+	return (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
 }
 
 void Fighter::reset_position(float x, float y){
