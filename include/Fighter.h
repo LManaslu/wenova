@@ -8,8 +8,8 @@
 
 class Fighter : public GameObject{
 protected:
-	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK, JUMP_ATK_UP, JUMP_ATK_DOWN, DEFENDING, STUNT};
-	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SKILL1_BUTTON, SKILL2_BUTTON, BLOCK_BUTTON};
+	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK, JUMP_ATK_UP, JUMP_ATK_DOWN, DEFENDING, STUNT, SPECIAL_1_1};
+	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SPECIAL1_BUTTON, SPECIAL2_BUTTON, BLOCK_BUTTON};
 	enum Orientation {LEFT, RIGHT};
 	enum AttackDirection{ATK_DOWN = 1, ATK_LEFT = 2, ATK_UP = 4, ATK_RIGHT = 8};
 	Sprite sprite[40];
@@ -57,6 +57,9 @@ protected:
 	virtual void check_pass_through_platform(bool change = true) = 0;
 	virtual void check_defense(bool change = true) = 0;
 	virtual void check_stunt(bool change = true) = 0;
+	virtual void check_special_1_1(bool change = true) = 0;
+
+	AttackDirection get_attack_orientation();
 
 	virtual void update_machine_state() = 0;
 

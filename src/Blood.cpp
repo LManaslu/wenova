@@ -19,6 +19,7 @@ Blood::Blood(string skin, float x, float y, int cjoystick_id) : Fighter(cjoystic
 	sprite[JUMP_ATK_UP] = Sprite("blood/" + skin + "/jump_atk_up.png", 4, 10);
 	sprite[DEFENDING] = Sprite("blood/" + skin + "/defending.png", 2, 10);
 	sprite[STUNT] = Sprite("blood/" + skin + "/stunt.png", 2, 10);
+	sprite[SPECIAL_1_1] = Sprite("blood/" + skin + "/special_1_1.png", 7, 10);
 
 	tags["blood"] = true;
 	tags[skin] = true;
@@ -29,7 +30,7 @@ void Blood::update_machine_state(){
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
 			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
-			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -41,7 +42,7 @@ void Blood::update_machine_state(){
 
 		case FighterState::IDLE_ATK_NEUTRAL_2:
 			attack_damage = 5 * (sprite[state].get_current_frame() == 1);
-			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -53,7 +54,7 @@ void Blood::update_machine_state(){
 
 		case FighterState::IDLE_ATK_FRONT: //2
 			attack_damage = 10 * (sprite[state].get_current_frame() == 2);
-			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -70,7 +71,7 @@ void Blood::update_machine_state(){
 		break;
 		case FighterState::CROUCH_ATK: //1
 		attack_damage = 3 * (sprite[state].get_current_frame() == 1);
-		attack_mask = ((orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT) | AttackDirection::ATK_DOWN);
+		attack_mask = get_attack_orientation() | AttackDirection::ATK_DOWN;
 		if(sprite[state].is_finished()){
 			check_idle();
 			check_crouch();
@@ -79,7 +80,7 @@ void Blood::update_machine_state(){
 		case FighterState::IDLE_ATK_NEUTRAL_3: //1
 		case FighterState::IDLE_ATK_UP: //1
 			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
-			attack_mask = (orientation == Orientation::LEFT ? AttackDirection::ATK_LEFT : AttackDirection::ATK_RIGHT);
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -118,6 +119,15 @@ void Blood::update_machine_state(){
 			}
 		break;
 
+		case FighterState::SPECIAL_1_1:
+			attack_damage = 1;
+			attack_mask = get_attack_orientation();
+			if(sprite[state].is_finished()){
+				check_fall();
+				check_idle();
+			}
+		break;
+
 		case FighterState::IDLE:
 			attack_damage = 0;
 			attack_mask = 0;
@@ -131,6 +141,7 @@ void Blood::update_machine_state(){
 			check_idle_atk_front();
 			check_idle_atk_up();
 			check_idle_atk_down();
+			check_special_1_1();
 			check_pass_through_platform();
 			check_fall();
 		break;
@@ -313,4 +324,10 @@ void Blood::check_defense(bool change){
 void Blood::check_stunt(bool change){
 	speed.x = 0;
 	if(change) temporary_state = FighterState::STUNT;
+}
+
+void Blood::check_special_1_1(bool change){
+	if(pressed[SPECIAL1_BUTTON]) {
+		if(change) temporary_state = FighterState::SPECIAL_1_1;
+	}
 }
