@@ -160,7 +160,7 @@ void Fighter::notify_collision(GameObject & object){
 }
 
 void Fighter::render(){
-	int x = box.get_draw_x();
+	int x = box.get_draw_x() + (orientation == RIGHT ? 0 : -1) * (sprite[state].get_width() - 84);
 	int y = box.get_draw_y();
 
 	SDL_RendererFlip flip = (orientation == Orientation::LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
@@ -208,11 +208,11 @@ void Fighter::test_limits(){
 	}
 
 	if(box.y > 900){
+		pass_through = false;
 		if(is("test")) box.y = -100;
 		else remaining_life = 0;
-		//Comentar linha acima e descomentar duas abaixo para não morrer ao cair
+		//Comentar linha acima e descomentar abaixo para não morrer ao cair
 		//box.y = 0;
-		//pass_through = false;
 	}
 }
 
