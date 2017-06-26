@@ -2,25 +2,26 @@
 
 #define CROUCH_COOLDOWN 100.0
 
-Blood::Blood(string name, float x, float y, int cjoystick_id) : Fighter(cjoystick_id){
-	sprite[IDLE] = Sprite(name + "/idle.png", 12, 10);
-	sprite[RUNNING] = Sprite(name + "/running.png", 8, 10);
-	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
-	sprite[FALLING] = Sprite(name + "/falling.png", 2, 10);
-	sprite[CROUCH] = Sprite(name + "/crouch.png", 3, 20);
-	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(name + "/idle_atk_neutral_1.png", 4, 10);
-	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(name + "/idle_atk_neutral_2.png", 4, 10);
-	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(name + "/idle_atk_neutral_3.png", 3, 10);
-	sprite[IDLE_ATK_FRONT] = Sprite(name + "/idle_atk_front.png", 5, 10);
-	sprite[IDLE_ATK_UP] = Sprite(name + "/idle_atk_up.png", 5, 10);
-	sprite[IDLE_ATK_DOWN] = Sprite(name + "/idle_atk_down.png", 6, 10);
-	sprite[CROUCH_ATK] = Sprite(name + "/crouch_atk.png", 3, 10);
-	sprite[JUMP_ATK_DOWN] = Sprite(name + "/jump_atk_down.png", 4, 10);
-	sprite[JUMP_ATK_UP] = Sprite(name + "/jump_atk_up.png", 4, 10);
-	sprite[DEFENDING] = Sprite(name + "/defending.png", 2, 10);
-	sprite[STUNT] = Sprite(name + "/stunt.png", 2, 10);
+Blood::Blood(string skin, float x, float y, int cjoystick_id) : Fighter(cjoystick_id){
+	sprite[IDLE] = Sprite("blood/" + skin + "/idle.png", 12, 10);
+	sprite[RUNNING] = Sprite("blood/" + skin + "/running.png", 8, 10);
+	sprite[JUMPING] = Sprite("blood/" + skin + "/jumping.png", 6, 10);
+	sprite[FALLING] = Sprite("blood/" + skin + "/falling.png", 2, 10);
+	sprite[CROUCH] = Sprite("blood/" + skin + "/crouch.png", 3, 20);
+	sprite[IDLE_ATK_NEUTRAL_1] = Sprite("blood/" + skin + "/idle_atk_neutral_1.png", 4, 10);
+	sprite[IDLE_ATK_NEUTRAL_2] = Sprite("blood/" + skin + "/idle_atk_neutral_2.png", 4, 10);
+	sprite[IDLE_ATK_NEUTRAL_3] = Sprite("blood/" + skin + "/idle_atk_neutral_3.png", 3, 10);
+	sprite[IDLE_ATK_FRONT] = Sprite("blood/" + skin + "/idle_atk_front.png", 5, 10);
+	sprite[IDLE_ATK_UP] = Sprite("blood/" + skin + "/idle_atk_up.png", 5, 10);
+	sprite[IDLE_ATK_DOWN] = Sprite("blood/" + skin + "/idle_atk_down.png", 6, 10);
+	sprite[CROUCH_ATK] = Sprite("blood/" + skin + "/crouch_atk.png", 3, 10);
+	sprite[JUMP_ATK_DOWN] = Sprite("blood/" + skin + "/jump_atk_down.png", 4, 10);
+	sprite[JUMP_ATK_UP] = Sprite("blood/" + skin + "/jump_atk_up.png", 4, 10);
+	sprite[DEFENDING] = Sprite("blood/" + skin + "/defending.png", 2, 10);
+	sprite[STUNT] = Sprite("blood/" + skin + "/stunt.png", 2, 10);
 
 	tags["blood"] = true;
+	tags[skin] = true;
 	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
 }
 
@@ -88,6 +89,8 @@ void Blood::update_machine_state(){
 		case FighterState::JUMP_ATK_DOWN:
 			attack_damage = 2;
 			attack_mask = AttackDirection::ATK_DOWN;
+			check_left(false);
+			check_right(false);
 			if(on_floor){
 				n_sprite_start = 2;
 				check_idle_atk_down(true, true);
@@ -97,12 +100,12 @@ void Blood::update_machine_state(){
 		case FighterState::JUMP_ATK_UP:
 			attack_damage = 7 * (sprite[state].get_current_frame() == 1);
 			attack_mask = AttackDirection::ATK_UP;
+			check_left(false);
+			check_right(false);
 			if(sprite[state].is_finished()){
 				speed.y = 0.1;
 				check_fall();
 				check_idle();
-				check_left(false);
-				check_right(false);
 			}
 		break;
 
