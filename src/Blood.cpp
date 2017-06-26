@@ -2,6 +2,10 @@
 
 #define CROUCH_COOLDOWN 100.0
 
+#include <algorithm>
+
+using std::min;
+
 Blood::Blood(string skin, float x, float y, int cjoystick_id) : Fighter(cjoystick_id){
 	sprite[IDLE] = Sprite("blood/" + skin + "/idle.png", 12, 10);
 	sprite[RUNNING] = Sprite("blood/" + skin + "/running.png", 8, 10);
@@ -20,6 +24,7 @@ Blood::Blood(string skin, float x, float y, int cjoystick_id) : Fighter(cjoystic
 	sprite[DEFENDING] = Sprite("blood/" + skin + "/defending.png", 2, 10);
 	sprite[STUNT] = Sprite("blood/" + skin + "/stunt.png", 2, 10);
 	sprite[SPECIAL_1_1] = Sprite("blood/" + skin + "/special_1_1.png", 7, 10);
+	sprite[SPECIAL_1_2] = Sprite("blood/" + skin + "/special_1_2.png", 11, 10);
 
 	tags["blood"] = true;
 	tags[skin] = true;
@@ -120,9 +125,25 @@ void Blood::update_machine_state(){
 		break;
 
 		case FighterState::SPECIAL_1_1:
-			attack_damage = 1;
+			attack_damage = 0.1 * (sprite[state].get_current_frame() > 3);
+			if(grab) remaining_life = min(remaining_life + attack_damage, MAX_LIFE * 1.0f);
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
+				if(grab){
+					printf("GRAB %d\n", grab);
+					check_special_1_2();
+				}else{
+					check_fall();
+					check_idle();
+				}
+			}
+		break;
+
+		case FighterState::SPECIAL_1_2:
+			attack_damage = 0.5;
+			if(grab) remaining_life = min(remaining_life + attack_damage, MAX_LIFE * 1.0f);
+			attack_mask = get_attack_orientation();
+			if(sprite[state].is_finished() or not grab){
 				check_fall();
 				check_idle();
 			}
@@ -198,7 +219,14 @@ void Blood::update_machine_state(){
 			check_crouch_atk();
 			check_fall();
 		break;
+
+		case FighterState::LAST:
+			printf("Invalid blood %d state\n", joystick_id);
+			exit(-1);
+		break;
 	}
+
+	if(joystick_id == -1) printf("grab: %d attack %f\n", grab, attack_damage);
 }
 
 void Blood::check_jump(bool change){
@@ -330,4 +358,9 @@ void Blood::check_special_1_1(bool change){
 	if(pressed[SPECIAL1_BUTTON]) {
 		if(change) temporary_state = FighterState::SPECIAL_1_1;
 	}
+}
+
+void Blood::check_special_1_2(bool change){
+	attack_damage = 0.5;
+	if(change) temporary_state = FighterState::SPECIAL_1_2;
 }
