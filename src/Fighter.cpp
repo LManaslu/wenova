@@ -56,7 +56,7 @@ void Fighter::process_input(){
 		ii(RIGHT_BUTTON, SDLK_d),
 		ii(ATTACK_BUTTON, SDLK_l),
 		ii(SPECIAL1_BUTTON, SDLK_o),
-		ii(SPECIAL2_BUTTON, SDLK_p),
+		ii(SPECIAL2_BUTTON, SDLK_k),
 		ii(BLOCK_BUTTON, SDLK_i)
 	};
 
@@ -183,21 +183,25 @@ void Fighter::change_state(FighterState cstate){
 
 	if(joystick_id == -1) printf("%d to %d\n", state, cstate);
 
-	float old_width = sprite[state].get_width();
-	float old_height = sprite[state].get_height();
+	float old_width = box.width;
+	float old_height = box.height;
 	state = cstate;
-	float new_width = sprite[state].get_width();
-	float new_height = sprite[state].get_height();
+	Vector csize;
+	if(cstate == CROUCH or cstate == CROUCH_ATK) csize = crouching_size;
+	else csize = not_crouching_size;
+	float new_width = csize.x;
+	float new_height = csize.y;
 
 	sprite[state].restart_count(n_sprite_start);
 	n_sprite_start = 0;
 
-	float x = box.x - (new_width - old_width) * 0.5;
+	//float x = box.x - (new_width - old_width) * 0.5;
 	float y = box.y - (new_height - old_height) * 0.5;
 
-	box.x = x;
-	box.y = y;
-	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
+	//box.x = x;
+	//box.y = y;
+	printf("x = %f\n", box.x);
+	box = Rectangle(box.x, y, csize.x, csize.y);
 }
 
 void Fighter::test_limits(){
