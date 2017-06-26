@@ -10,6 +10,7 @@
 #include "FighterStats.h"
 #include "TimeCounter.h"
 #include "Config.h"
+#include "Blood.h"
 
 #define N_BACKGROUND 2
 
@@ -26,10 +27,10 @@ BattleState::BattleState(string stage, string cmusic){
 
 	music.play();
 
-	fighters.push_back(new Fighter("blood", 100, 100, SDL_NumJoysticks() == 0 ? -1 : 0));
-	fighters.push_back(new Fighter("blood", 200, 100, SDL_NumJoysticks() == 1 ? -1 : 1));
-	fighters.push_back(new Fighter("blood", 300, 100, SDL_NumJoysticks() == 2 ? -1 : 2));
-	fighters.push_back(new Fighter("blood", 400, 100, SDL_NumJoysticks() == 3 ? -1 : 3));
+	fighters.push_back(new Blood("blood", 100, 100, SDL_NumJoysticks() == 0 ? -1 : 0));
+	fighters.push_back(new Blood("blood", 200, 100, SDL_NumJoysticks() == 1 ? -1 : 1));
+	fighters.push_back(new Blood("blood", 300, 100, SDL_NumJoysticks() == 2 ? -1 : 2));
+	fighters.push_back(new Blood("blood", 400, 100, SDL_NumJoysticks() == 3 ? -1 : 3));
 
 	add_object(new TimeCounter());
 

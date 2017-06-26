@@ -7,7 +7,7 @@
 #include "Timer.h"
 
 class Fighter : public GameObject{
-private:
+protected:
 	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK, JUMP_ATK_UP, JUMP_ATK_DOWN, DEFENDING, STUNT};
 	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SKILL1_BUTTON, SKILL2_BUTTON, BLOCK_BUTTON};
 	enum Orientation {LEFT, RIGHT};
@@ -39,8 +39,29 @@ private:
 
 	void process_input();
 
+	virtual void check_jump(bool change = true) = 0;
+	virtual void check_fall(bool change = true) = 0;
+	virtual void check_left(bool change = true) = 0;
+	virtual void check_right(bool change = true) = 0;
+	virtual void check_idle(bool change = true) = 0;
+	virtual void check_crouch(bool change = true) = 0;
+	virtual void check_idle_atk_neutral_1(bool change = true) = 0;
+	virtual void check_idle_atk_neutral_2(bool change = true) = 0;
+	virtual void check_idle_atk_neutral_3(bool change = true) = 0;
+	virtual void check_idle_atk_front(bool change = true) = 0;
+	virtual void check_idle_atk_up(bool change = true) = 0;
+	virtual void check_idle_atk_down(bool change = true, bool condition = false) = 0;
+	virtual void check_crouch_atk(bool change = true) = 0;
+	virtual void check_jump_atk_up(bool change = true) = 0;
+	virtual void check_jump_atk_down(bool change = true) = 0;
+	virtual void check_pass_through_platform(bool change = true) = 0;
+	virtual void check_defense(bool change = true) = 0;
+	virtual void check_stunt(bool change = true) = 0;
+
+	virtual void update_machine_state() = 0;
+
 public:
-	Fighter(string name, float x, float y, int cjoystick_id);
+	Fighter(int cjoystick_id);
 	~Fighter();
 
 	void update(float delta);
@@ -55,32 +76,11 @@ public:
 	void change_state(FighterState cstate);
 	void reset_position(float x, float y);
 
-	//TODO ver se é pra tá aqui msm
-	void check_jump(bool change = true);
-	void check_fall(bool change = true);
-	void check_left(bool change = true);
-	void check_right(bool change = true);
-	void check_idle(bool change = true);
-	void check_crouch(bool change = true);
-	void check_idle_atk_neutral_1(bool change = true);
-	void check_idle_atk_neutral_2(bool change = true);
-	void check_idle_atk_neutral_3(bool change = true);
-	void check_idle_atk_front(bool change = true);
-	void check_idle_atk_up(bool change = true);
-	void check_idle_atk_down(bool change = true, bool condition = false);
-	void check_crouch_atk(bool change = true);
-	void check_jump_atk_up(bool change = true);
-	void check_jump_atk_down(bool change = true);
-	void check_pass_through_platform(bool change = true);
-	void check_defense(bool change = true);
-	void check_stunt(bool change = true);
-
 	bool is_attacking();
 	int get_attack_damage();
 	int get_attack_mask();
 
 	static const int MAX_LIFE = 500;
-
 	static const int MAX_SPECIAL = 400;
 };
 
