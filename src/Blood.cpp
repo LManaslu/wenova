@@ -25,10 +25,14 @@ Blood::Blood(string skin, float x, float y, int cjoystick_id) : Fighter(cjoystic
 	sprite[STUNT] = Sprite("blood/" + skin + "/stunt.png", 2, 10);
 	sprite[SPECIAL_1_1] = Sprite("blood/" + skin + "/special_1_1.png", 7, 10);
 	sprite[SPECIAL_1_2] = Sprite("blood/" + skin + "/special_1_2.png", 11, 10);
+	sprite[SPECIAL_2] = Sprite("blood/" + skin + "/special_2.png", 8, 10);
+
+	crouching_size = Vector(84, 59);
+	not_crouching_size = Vector(84, 84);
 
 	tags["blood"] = true;
 	tags[skin] = true;
-	box = Rectangle(x, y, sprite[state].get_width(), sprite[state].get_height());
+	box = Rectangle(x, y, 84, 84);
 }
 
 void Blood::update_machine_state(){
@@ -149,6 +153,13 @@ void Blood::update_machine_state(){
 			}
 		break;
 
+		case FighterState::SPECIAL_2:
+			if(sprite[state].is_finished()){
+				check_idle();
+				check_crouch();
+			}
+		break;
+
 		case FighterState::IDLE:
 			attack_damage = 0;
 			attack_mask = 0;
@@ -163,6 +174,7 @@ void Blood::update_machine_state(){
 			check_idle_atk_up();
 			check_idle_atk_down();
 			check_special_1_1();
+			check_special_2();
 			check_pass_through_platform();
 			check_fall();
 		break;
@@ -174,6 +186,7 @@ void Blood::update_machine_state(){
 			check_right(on_floor);
 			check_jump_atk_down();
 			check_fall();
+			check_idle();
 			check_jump_atk_up();
 		break;
 
@@ -201,6 +214,10 @@ void Blood::update_machine_state(){
 			check_defense();
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
+			check_special_1_1();
+			check_special_2();
+			check_idle_atk_up();
+			check_idle_atk_down();
 			check_pass_through_platform();
 			check_fall();
 		break;
@@ -225,8 +242,6 @@ void Blood::update_machine_state(){
 			exit(-1);
 		break;
 	}
-
-	if(joystick_id == -1) printf("grab: %d attack %f\n", grab, attack_damage);
 }
 
 void Blood::check_jump(bool change){
@@ -363,4 +378,11 @@ void Blood::check_special_1_1(bool change){
 void Blood::check_special_1_2(bool change){
 	attack_damage = 0.5;
 	if(change) temporary_state = FighterState::SPECIAL_1_2;
+}
+
+void Blood::check_special_2(bool change){
+	if(pressed[SPECIAL2_BUTTON]) {
+		printf("Mudou\n");
+		if(change) temporary_state = FighterState::SPECIAL_2;
+	}
 }
