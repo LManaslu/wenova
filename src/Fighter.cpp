@@ -21,7 +21,7 @@ using std::vector;
 Fighter::Fighter(int cjoystick_id){
 	state = FighterState::IDLE;
 	joystick_id = cjoystick_id;
-	remaining_life = MAX_LIFE;
+	remaining_life = MAX_LIFE / 2;
 	special = 0;
 	attack_damage = 0;
 	vertical_speed = rotation = 0;
@@ -29,11 +29,13 @@ Fighter::Fighter(int cjoystick_id){
 	acceleration = Vector(0, 0.1);
 	max_speed = 9;
 	attack_mask = 0;
+	sprite = vector<Sprite>(LAST);
 
 	orientation = RIGHT;
 
 	on_floor = false;
 	last_collided_floor = 0;
+	grab = false;
 	pass_through = false;
 
 	n_sprite_start = 0;
@@ -90,6 +92,8 @@ void Fighter::update(float delta){
 
 	temporary_state = state;
 
+	sprite[state].update(delta);
+
 	update_machine_state();
 
 	speed.y = std::min(speed.y + !on_floor * acceleration.y * delta, max_speed);
@@ -99,11 +103,11 @@ void Fighter::update(float delta){
 	test_limits();
 
 	crouch_timer.update(delta);
-	sprite[state].update(delta);
 
 	change_state(temporary_state);
 
 	speed.x = 0;
+	grab = false;
 	on_floor = false;
 }
 
@@ -136,14 +140,15 @@ void Fighter::notify_collision(GameObject & object){
 			int down = AttackDirection::ATK_DOWN * (fighter.box.y <= box.y);
 			int position_mask = left | right | up | down;
 			if(position_mask & fighter.get_attack_mask()){
-				int damage = fighter.get_attack_damage() * ((state == FighterState::DEFENDING) ? 0.5 : 1);
+				float damage = fighter.get_attack_damage() * ((state == FighterState::DEFENDING) ? 0.5 : 1);
 				remaining_life -= damage;
-				int increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1);
+				float increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1);
 				special += increment_special;
 				if(special > MAX_SPECIAL) special = MAX_SPECIAL;
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
 		}else if(is_attacking()){
+			grab = true;
 			special += attack_damage / 2;
 			if(special > MAX_SPECIAL) special = MAX_SPECIAL;
 		}
@@ -164,11 +169,11 @@ bool Fighter::is_dead(){
 	return remaining_life <= 0;
 }
 
-int Fighter::get_remaining_life(){
+float Fighter::get_remaining_life(){
 	return remaining_life;
 }
 
-int Fighter::get_special(){
+float Fighter::get_special(){
 	return special;
 }
 
@@ -176,11 +181,14 @@ int Fighter::get_special(){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
+	if(joystick_id == -1) printf("%d to %d\n", state, cstate);
+
 	float old_width = sprite[state].get_width();
 	float old_height = sprite[state].get_height();
 	state = cstate;
 	float new_width = sprite[state].get_width();
 	float new_height = sprite[state].get_height();
+
 	sprite[state].restart_count(n_sprite_start);
 	n_sprite_start = 0;
 
@@ -224,7 +232,7 @@ bool Fighter::is_attacking(){
 	return attack_damage > 0;
 }
 
-int Fighter::get_attack_damage(){
+float Fighter::get_attack_damage(){
 	return attack_damage;
 }
 
