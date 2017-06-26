@@ -27,11 +27,12 @@ protected:
 	int last_collided_floor;
 	float max_speed;
 	float remaining_life;
-	int joystick_id;
+	int id;
 	int combo;
 	int n_sprite_start;
 	float attack_damage;
 	int attack_mask;
+	Fighter * partner;
 
 	void test_limits();
 
@@ -71,7 +72,7 @@ protected:
 	virtual void update_machine_state() = 0;
 
 public:
-	Fighter(int cjoystick_id);
+	Fighter(int cid, Fighter * cpartner = nullptr);
 	~Fighter();
 
 	void update(float delta);
@@ -89,6 +90,9 @@ public:
 	bool is_attacking();
 	float get_attack_damage();
 	int get_attack_mask();
+	int get_id();
+	void increment_life(float increment);
+	void set_partner(Fighter * cpartner);
 
 	static const int MAX_LIFE = 500;
 	static const int MAX_SPECIAL = 400;

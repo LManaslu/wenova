@@ -30,7 +30,7 @@ private:
 	void update_machine_state();
 
 public:
-	Blood(string skin, float x, float y, int cjoystick_id);
+	Blood(string skin, float x, float y, int cid, Fighter * cpartner = nullptr);
 };
 
 #endif

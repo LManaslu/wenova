@@ -15,12 +15,14 @@
 
 #define CROUCH_COOLDOWN 100.0
 
+using std::min;
 using std::pair;
 using std::vector;
 
-Fighter::Fighter(int cjoystick_id){
+Fighter::Fighter(int cid, Fighter * cpartner){
+	partner = cpartner;
 	state = FighterState::IDLE;
-	joystick_id = cjoystick_id;
+	id = cid;
 	remaining_life = MAX_LIFE / 2;
 	special = 0;
 	attack_damage = 0;
@@ -72,11 +74,11 @@ void Fighter::process_input(){
 		ii(BLOCK_BUTTON, InputManager::RB)
 	};
 
-	if(joystick_id != -1){
+	if(id != -1){
 		for(ii button : joystick_buttons){
-			pressed[button.first] = input_manager->joystick_button_press(button.second, joystick_id);
-			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, joystick_id);
-			released[button.first] = input_manager->joystick_button_release(button.second, joystick_id);
+			pressed[button.first] = input_manager->joystick_button_press(button.second, id);
+			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, id);
+			released[button.first] = input_manager->joystick_button_release(button.second, id);
 		}
 	}else{
 		for(ii button : buttons){
@@ -133,7 +135,7 @@ void Fighter::notify_collision(GameObject & object){
 		pass_through = false;
 	}else if(object.is("player")){
 		Fighter & fighter = (Fighter &) object;
-		if(fighter.is_attacking()){
+		if(fighter.is_attacking() and fighter.get_id() != partner->get_id()){
 			int left = AttackDirection::ATK_LEFT * (fighter.box.x > box.x);
 			int right = AttackDirection::ATK_RIGHT * (fighter.box.x <= box.x);
 			int up = AttackDirection::ATK_UP * (fighter.box.y > box.y);
@@ -147,7 +149,7 @@ void Fighter::notify_collision(GameObject & object){
 				if(special > MAX_SPECIAL) special = MAX_SPECIAL;
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
-		}else if(is_attacking()){
+		}else if(is_attacking() and fighter.get_id() != partner->get_id()){
 			grab = true;
 			special += attack_damage / 2;
 			if(special > MAX_SPECIAL) special = MAX_SPECIAL;
@@ -181,26 +183,18 @@ float Fighter::get_special(){
 void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
-	if(joystick_id == -1) printf("%d to %d\n", state, cstate);
-
-	float old_width = box.width;
 	float old_height = box.height;
 	state = cstate;
 	Vector csize;
 	if(cstate == CROUCH or cstate == CROUCH_ATK) csize = crouching_size;
 	else csize = not_crouching_size;
-	float new_width = csize.x;
 	float new_height = csize.y;
 
 	sprite[state].restart_count(n_sprite_start);
 	n_sprite_start = 0;
 
-	//float x = box.x - (new_width - old_width) * 0.5;
 	float y = box.y - (new_height - old_height) * 0.5;
 
-	//box.x = x;
-	//box.y = y;
-	printf("x = %f\n", box.x);
 	box = Rectangle(box.x, y, csize.x, csize.y);
 }
 
@@ -208,8 +202,8 @@ void Fighter::test_limits(){
 	//TODO Matar personagem ao cair do cenario
 	if(box.x < box.width / 2) box.x = box.width / 2;
 	if(box.x > 1280 - box.width / 2) box.x = 1280 - box.width / 2;
-	if(box.y < 0){
-		box.y = 0;
+	if(box.y < -100){
+		box.y = -100;
 		pass_through = false;
 	}
 
@@ -242,4 +236,16 @@ float Fighter::get_attack_damage(){
 
 int Fighter::get_attack_mask(){
 	return attack_mask;
+}
+
+int Fighter::get_id(){
+	return id;
+}
+
+void Fighter::increment_life(float increment){
+	remaining_life = min(remaining_life + increment, MAX_LIFE * 1.0f);
+}
+
+void Fighter::set_partner(Fighter * cpartner){
+	partner = cpartner;
 }
