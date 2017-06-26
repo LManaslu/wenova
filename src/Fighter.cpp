@@ -332,9 +332,12 @@ void Fighter::notify_collision(GameObject & object){
 			int position_mask = left | right | up | down;
 			printf("%d x %d\n", position_mask, fighter.get_attack_mask());
 			if(position_mask & fighter.get_attack_mask()){
-				remaining_life -= fighter.get_attack_damage();
-				special += fighter.get_attack_damage() / 3;
-				check_stunt();
+				int damage = fighter.get_attack_damage() * ((state == FighterState::DEFENDING) ? 0.5 : 1);
+				remaining_life -= damage;
+				int increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1);
+				special += increment_special;
+				if(special > MAX_SPECIAL) special = MAX_SPECIAL;
+				if(state != FighterState::DEFENDING) check_stunt();
 			}
 		}else if(is_attacking()){
 			special += attack_damage / 2;
