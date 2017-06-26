@@ -202,7 +202,8 @@ void Fighter::test_limits(){
 	}
 
 	if(box.y > 900){
-		remaining_life = 0;
+		if(is("test")) box.y = -100;
+		else remaining_life = 0;
 		//Comentar linha acima e descomentar duas abaixo para não morrer ao cair
 		//box.y = 0;
 		//pass_through = false;
