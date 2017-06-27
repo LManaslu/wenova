@@ -68,6 +68,10 @@ void EditState::update(float delta){
 		update_level_design();
 	}
 
+	if(inputManager->is_key_down(SDLK_j)){
+		printf("%f, %f\n", object_array[0].get()->box.x, object_array[0].get()->box.y);
+	}
+
 	for(auto & background : backgrounds)
 		background.first.update(delta);
 
