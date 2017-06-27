@@ -19,7 +19,7 @@ using std::min;
 using std::pair;
 using std::vector;
 
-Fighter::Fighter(int cid, Fighter * cpartner){
+Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	partner = cpartner;
 	state = FighterState::IDLE;
 	id = cid;
@@ -32,8 +32,9 @@ Fighter::Fighter(int cid, Fighter * cpartner){
 	max_speed = 9;
 	attack_mask = 0;
 	sprite = vector<Sprite>(LAST);
+	temporary_state = state;
 
-	orientation = RIGHT;
+	orientation = (x > 640 ? LEFT : RIGHT);
 
 	on_floor = false;
 	last_collided_floor = 0;
@@ -126,7 +127,6 @@ void Fighter::notify_collision(GameObject & object){
 			}
 		}
 
-
 		speed.y = 0;
 		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
 
@@ -135,6 +135,7 @@ void Fighter::notify_collision(GameObject & object){
 		pass_through = false;
 	}else if(object.is("player")){
 		Fighter & fighter = (Fighter &) object;
+
 		if(fighter.is_attacking() and fighter.get_id() != partner->get_id()){
 			int left = AttackDirection::ATK_LEFT * (fighter.box.x > box.x);
 			int right = AttackDirection::ATK_RIGHT * (fighter.box.x <= box.x);
@@ -150,9 +151,16 @@ void Fighter::notify_collision(GameObject & object){
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
 		}else if(is_attacking() and fighter.get_id() != partner->get_id()){
-			grab = true;
-			special += attack_damage / 2;
-			if(special > MAX_SPECIAL) special = MAX_SPECIAL;
+			int left = AttackDirection::ATK_LEFT * (fighter.box.x <= box.x);
+			int right = AttackDirection::ATK_RIGHT * (fighter.box.x > box.x);
+			int up = AttackDirection::ATK_UP * (fighter.box.y <= box.y);
+			int down = AttackDirection::ATK_DOWN * (fighter.box.y > box.y);
+			int position_mask = left | right | up | down;
+			if(position_mask & get_attack_mask()){
+				grab = true;
+				special += attack_damage / 2;
+				if(special > MAX_SPECIAL) special = MAX_SPECIAL;
+			}
 		}
 	}
 
