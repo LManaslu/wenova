@@ -6,7 +6,7 @@
 
 using std::min;
 
-Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, cpartner){
+Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, x, cpartner){
 	sprite[IDLE] = Sprite("blood/" + skin + "/idle.png", 12, 10);
 	sprite[RUNNING] = Sprite("blood/" + skin + "/running.png", 8, 10);
 	sprite[JUMPING] = Sprite("blood/" + skin + "/jumping.png", 6, 10);

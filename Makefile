@@ -80,6 +80,15 @@ arun:
 	make -j
 	make run
 
+scrun:
+	make dist-clean
+	make
+	make run
+
+sarun:
+	make
+	make run
+
 clean:
 	@echo Cleaning...
 	@$(RMDIR) *~ *.o

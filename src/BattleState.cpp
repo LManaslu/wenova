@@ -27,23 +27,27 @@ BattleState::BattleState(string stage, string cmusic){
 
 	music.play();
 
-	fighters.push_back(new Blood("default", 100, 100, SDL_NumJoysticks() == 2 ? -1 : 2));
-	fighters.push_back(new Blood("default", 200, 100, SDL_NumJoysticks() == 3 ? -1 : 3, fighters[0]));
-	fighters.push_back(new Blood("default", 300, 100, SDL_NumJoysticks() == 0 ? -1 : 0));
-	fighters.push_back(new Blood("default", 400, 100, SDL_NumJoysticks() == 1 ? -1 : 1, fighters[2]));
+	Fighter * player_1 = new Blood("default", 177, 313, SDL_NumJoysticks() == 0 ? -1 : 0);
+	Fighter * player_2 = new Blood("default", 276, 510, SDL_NumJoysticks() == 1 ? -1 : 1);
+	Fighter * player_3 = new Blood("default", 1128, 245, SDL_NumJoysticks() == 2 ? -1 : 2);
+	Fighter * player_4 = new Blood("default", 954, 474, SDL_NumJoysticks() == 3 ? -1 : 3);
 
-	fighters[0]->set_partner(fighters[1]);
-	fighters[2]->set_partner(fighters[3]);
+	player_1->set_partner(player_2);
+	player_2->set_partner(player_1);
+	player_3->set_partner(player_4);
+	player_4->set_partner(player_3);
 
 	add_object(new TimeCounter());
 
-	add_object(new FighterStats(fighters[3], 4, 1, 1147, 679.5));
-	add_object(new FighterStats(fighters[2], 3, 1, 1147, 599.5));
-	add_object(new FighterStats(fighters[1], 2, 0, 133, 679.5));
-	add_object(new FighterStats(fighters[0], 1, 0, 133, 599.5));
+	add_object(new FighterStats(player_4, 4, 1, 1147, 679.5));
+	add_object(new FighterStats(player_3, 3, 1, 1147, 599.5));
+	add_object(new FighterStats(player_2, 2, 0, 133, 679.5));
+	add_object(new FighterStats(player_1, 1, 0, 133, 599.5));
 
-	for(unsigned i = 0; i < fighters.size(); i++)
-		add_object(fighters[i]);
+	add_object(player_4);
+	add_object(player_3);
+	add_object(player_2);
+	add_object(player_1);
 
 	add_object(new TimeCounter());
 

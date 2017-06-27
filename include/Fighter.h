@@ -72,7 +72,7 @@ protected:
 	virtual void update_machine_state() = 0;
 
 public:
-	Fighter(int cid, Fighter * cpartner = nullptr);
+	Fighter(int cid, float x, Fighter * cpartner = nullptr);
 	~Fighter();
 
 	void update(float delta);
@@ -94,8 +94,8 @@ public:
 	void increment_life(float increment);
 	void set_partner(Fighter * cpartner);
 
-	static const int MAX_LIFE = 500;
-	static const int MAX_SPECIAL = 400;
+	static const int MAX_LIFE = 2000;
+	static const int MAX_SPECIAL = 250;
 };
 
 #endif
