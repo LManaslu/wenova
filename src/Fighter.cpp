@@ -99,6 +99,7 @@ void Fighter::update(float delta){
 	grab = false;
 	attack_damage *= delta;
 	on_floor = false;
+	collided_after_atk_down_fallloop = false;
 }
 
 void Fighter::notify_collision(GameObject & object){
@@ -281,9 +282,15 @@ void Fighter::jump_atk_down_fallloop(bool change){
 void Fighter::jump_atk_down_dmg(bool change){
 	if(grab){
 //	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON] && collided_after_atk_down_fallloop){
-		if(change){
-			temporary_state = FighterState::JUMP_ATK_DOWN_DMG;
-			printf("entrei\n");
-		}
+		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_DMG;
+	}
+}
+
+void Fighter::idle_atk_down(bool change){
+	if(is_holding[DOWN_BUTTON]) printf("to descendo\n");
+	if(is_holding[ATTACK_BUTTON]) printf("to atacando\n");
+	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
+		printf("troquei, parsa\n");
+		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
 	}
 }
