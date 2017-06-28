@@ -28,7 +28,7 @@ CharacterSelectState::CharacterSelectState(){
 		number[i] = Sprite("character_select/number_" + to_string(i + 1) + ".png");
 	}
 
-	names = { {"blood",""}, {"flesh",""}, {"",""}, {"",""} };
+	names = { {"flesh",""}, {"blood",""}, {"",""}, {"",""} };
 
 	memset(cur_selection_col, 0, sizeof cur_selection_col);
 	memset(cur_selection_row, 0, sizeof cur_selection_row);
@@ -64,34 +64,43 @@ void CharacterSelectState::update(float delta){
 	}
 
 	for(int i=0;i<4;i++){
-		if(input_manager->key_press(SDLK_LEFT) && cur_selection_col[i] != 0 && not selected[i]){
+		if(selected[i]) continue;
+
+		if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
+		&& cur_selection_col[i] != 0){
 			if(character_enabled(cur_selection_row[i], cur_selection_col[i] - 1))
-			cur_selection_col[i]--;
+				cur_selection_col[i]--;
 		}
 
-		if(input_manager->key_press(SDLK_RIGHT) && cur_selection_col[i] != 1 && not selected[i]){
+		if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::RIGHT, i))
+		&& cur_selection_col[i] != 1){
 			if(character_enabled(cur_selection_row[i], cur_selection_col[i] + 1))
-			cur_selection_col[i]++;
+				cur_selection_col[i]++;
 		}
 
-		if(input_manager->key_press(SDLK_UP) && cur_selection_row[i] != 0 && not selected[i]){
+		if((input_manager->key_press(SDLK_UP) || input_manager->joystick_button_press(InputManager::UP, i))
+		&& cur_selection_row[i] != 0){
 			if(character_enabled(cur_selection_row[i] - 1, cur_selection_col[i]))
-			cur_selection_row[i]--;
+				cur_selection_row[i]--;
 		}
 
-		if(input_manager->key_press(SDLK_DOWN) && cur_selection_row[i] != 3 && not selected[i]){
+		if((input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, i))
+		&& cur_selection_row[i] != 3){
 			if(character_enabled(cur_selection_row[i] + 1, cur_selection_col[i]))
-			cur_selection_row[i]++;
+				cur_selection_row[i]++;
 		}
 
 		// skins
-		// press triangle goes over all skins
-		if(input_manager->key_press(SDLK_y) && not selected[i]){
+		if(input_manager->key_press(SDLK_COMMA) || input_manager->joystick_button_press(InputManager::LB, i)){
+			cur_skin[i] = (cur_skin[i] - 1 + 4) % 4;
+		}
+
+		if(input_manager->key_press(SDLK_PERIOD) || input_manager->joystick_button_press(InputManager::RB, i)){
 			cur_skin[i] = (cur_skin[i] + 1) % 4;
 		}
 
 		// select character && lock skin
-		if(input_manager->key_press(SDLK_x) && not selected[i]){
+		if(input_manager->key_press(SDLK_x) || input_manager->joystick_button_press(InputManager::A, i)){
 			int col_sel = cur_selection_col[i];
 			int row_sel = cur_selection_row[i];
 			string char_selected = names[col_sel][row_sel];
