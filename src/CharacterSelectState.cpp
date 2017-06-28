@@ -3,18 +3,24 @@
 #include "MenuState.h"
 #include "BattleState.h"
 
+#define AVAILABLE_CHARS 2
+#define NUMBER_OF_PLAYERS 4
+#define AVAILABLE_SKINS 4
+#define FIRST_PLAYER 0
+#define COL_SLOTS 2
+#define ROW_SLOTS 4
+
 CharacterSelectState::CharacterSelectState(){
 	background = Sprite("character_select/background.png");
 	character_slots = Sprite("character_select/character_slots.png");
 
-	// FIXME 2 enabled characters
-	for(int i=0;i<2;i++){
-		available_skin[get_char_info(i).first].assign(4, true);
+	for(int i=0;i<AVAILABLE_CHARS;i++){
+		available_skin[get_char_info(i).first].assign(AVAILABLE_SKINS, true);
 
 		char_name[get_char_info(i).first] = Sprite("character_select/chars/" + get_char_info(i).first + "/name.png");
 
 		// loop to get skins
-		for(int j=0;j<4;j++){
+		for(int j=0;j<AVAILABLE_SKINS;j++){
 			char_sprite[get_char_info(i).first].push_back(Sprite("character_select/chars/" + get_char_info(i).first + "/" + to_string(j) + ".png",
 													get_char_info(i).second,
 													13));
@@ -23,7 +29,7 @@ CharacterSelectState::CharacterSelectState(){
 		}
 	}
 
-	for(int i=0;i<4;i++){
+	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
 		name_tag[i] = Sprite("character_select/name_tag_" + to_string(i + 1) + ".png");
 		number[i] = Sprite("character_select/number_" + to_string(i + 1) + ".png");
 	}
@@ -50,8 +56,8 @@ void CharacterSelectState::update(float delta){
 	// inputs
 	if(input_manager->quit_requested() ||
 		input_manager->key_press(SDLK_ESCAPE) ||
-		(not selected[0] && input_manager->joystick_button_press(InputManager::B, 0)) ||
-		input_manager->joystick_button_press(InputManager::SELECT, 0)){
+		(not selected[FIRST_PLAYER] && input_manager->joystick_button_press(InputManager::B, FIRST_PLAYER)) ||
+		input_manager->joystick_button_press(InputManager::SELECT, FIRST_PLAYER)){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState(true));
 		return;
@@ -59,14 +65,14 @@ void CharacterSelectState::update(float delta){
 
 	// only enable start when all players have selected a character
 	if(all_players_selected()){
-		if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0)){
+		if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, FIRST_PLAYER)){
 			m_quit_requested = true;
 			Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
 			return;
 		}
 	}
 
-	for(int i=0;i<4;i++){
+	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
 		if(not selected[i]){
 			if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
 			&& cur_selection_col[i] != 0){
@@ -75,7 +81,7 @@ void CharacterSelectState::update(float delta){
 			}
 
 			if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::RIGHT, i))
-			&& cur_selection_col[i] != 1){
+			&& cur_selection_col[i] + 1 < COL_SLOTS){
 				if(character_enabled(cur_selection_row[i], cur_selection_col[i] + 1))
 					cur_selection_col[i]++;
 			}
@@ -87,18 +93,18 @@ void CharacterSelectState::update(float delta){
 			}
 
 			if((input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, i))
-			&& cur_selection_row[i] != 3){
+			&& cur_selection_row[i] + 1 < ROW_SLOTS){
 				if(character_enabled(cur_selection_row[i] + 1, cur_selection_col[i]))
 					cur_selection_row[i]++;
 			}
 
 			// skins
 			if(input_manager->key_press(SDLK_COMMA) || input_manager->joystick_button_press(InputManager::LT, i)){
-				cur_skin[i] = (cur_skin[i] - 1 + 4) % 4;
+				cur_skin[i] = (cur_skin[i] - 1 + AVAILABLE_SKINS) % AVAILABLE_SKINS;
 			}
 
 			if(input_manager->key_press(SDLK_PERIOD) || input_manager->joystick_button_press(InputManager::RT, i)){
-				cur_skin[i] = (cur_skin[i] + 1) % 4;
+				cur_skin[i] = (cur_skin[i] + 1) % AVAILABLE_SKINS;
 			}
 
 			// select character && lock skin
@@ -142,7 +148,7 @@ void CharacterSelectState::render(){
 	background.render(0, 0);
 	character_slots.render(0, 0);
 
-	for(int i=0;i<4;i++){
+	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
 		int col_sel = cur_selection_col[i];
 		int row_sel = cur_selection_row[i];
 
