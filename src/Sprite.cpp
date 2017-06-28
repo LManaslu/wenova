@@ -25,6 +25,7 @@ Sprite::Sprite(string file, int cframe_count, float cframe_time, int ccolumns, i
 	rows = ceil(frame_count / columns);
 	time_elapsed = 0;
 	texture = nullptr;
+	finished = false;
 	open(RES_FOLDER + file);
 
 	scale_x = scale_y = 1;
