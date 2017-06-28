@@ -73,6 +73,8 @@ Game::Game(string title){
 
 	SDL_GameControllerAddMappingsFromFile((RES_FOLDER + "joysticks/gamecontrollerdb.txt").c_str());
 
+	InputManager::get_instance()->connect_joysticks();
+
 	stored_state = nullptr;
 }
 
