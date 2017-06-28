@@ -9,15 +9,17 @@ CharacterSelectState::CharacterSelectState(){
 
 	// FIXME 2 enabled characters
 	for(int i=0;i<2;i++){
-		available_skin[get_char_name(i)].assign(4, true);
+		available_skin[get_char_info(i).first].assign(4, true);
 
-		char_name[get_char_name(i)] = Sprite("character_select/chars/" + get_char_name(i) + "/name.png");
+		char_name[get_char_info(i).first] = Sprite("character_select/chars/" + get_char_info(i).first + "/name.png");
 
 		// loop to get skins
 		for(int j=0;j<4;j++){
-			char_sprite[get_char_name(i)].push_back(Sprite("character_select/chars/" + get_char_name(i) + "/" + to_string(j) + ".png", 8, 13));
-			char_sprite[get_char_name(i)][j].set_scale_x(3);
-			char_sprite[get_char_name(i)][j].set_scale_y(3);
+			char_sprite[get_char_info(i).first].push_back(Sprite("character_select/chars/" + get_char_info(i).first + "/" + to_string(j) + ".png",
+													get_char_info(i).second,
+													13));
+			char_sprite[get_char_info(i).first][j].set_scale_x(3);
+			char_sprite[get_char_info(i).first][j].set_scale_y(3);
 		}
 	}
 
@@ -146,10 +148,11 @@ bool CharacterSelectState::character_enabled(int row, int){
 	return row == 0;
 }
 
-string CharacterSelectState::get_char_name(int idx){
+// returns name and number of frames in corresponding sprite
+pair<string, int> CharacterSelectState::get_char_info(int idx){
 	switch(idx){
-		case 0: return "flesh";
-		case 1: return "blood";
+		case 0: return pair<string, int> ("flesh", 12);
+		case 1: return pair<string, int> ("blood", 8);
 	}
 }
 
