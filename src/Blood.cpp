@@ -1,5 +1,8 @@
 #include "Blood.h"
 
+#include "Game.h"
+#include "Effect.h"
+
 #define CROUCH_COOLDOWN 100.0
 
 #include <algorithm>
@@ -154,8 +157,8 @@ void Blood::update_machine_state(){
 
 		case FighterState::SPECIAL_2:
 			remaining_life -= 0.2;
-			if(partner) partner->increment_life(0.2);
 			if(sprite[state].is_finished()){
+				Game::get_instance().get_current_state().add_object(new Effect(partner, "blood/heal_effect.png", "", 9));
 				check_idle();
 				check_crouch();
 			}
