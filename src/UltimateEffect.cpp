@@ -8,10 +8,11 @@ void UltimateEffect::update(float delta){
 	if(parent){
 		box.x = parent->box.x;
 		box.y = parent->box.get_draw_y() - box.get_height()/2 - 10;
+		parent->increment_special(-1 * delta);
 	}
 	sprite.update(delta);
 }
 
 bool UltimateEffect::is_dead(){
-	return parent->get_special() < Fighter::MAX_SPECIAL;
+	return parent->get_special() <= 0;
 }
