@@ -33,6 +33,8 @@ Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fight
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
 
+	path = "blood/" + skin;
+
 	tags["blood"] = true;
 	tags[skin] = true;
 	box = Rectangle(x, y, 84, 84);
