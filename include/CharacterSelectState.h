@@ -11,21 +11,19 @@ using std::to_string;
 
 class CharacterSelectState : public State {
 private:
-    Sprite background, character_slots;
-    Sprite character_base[4];
-    Sprite character_selector[4];
-    Sprite disabled_selector;
-    int cur_selection[4];
-    vector<ii> box_positions, base_positions;
+	Sprite background, character_slots;
+	Sprite name_tag[4];
+	int cur_selection[4];
+	vector<ii> name_tag_positions;
 
 public:
-    CharacterSelectState();
+	CharacterSelectState();
 
-    void update(float delta);
-    void render();
+	void update(float delta);
+	void render();
 
-    void pause();
-    void resume();
+	void pause();
+	void resume();
 };
 
 #endif
