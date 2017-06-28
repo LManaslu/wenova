@@ -27,6 +27,14 @@ public:
 		return true;
 	}
 
+	virtual void process_tags(string ctags) {
+		stringstream types(ctags);
+		string tag;
+		while(types >> tag) {
+			tags[tag] = true;
+		}
+	}
+
 	Rectangle box;
 	float rotation = 0;
 
