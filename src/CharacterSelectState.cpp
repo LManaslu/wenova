@@ -9,6 +9,8 @@ CharacterSelectState::CharacterSelectState(){
 
 	// FIXME 2 enabled characters
 	for(int i=0;i<2;i++){
+		available_skin[get_char_name(i)].assign(4, true);
+
 		char_name[get_char_name(i)] = Sprite("character_select/chars/" + get_char_name(i) + "/name.png");
 
 		// loop to get skins
@@ -29,6 +31,7 @@ CharacterSelectState::CharacterSelectState(){
 	memset(cur_selection_col, 0, sizeof cur_selection_col);
 	memset(cur_selection_row, 0, sizeof cur_selection_row);
 	memset(cur_skin, 0, sizeof cur_skin);
+	memset(selected, false, sizeof selected);
 
 	name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
 	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
@@ -49,38 +52,57 @@ void CharacterSelectState::update(float delta){
 		return;
 	}
 
-	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0)){
-		m_quit_requested = true;
-		Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
-		return;
+	// only enable start when all players have selected a character
+	if(all_players_selected()){
+		if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0)){
+			m_quit_requested = true;
+			Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
+			return;
+		}
 	}
 
 	for(int i=0;i<4;i++){
-		if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i)) && cur_selection_col[i] != 0){
+		if(input_manager->key_press(SDLK_LEFT) && cur_selection_col[i] != 0 && not selected[i]){
 			if(character_enabled(cur_selection_row[i], cur_selection_col[i] - 1))
 			cur_selection_col[i]--;
 		}
 
-		if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::RIGHT, i)) && cur_selection_col[i] != 1){
+		if(input_manager->key_press(SDLK_RIGHT) && cur_selection_col[i] != 1 && not selected[i]){
 			if(character_enabled(cur_selection_row[i], cur_selection_col[i] + 1))
 			cur_selection_col[i]++;
 		}
 
-		if(input_manager->key_press(SDLK_UP) && cur_selection_row[i] != 0){
+		if(input_manager->key_press(SDLK_UP) && cur_selection_row[i] != 0 && not selected[i]){
 			if(character_enabled(cur_selection_row[i] - 1, cur_selection_col[i]))
 			cur_selection_row[i]--;
 		}
 
-		if(input_manager->key_press(SDLK_DOWN) && cur_selection_row[i] != 3){
+		if(input_manager->key_press(SDLK_DOWN) && cur_selection_row[i] != 3 && not selected[i]){
 			if(character_enabled(cur_selection_row[i] + 1, cur_selection_col[i]))
 			cur_selection_row[i]++;
 		}
 
 		// skins
-		if(input_manager->key_press(SDLK_1)) cur_skin[i] = 0;
-		if(input_manager->key_press(SDLK_2)) cur_skin[i] = 1;
-		if(input_manager->key_press(SDLK_3)) cur_skin[i] = 2;
-		if(input_manager->key_press(SDLK_4)) cur_skin[i] = 3;
+		// press triangle goes over all skins
+		if(input_manager->key_press(SDLK_y) && not selected[i]){
+			cur_skin[i] = (cur_skin[i] + 1) % 4;
+		}
+
+		// select character && lock skin
+		if(input_manager->key_press(SDLK_x) && not selected[i]){
+			int col_sel = cur_selection_col[i];
+			int row_sel = cur_selection_row[i];
+			string char_selected = names[col_sel][row_sel];
+
+			if(not available_skin[char_selected][cur_skin[i]]){
+				printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
+			}
+			else{
+				printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
+				available_skin[char_selected][cur_skin[i]] = false;
+				selected[i] = true;
+			}
+		}
 	}
 
 	for(auto it = char_sprite.begin(); it != char_sprite.end(); it++){
@@ -129,4 +151,10 @@ string CharacterSelectState::get_char_name(int idx){
 		case 0: return "flesh";
 		case 1: return "blood";
 	}
+}
+
+bool CharacterSelectState::all_players_selected(){
+	for(auto cur : selected)
+		if(not cur) return false;
+	return true;
 }
