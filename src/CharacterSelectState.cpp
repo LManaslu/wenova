@@ -10,6 +10,14 @@ CharacterSelectState::CharacterSelectState(){
 	char_name["blood"] = Sprite("character_select/name_blood.png");
 	char_name["flesh"] = Sprite("character_select/name_flesh.png");
 
+	char_sprite["blood"] = Sprite("character_select/blood_idle.png", 8, 13);
+	char_sprite["flesh"] = Sprite("character_select/flesh_idle.png", 8, 13);
+
+	for(auto it = char_sprite.begin(); it != char_sprite.end(); it++){
+		(*it).second.set_scale_x(3);
+		(*it).second.set_scale_y(3);
+	}
+
 	for(int i=0;i<4;i++){
 		name_tag[i] = Sprite("character_select/name_tag_" + to_string(i + 1) + ".png");
 		number[i] = Sprite("character_select/number_" + to_string(i + 1) + ".png");
@@ -21,12 +29,12 @@ CharacterSelectState::CharacterSelectState(){
 	memset(cur_selection_row, 0, sizeof cur_selection_row);
 
 	name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
+	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
+	name_delta = { ii(118, 53), ii(117, 55), ii(47, 54), ii(50, 54) };
+	sprite_pos = { ii(155, 32), ii(141, 379), ii(923, 34), ii(946, 381) };
 
 	col_slots = { 510, 645 };
 	row_slots = { 55, 197, 395, 536 };
-
-	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
-	name_delta = { ii(118, 53), ii(117, 55), ii(47, 54), ii(50, 54) };
 }
 
 void CharacterSelectState::update(float delta){
@@ -67,6 +75,9 @@ void CharacterSelectState::update(float delta){
 		}
 	}
 
+	for(auto it = char_sprite.begin(); it != char_sprite.end(); it++){
+		(*it).second.update(delta);
+	}
 }
 
 void CharacterSelectState::render(){
@@ -74,12 +85,13 @@ void CharacterSelectState::render(){
 	character_slots.render(0, 0);
 
 	for(int i=0;i<4;i++){
-		name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
-
 		int col_sel = cur_selection_col[i];
 		int row_sel = cur_selection_row[i];
 
 		string char_selected = names[col_sel][row_sel];
+
+		char_sprite[char_selected].render(sprite_pos[i].first, sprite_pos[i].second);
+		name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
 
 		char_name[char_selected].render(
 			name_tag_positions[i].first + name_delta[i].first,
