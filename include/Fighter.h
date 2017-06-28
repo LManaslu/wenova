@@ -13,7 +13,7 @@ using std::vector;
 class Fighter : public GameObject{
 protected:
 	enum FighterState {IDLE, RUNNING, JUMPING, FALLING, CROUCH, IDLE_ATK_NEUTRAL_1, IDLE_ATK_NEUTRAL_2, IDLE_ATK_NEUTRAL_3, IDLE_ATK_FRONT, IDLE_ATK_UP, IDLE_ATK_DOWN, CROUCH_ATK, JUMP_ATK_UP, JUMP_ATK_DOWN, DEFENDING, STUNT, SPECIAL_1_1, SPECIAL_1_2, SPECIAL_2, LAST};
-	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SPECIAL1_BUTTON, SPECIAL2_BUTTON, BLOCK_BUTTON};
+	enum Button {JUMP_BUTTON, UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, ATTACK_BUTTON, SPECIAL1_BUTTON, SPECIAL2_BUTTON, BLOCK_BUTTON, ULTIMATE_BUTTON};
 	enum Orientation {LEFT, RIGHT};
 	enum AttackDirection{ATK_DOWN = 1, ATK_LEFT = 2, ATK_UP = 4, ATK_RIGHT = 8};
 	vector<Sprite> sprite;
@@ -70,6 +70,7 @@ protected:
 	virtual void check_special_1_1(bool change = true) = 0;
 	virtual void check_special_1_2(bool change = true) = 0;
 	virtual void check_special_2(bool change = true) = 0;
+	virtual void check_ultimate() = 0;
 
 	AttackDirection get_attack_orientation();
 
@@ -96,6 +97,7 @@ public:
 	int get_attack_mask();
 	int get_id();
 	void increment_life(float increment);
+	void increment_special(float increment);
 	void set_partner(Fighter * cpartner);
 
 	static const int MAX_LIFE = 2000;

@@ -2,8 +2,6 @@
 
 #include "InputManager.h"
 #include "Floor.h"
-#include "Game.h"
-#include "UltimateEffect.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -64,7 +62,8 @@ void Fighter::process_input(){
 		ii(ATTACK_BUTTON, SDLK_l),
 		ii(SPECIAL1_BUTTON, SDLK_o),
 		ii(SPECIAL2_BUTTON, SDLK_k),
-		ii(BLOCK_BUTTON, SDLK_i)
+		ii(BLOCK_BUTTON, SDLK_i),
+		ii(ULTIMATE_BUTTON, SDLK_u)
 	};
 
 	vector< pair<int, int> > joystick_buttons = {
@@ -76,7 +75,8 @@ void Fighter::process_input(){
 		ii(ATTACK_BUTTON, InputManager::X),
 		ii(SPECIAL1_BUTTON, InputManager::B),
 		ii(SPECIAL2_BUTTON, InputManager::RB),
-		ii(BLOCK_BUTTON, InputManager::LB)
+		ii(BLOCK_BUTTON, InputManager::LB),
+		ii(ULTIMATE_BUTTON, InputManager::Y)
 	};
 
 	if(id != -1){
@@ -155,10 +155,6 @@ void Fighter::notify_collision(GameObject & object){
 				special += increment_special;
 				if(special >= MAX_SPECIAL){
 					special = MAX_SPECIAL;
-					if(ultimate_ready == false) {
-						ultimate_ready = true;
-						Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", "has_sprite", 1));
-					}
 				}
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
@@ -173,10 +169,6 @@ void Fighter::notify_collision(GameObject & object){
 				special += attack_damage / 2;
 				if(special >= MAX_SPECIAL){
 					special = MAX_SPECIAL;
-					if(ultimate_ready == false) {
-						ultimate_ready = true;
-						Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", "has_sprite", 1));
-					}
 				}
 			}
 		}
@@ -271,6 +263,10 @@ int Fighter::get_id(){
 
 void Fighter::increment_life(float increment){
 	remaining_life = min(remaining_life + increment, MAX_LIFE * 1.0f);
+}
+
+void Fighter::increment_special(float increment){
+	special = min(special + increment, MAX_SPECIAL * 1.0f);
 }
 
 void Fighter::set_partner(Fighter * cpartner){
