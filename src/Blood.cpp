@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "HealEffect.h"
+#include "UltimateEffect.h"
 
 #define CROUCH_COOLDOWN 100.0
 
@@ -158,6 +159,7 @@ void Blood::update_machine_state(){
 		break;
 
 		case FighterState::SPECIAL_2:
+			increment_special(0.2);
 			remaining_life -= 0.2;
 			if(sprite[state].is_finished()){
 				Game::get_instance().get_current_state().add_object(new HealEffect(partner, "blood/heal_effect.png", "has_sprite", 9, 0.2));
@@ -181,6 +183,7 @@ void Blood::update_machine_state(){
 			check_idle_atk_down();
 			check_special_1_1();
 			check_special_2();
+			check_ultimate();
 			check_pass_through_platform();
 			check_fall();
 		break;
@@ -194,6 +197,7 @@ void Blood::update_machine_state(){
 			check_fall();
 			check_idle();
 			check_jump_atk_up();
+			check_ultimate();
 		break;
 
 		case FighterState::FALLING:
@@ -206,6 +210,7 @@ void Blood::update_machine_state(){
 			check_crouch();
 			check_jump_atk_up();
 			check_jump_atk_down();
+			check_ultimate();
 		break;
 
 
@@ -224,6 +229,7 @@ void Blood::update_machine_state(){
 			check_special_2();
 			check_idle_atk_up();
 			check_idle_atk_down();
+			check_ultimate();
 			check_pass_through_platform();
 			check_fall();
 		break;
@@ -389,5 +395,11 @@ void Blood::check_special_1_2(bool change){
 void Blood::check_special_2(bool change){
 	if(pressed[SPECIAL2_BUTTON] and partner) {
 		if(change) temporary_state = FighterState::SPECIAL_2;
+	}
+}
+
+void Blood::check_ultimate() {
+	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL) {
+		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", "has_sprite", 1));
 	}
 }
