@@ -74,9 +74,9 @@ void Fighter::process_input(){
 		ii(LEFT_BUTTON, InputManager::LEFT),
 		ii(RIGHT_BUTTON, InputManager::RIGHT),
 		ii(ATTACK_BUTTON, InputManager::X),
-		ii(SPECIAL1_BUTTON, InputManager::LT),
-		ii(SPECIAL2_BUTTON, InputManager::RT),
-		ii(BLOCK_BUTTON, InputManager::RB)
+		ii(SPECIAL1_BUTTON, InputManager::B),
+		ii(SPECIAL2_BUTTON, InputManager::RB),
+		ii(BLOCK_BUTTON, InputManager::LB)
 	};
 
 	if(id != -1){

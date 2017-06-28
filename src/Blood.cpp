@@ -387,7 +387,7 @@ void Blood::check_special_1_2(bool change){
 }
 
 void Blood::check_special_2(bool change){
-	if(pressed[SPECIAL2_BUTTON]) {
+	if(pressed[SPECIAL2_BUTTON] and partner) {
 		if(change) temporary_state = FighterState::SPECIAL_2;
 	}
 }
