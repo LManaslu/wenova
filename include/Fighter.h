@@ -43,6 +43,10 @@ protected:
 	bool is_holding[10];
 	bool released[10];
 
+	bool ultimate_ready;
+
+	string path;
+
 	void process_input();
 
 	virtual void check_jump(bool change = true) = 0;
