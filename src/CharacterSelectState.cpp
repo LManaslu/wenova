@@ -7,15 +7,16 @@ CharacterSelectState::CharacterSelectState(){
 	background = Sprite("character_select/background.png");
 	character_slots = Sprite("character_select/character_slots.png");
 
-	char_name["blood"] = Sprite("character_select/name_blood.png");
-	char_name["flesh"] = Sprite("character_select/name_flesh.png");
+	// FIXME 2 enabled characters
+	for(int i=0;i<2;i++){
+		char_name[get_char_name(i)] = Sprite("character_select/chars/" + get_char_name(i) + "/name.png");
 
-	char_sprite["blood"] = Sprite("character_select/blood_idle.png", 8, 13);
-	char_sprite["flesh"] = Sprite("character_select/flesh_idle.png", 8, 13);
-
-	for(auto it = char_sprite.begin(); it != char_sprite.end(); it++){
-		(*it).second.set_scale_x(3);
-		(*it).second.set_scale_y(3);
+		// loop to get skins
+		for(int j=0;j<4;j++){
+			char_sprite[get_char_name(i)].push_back(Sprite("character_select/chars/" + get_char_name(i) + "/" + to_string(j) + ".png", 8, 13));
+			char_sprite[get_char_name(i)][j].set_scale_x(3);
+			char_sprite[get_char_name(i)][j].set_scale_y(3);
+		}
 	}
 
 	for(int i=0;i<4;i++){
@@ -27,6 +28,7 @@ CharacterSelectState::CharacterSelectState(){
 
 	memset(cur_selection_col, 0, sizeof cur_selection_col);
 	memset(cur_selection_row, 0, sizeof cur_selection_row);
+	memset(cur_skin, 0, sizeof cur_skin);
 
 	name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
 	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
@@ -73,10 +75,18 @@ void CharacterSelectState::update(float delta){
 			if(character_enabled(cur_selection_row[i] + 1, cur_selection_col[i]))
 			cur_selection_row[i]++;
 		}
+
+		// skins
+		if(input_manager->key_press(SDLK_1)) cur_skin[i] = 0;
+		if(input_manager->key_press(SDLK_2)) cur_skin[i] = 1;
+		if(input_manager->key_press(SDLK_3)) cur_skin[i] = 2;
+		if(input_manager->key_press(SDLK_4)) cur_skin[i] = 3;
 	}
 
 	for(auto it = char_sprite.begin(); it != char_sprite.end(); it++){
-		(*it).second.update(delta);
+		for(int i=0; i < (*it).second.size(); i++){
+			(*it).second[i].update(delta);
+		}
 	}
 }
 
@@ -90,7 +100,7 @@ void CharacterSelectState::render(){
 
 		string char_selected = names[col_sel][row_sel];
 
-		char_sprite[char_selected].render(sprite_pos[i].first, sprite_pos[i].second);
+		char_sprite[char_selected][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second);
 		name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
 
 		char_name[char_selected].render(
@@ -112,4 +122,11 @@ void CharacterSelectState::resume(){
 bool CharacterSelectState::character_enabled(int row, int){
 	// Only characters in first row are available
 	return row == 0;
+}
+
+string CharacterSelectState::get_char_name(int idx){
+	switch(idx){
+		case 0: return "flesh";
+		case 1: return "blood";
+	}
 }
