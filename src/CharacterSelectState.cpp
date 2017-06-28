@@ -48,7 +48,10 @@ void CharacterSelectState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
-	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
+	if(input_manager->quit_requested() ||
+		input_manager->key_press(SDLK_ESCAPE) ||
+		(not selected[0] && input_manager->joystick_button_press(InputManager::B, 0)) ||
+		input_manager->joystick_button_press(InputManager::SELECT, 0)){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState(true));
 		return;
@@ -64,54 +67,66 @@ void CharacterSelectState::update(float delta){
 	}
 
 	for(int i=0;i<4;i++){
-		if(selected[i]) continue;
-
-		if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
-		&& cur_selection_col[i] != 0){
-			if(character_enabled(cur_selection_row[i], cur_selection_col[i] - 1))
-				cur_selection_col[i]--;
-		}
-
-		if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::RIGHT, i))
-		&& cur_selection_col[i] != 1){
-			if(character_enabled(cur_selection_row[i], cur_selection_col[i] + 1))
-				cur_selection_col[i]++;
-		}
-
-		if((input_manager->key_press(SDLK_UP) || input_manager->joystick_button_press(InputManager::UP, i))
-		&& cur_selection_row[i] != 0){
-			if(character_enabled(cur_selection_row[i] - 1, cur_selection_col[i]))
-				cur_selection_row[i]--;
-		}
-
-		if((input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, i))
-		&& cur_selection_row[i] != 3){
-			if(character_enabled(cur_selection_row[i] + 1, cur_selection_col[i]))
-				cur_selection_row[i]++;
-		}
-
-		// skins
-		if(input_manager->key_press(SDLK_COMMA) || input_manager->joystick_button_press(InputManager::LB, i)){
-			cur_skin[i] = (cur_skin[i] - 1 + 4) % 4;
-		}
-
-		if(input_manager->key_press(SDLK_PERIOD) || input_manager->joystick_button_press(InputManager::RB, i)){
-			cur_skin[i] = (cur_skin[i] + 1) % 4;
-		}
-
-		// select character && lock skin
-		if(input_manager->key_press(SDLK_x) || input_manager->joystick_button_press(InputManager::A, i)){
-			int col_sel = cur_selection_col[i];
-			int row_sel = cur_selection_row[i];
-			string char_selected = names[col_sel][row_sel];
-
-			if(not available_skin[char_selected][cur_skin[i]]){
-				printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
+		if(not selected[i]){
+			if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
+			&& cur_selection_col[i] != 0){
+				if(character_enabled(cur_selection_row[i], cur_selection_col[i] - 1))
+					cur_selection_col[i]--;
 			}
-			else{
-				printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
-				available_skin[char_selected][cur_skin[i]] = false;
-				selected[i] = true;
+
+			if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::RIGHT, i))
+			&& cur_selection_col[i] != 1){
+				if(character_enabled(cur_selection_row[i], cur_selection_col[i] + 1))
+					cur_selection_col[i]++;
+			}
+
+			if((input_manager->key_press(SDLK_UP) || input_manager->joystick_button_press(InputManager::UP, i))
+			&& cur_selection_row[i] != 0){
+				if(character_enabled(cur_selection_row[i] - 1, cur_selection_col[i]))
+					cur_selection_row[i]--;
+			}
+
+			if((input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, i))
+			&& cur_selection_row[i] != 3){
+				if(character_enabled(cur_selection_row[i] + 1, cur_selection_col[i]))
+					cur_selection_row[i]++;
+			}
+
+			// skins
+			if(input_manager->key_press(SDLK_COMMA) || input_manager->joystick_button_press(InputManager::LT, i)){
+				cur_skin[i] = (cur_skin[i] - 1 + 4) % 4;
+			}
+
+			if(input_manager->key_press(SDLK_PERIOD) || input_manager->joystick_button_press(InputManager::RT, i)){
+				cur_skin[i] = (cur_skin[i] + 1) % 4;
+			}
+
+			// select character && lock skin
+			if(input_manager->key_press(SDLK_x) || input_manager->joystick_button_press(InputManager::A, i)){
+				int col_sel = cur_selection_col[i];
+				int row_sel = cur_selection_row[i];
+				string char_selected = names[col_sel][row_sel];
+
+				if(not available_skin[char_selected][cur_skin[i]]){
+					printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
+				}
+				else{
+					printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
+					available_skin[char_selected][cur_skin[i]] = false;
+					selected[i] = true;
+				}
+			}
+		}
+		else{
+			// unselect character
+			if(input_manager->key_press(SDLK_y) || input_manager->joystick_button_press(InputManager::B, i)){
+				int col_sel = cur_selection_col[i];
+				int row_sel = cur_selection_row[i];
+				string char_selected = names[col_sel][row_sel];
+
+				available_skin[char_selected][cur_skin[i]] = true;
+				selected[i] = false;
+				printf("PLAYER %d UNSELECTED SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
 			}
 		}
 	}
