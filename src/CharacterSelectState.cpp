@@ -6,17 +6,14 @@
 CharacterSelectState::CharacterSelectState(){
     background = Sprite("character_select/background.png");
     character_slots = Sprite("character_select/character_slots.png");
-    disabled_selector = Sprite("character_select/disabled_selector.png");
 
     for(int i=0;i<4;i++){
-        character_base[i] = Sprite("character_select/charselect_base_" + to_string(i+1) + ".png");
-        character_selector[i] = Sprite("character_select/character_selector_" + to_string(i+1) + ".png");
+        name_tag[i] = Sprite("character_select/name_tag_" + to_string(i + 1) + ".png");
     }
 
     memset(cur_selection, 0, sizeof cur_selection);
 
-    base_positions = { ii(28, 314), ii(221, 638), ii(994, 314), ii(801, 638) };
-    box_positions = { ii(510, 55), ii(645, 55), ii(510, 217), ii(645, 217) };
+    name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
 }
 
 void CharacterSelectState::update(float delta){
@@ -54,16 +51,7 @@ void CharacterSelectState::render(){
     character_slots.render(0, 0);
 
     for(int i=0;i<4;i++){
-        character_base[i].render(base_positions[i].first, base_positions[i].second);
-    }
-
-    for(int i=0; i<2; i++){
-        character_selector[i].render(box_positions[cur_selection[i]].first, box_positions[cur_selection[i]].second);
-    }
-
-    for(int i=2; i<4; i++){
-        character_selector[i].render(box_positions[cur_selection[i]].first, box_positions[cur_selection[i]].second);
-        disabled_selector.render(box_positions[i].first, box_positions[i].second);
+        name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
     }
 }
 
