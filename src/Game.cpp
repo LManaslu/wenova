@@ -38,7 +38,7 @@ Game::Game(string title){
 		exit(-1);
 	}
 
-	if(Config::is_fullscreen()) SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	if(Config::is_fullscreen()) SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(renderer == nullptr){
