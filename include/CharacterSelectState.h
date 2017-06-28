@@ -35,7 +35,7 @@ public:
 	void resume();
 
 	bool character_enabled(int row, int col);
-	string get_char_name(int idx);
+	pair<string, int> get_char_info(int idx);
 	bool all_players_selected();
 };
 
