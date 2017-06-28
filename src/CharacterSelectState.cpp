@@ -13,6 +13,7 @@
 CharacterSelectState::CharacterSelectState(){
 	background = Sprite("character_select/background.png");
 	character_slots = Sprite("character_select/character_slots.png");
+	selected_tag = Sprite("character_select/selected.png");
 
 	for(int i=0;i<AVAILABLE_CHARS;i++){
 		available_skin[get_char_info(i).first].assign(AVAILABLE_SKINS, true);
@@ -138,7 +139,7 @@ void CharacterSelectState::update(float delta){
 	}
 
 	for(auto it = char_sprite.begin(); it != char_sprite.end(); it++){
-		for(int i=0; i < (*it).second.size(); i++){
+		for(int i=0; i < (int)(*it).second.size(); i++){
 			(*it).second[i].update(delta);
 		}
 	}
@@ -154,7 +155,11 @@ void CharacterSelectState::render(){
 
 		string char_selected = names[col_sel][row_sel];
 
-		char_sprite[char_selected][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second);
+		if(i < 2)
+			char_sprite[char_selected][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second);
+		else
+			char_sprite[char_selected][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second, 0, SDL_FLIP_HORIZONTAL);
+
 		name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
 
 		char_name[char_selected].render(
@@ -162,6 +167,13 @@ void CharacterSelectState::render(){
 			name_tag_positions[i].second + name_delta[i].second
 		);
 		number[i].render(col_slots[col_sel] + number_delta[i].first, row_slots[row_sel] + number_delta[i].second);
+
+		if(selected[i]){
+			if(i < 2)
+				selected_tag.render(name_tag_positions[i].first, name_tag_positions[i].second);
+			else
+				selected_tag.render(name_tag_positions[i].first, name_tag_positions[i].second, 0, SDL_FLIP_HORIZONTAL);
+		}
 	}
 }
 
@@ -184,6 +196,7 @@ pair<string, int> CharacterSelectState::get_char_info(int idx){
 		case 0: return pair<string, int> ("flesh", 12);
 		case 1: return pair<string, int> ("blood", 8);
 	}
+	return pair<string, int>("", 0);
 }
 
 bool CharacterSelectState::all_players_selected(){
