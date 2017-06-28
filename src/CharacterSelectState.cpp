@@ -3,15 +3,22 @@
 #include "MenuState.h"
 #include "BattleState.h"
 
+#define FRAME_TIME 7.5
+
 #define AVAILABLE_CHARS 2
 #define NUMBER_OF_PLAYERS 4
 #define AVAILABLE_SKINS 4
 #define FIRST_PLAYER 0
 #define COL_SLOTS 2
 #define ROW_SLOTS 4
+#define NUMBER_OF_BACKGROUNDS 2
 
 CharacterSelectState::CharacterSelectState(){
-	background = Sprite("character_select/background.png");
+	for(int i=0;i<NUMBER_OF_BACKGROUNDS;i++){
+		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
+	}
+
+	planet = Sprite("character_select/planet.png", 8, FRAME_TIME);
 	character_slots = Sprite("character_select/character_slots.png");
 	selected_tag = Sprite("character_select/selected.png");
 
@@ -143,10 +150,14 @@ void CharacterSelectState::update(float delta){
 			(*it).second[i].update(delta);
 		}
 	}
+
+	planet.update(delta);
 }
 
 void CharacterSelectState::render(){
-	background.render(0, 0);
+	background[0].render(0, 0);
+	planet.render(423, 177);
+	background[1].render(0, 0);
 	character_slots.render(0, 0);
 
 	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
