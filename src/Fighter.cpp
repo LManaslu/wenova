@@ -2,6 +2,8 @@
 
 #include "InputManager.h"
 #include "Floor.h"
+#include "Game.h"
+#include "UltimateEffect.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -40,6 +42,8 @@ Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	last_collided_floor = 0;
 	grab = false;
 	pass_through = false;
+
+	ultimate_ready = false;
 
 	n_sprite_start = 0;
 	tags["player"] = true;
@@ -147,7 +151,13 @@ void Fighter::notify_collision(GameObject & object){
 				remaining_life -= damage;
 				float increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1);
 				special += increment_special;
-				if(special > MAX_SPECIAL) special = MAX_SPECIAL;
+				if(special >= MAX_SPECIAL){
+					special = MAX_SPECIAL;
+					if(ultimate_ready == false) {
+						ultimate_ready = true;
+						Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", "has_sprite", 1));
+					}
+				}
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
 		}else if(is_attacking() and fighter.get_id() != partner->get_id()){
@@ -159,7 +169,13 @@ void Fighter::notify_collision(GameObject & object){
 			if(position_mask & get_attack_mask()){
 				grab = true;
 				special += attack_damage / 2;
-				if(special > MAX_SPECIAL) special = MAX_SPECIAL;
+				if(special >= MAX_SPECIAL){
+					special = MAX_SPECIAL;
+					if(ultimate_ready == false) {
+						ultimate_ready = true;
+						Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", "has_sprite", 1));
+					}
+				}
 			}
 		}
 	}

@@ -17,6 +17,6 @@ void Effect::render(){
 		sprite.render(box.get_draw_x(), box.get_draw_y(), rotation);
 }
 
-void Effect::notify_collision(GameObject & object){
+void Effect::notify_collision(GameObject &){
 
 }
