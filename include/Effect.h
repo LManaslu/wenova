@@ -6,7 +6,7 @@
 #include "Sprite.h"
 
 class Effect : public GameObject{
-private:
+protected:
 	Sprite sprite;
 	Fighter * parent;
 
@@ -14,10 +14,11 @@ public:
 	Effect(Fighter * cparent, string csprite, string ctags, int frames = 1);
 	Effect(string ctags);
 
-	void update(float delta);
+	virtual void update(float delta) = 0;
+	virtual bool is_dead() = 0;
 	void render();
-	bool is_dead();
 	void notify_collision(GameObject & object);
+
 };
 
 #endif
