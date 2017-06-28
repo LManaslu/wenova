@@ -14,7 +14,7 @@
 #define ii pair<int, int>
 
 #define PI 3.14159265358979
-
+#define INVALID_ID -100
 #define CROUCH_COOLDOWN 100.0
 
 using std::min;
@@ -119,6 +119,7 @@ void Fighter::update(float delta){
 }
 
 void Fighter::notify_collision(GameObject & object){
+	int partner_id = (partner ? partner->get_id() : INVALID_ID);
 	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
 	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 10){
@@ -140,7 +141,8 @@ void Fighter::notify_collision(GameObject & object){
 	}else if(object.is("player")){
 		Fighter & fighter = (Fighter &) object;
 
-		if(fighter.is_attacking() and fighter.get_id() != partner->get_id()){
+		if(fighter.is_attacking() and fighter.get_id() != partner_id){
+			printf("In fighter stunt\n");
 			int left = AttackDirection::ATK_LEFT * (fighter.box.x > box.x);
 			int right = AttackDirection::ATK_RIGHT * (fighter.box.x <= box.x);
 			int up = AttackDirection::ATK_UP * (fighter.box.y > box.y);
@@ -160,7 +162,7 @@ void Fighter::notify_collision(GameObject & object){
 				}
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
-		}else if(is_attacking() and fighter.get_id() != partner->get_id()){
+		}else if(is_attacking() and fighter.get_id() != partner_id){
 			int left = AttackDirection::ATK_LEFT * (fighter.box.x <= box.x);
 			int right = AttackDirection::ATK_RIGHT * (fighter.box.x > box.x);
 			int up = AttackDirection::ATK_UP * (fighter.box.y <= box.y);
@@ -192,6 +194,8 @@ void Fighter::render(){
 }
 
 bool Fighter::is_dead(){
+	bool dead = remaining_life <= 0;
+	if(dead and partner) partner->set_partner(nullptr);
 	return remaining_life <= 0;
 }
 
@@ -223,7 +227,6 @@ void Fighter::change_state(FighterState cstate){
 }
 
 void Fighter::test_limits(){
-	//TODO Matar personagem ao cair do cenario
 	if(box.x < box.width / 2) box.x = box.width / 2;
 	if(box.x > 1280 - box.width / 2) box.x = 1280 - box.width / 2;
 	if(box.y < -100){
