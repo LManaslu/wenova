@@ -13,6 +13,8 @@
 #define ROW_SLOTS 4
 #define NUMBER_OF_BACKGROUNDS 2
 
+using std::make_pair;
+
 CharacterSelectState::CharacterSelectState(){
 	for(int i=0;i<NUMBER_OF_BACKGROUNDS;i++){
 		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
@@ -74,6 +76,7 @@ void CharacterSelectState::update(float delta){
 	// only enable start when all players have selected a character
 	if(all_players_selected()){
 		if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, FIRST_PLAYER)){
+			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
 			Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
 			return;
@@ -214,4 +217,29 @@ bool CharacterSelectState::all_players_selected(){
 	for(auto cur : selected)
 		if(not cur) return false;
 	return true;
+}
+
+string CharacterSelectState::get_skin_name(int idx){
+	vector<string> skins_names = { "default", "alt1", "alt2", "alt3" };
+	return skins_names[idx];
+}
+
+vector< pair<string, string> > CharacterSelectState::export_players(){
+	vector< pair<string, string> > players;
+
+	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
+		int col_sel = cur_selection_col[i];
+		int row_sel = cur_selection_row[i];
+
+		string char_selected = names[col_sel][row_sel];
+
+		players.push_back(make_pair(char_selected, get_skin_name(cur_skin[i])));
+	}
+
+	printf("PLAYERS\n");
+	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
+		printf("Player %d chose skin [%s] of [%s]\n", i + 1, players[i].second.c_str(), players[i].first.c_str());
+	}
+	printf("END PLAYERS\n");
+	return players;
 }

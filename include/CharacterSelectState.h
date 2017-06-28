@@ -37,6 +37,8 @@ public:
 	bool character_enabled(int row, int col);
 	pair<string, int> get_char_info(int idx);
 	bool all_players_selected();
+	string get_skin_name(int idx);
+	vector< pair<string, string> > export_players();
 };
 
 #endif
