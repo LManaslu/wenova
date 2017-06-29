@@ -20,6 +20,7 @@ FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side, 
 		life = Sprite("hud/left_life.png");
 		special[0] = Sprite("hud/left_special_bar.png");
 		special[1] = Sprite("hud/full_left_special_bar.png");
+		special[2] = Sprite("hud/in_ultimate_left_special_bar.png");
 	}
 
 	//Right
@@ -28,6 +29,7 @@ FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side, 
 		life = Sprite("hud/right_life.png");
 		special[0] = Sprite("hud/right_special_bar.png");
 		special[1] = Sprite("hud/full_right_special_bar.png");
+		special[2] = Sprite("hud/in_ultimate_right_special_bar.png");
 	}
 
 	box = Rectangle(x, y, bg.get_width(), bg.get_height());
@@ -41,9 +43,12 @@ void FighterStats::update(float){
 	percent_to_draw_life = (fighter->get_remaining_life() * 1.0) / Fighter::MAX_LIFE;
 	percent_to_draw_special = (fighter->get_special() * 1.0) / Fighter::MAX_SPECIAL;
 
-	int condition = (percent_to_draw_special == 1.0) ? 1 : 0;
+	condition = (percent_to_draw_special == 1.0) ? 1 : 0;
+	if(fighter->is("in_ultimate")) condition = 2;
+	if(fighter->get_id() == -1) printf("percent = %f\n", percent_to_draw_special);
 	//Left
 	if(side == 0){
+		if(fighter->get_id() == -1) printf("Tam: %f\n", special[condition].get_width() * (1 - percent_to_draw_special));
 		special[condition].set_clip(special[condition].get_width() * (1 - percent_to_draw_special) , 0, special[condition].get_width() * percent_to_draw_special, special[condition].get_height());
 		life.set_clip(0, 0, life.get_width() * percent_to_draw_life, life.get_height());
 	}
@@ -58,7 +63,6 @@ void FighterStats::update(float){
 void FighterStats::render(){
 	int offset = -3 * ((index_fighter + 1) % 2);
 
-	int condition = (percent_to_draw_special == 1.0) ? 1 : 0;
 	//Left
 	if(side == 0){
 		special[condition].render(82, box.get_draw_y());
@@ -79,6 +83,7 @@ void FighterStats::render(){
 }
 
 bool FighterStats::is_dead(){
+	//FIXME ficar cinza, nao destruir
 	return fighter->is_dead();
 }
 
