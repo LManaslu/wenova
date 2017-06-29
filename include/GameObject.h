@@ -27,11 +27,19 @@ public:
 		return true;
 	}
 
-	virtual void process_tags(string ctags) {
+	virtual void add_tags(string ctags) {
 		stringstream types(ctags);
 		string tag;
 		while(types >> tag) {
 			tags[tag] = true;
+		}
+	}
+
+	virtual void remove_tags(string ctags) {
+		stringstream types(ctags);
+		string tag;
+		while(types >> tag) {
+			tags[tag] = false;
 		}
 	}
 

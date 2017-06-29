@@ -31,6 +31,7 @@ class FighterStats : public GameObject{
 		double percent_to_draw_special;
 		int index_fighter;
 		int side;
+		int condition;
 		double x, y;
 		Fighter *fighter;
 };
