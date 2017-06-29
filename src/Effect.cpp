@@ -4,12 +4,12 @@ Effect::Effect(Fighter * cparent, string csprite, string ctags, int frames){
 	parent = cparent;
 	sprite = Sprite(csprite, frames, 10);
 	box = Rectangle(0, 0, sprite.get_width(), sprite.get_height());
-	process_tags(ctags);
+	add_tags(ctags);
 }
 
 Effect::Effect(string ctags){
 	parent = nullptr;
-	process_tags(ctags);
+	add_tags(ctags);
 }
 
 void Effect::render(){

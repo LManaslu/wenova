@@ -115,11 +115,13 @@ void Fighter::update(float delta){
 
 	speed.x = 0;
 	grab = false;
+	attack_damage *= delta;
 	on_floor = false;
 }
 
 void Fighter::notify_collision(GameObject & object){
 	int partner_id = (partner ? partner->get_id() : INVALID_ID);
+	int not_in_ultimate = (tags["in_ultimate"] ? 0 : 1);
 	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
 	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 10){
@@ -151,11 +153,8 @@ void Fighter::notify_collision(GameObject & object){
 			if(position_mask & fighter.get_attack_mask()){
 				float damage = fighter.get_attack_damage() * ((state == FighterState::DEFENDING) ? 0.5 : 1);
 				remaining_life -= damage;
-				float increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1);
-				special += increment_special;
-				if(special >= MAX_SPECIAL){
-					special = MAX_SPECIAL;
-				}
+				float increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1) * not_in_ultimate;
+				this->increment_special(increment_special);
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
 		}else if(is_attacking() and fighter.get_id() != partner_id){
@@ -166,10 +165,7 @@ void Fighter::notify_collision(GameObject & object){
 			int position_mask = left | right | up | down;
 			if(position_mask & get_attack_mask()){
 				grab = true;
-				special += attack_damage / 2;
-				if(special >= MAX_SPECIAL){
-					special = MAX_SPECIAL;
-				}
+				this->increment_special((attack_damage / 2) * not_in_ultimate);
 			}
 		}
 	}
@@ -266,7 +262,9 @@ void Fighter::increment_life(float increment){
 }
 
 void Fighter::increment_special(float increment){
-	special = min(special + increment, MAX_SPECIAL * 1.0f);
+	special += increment;
+	if(special < 0) special = 0;
+	if(special > MAX_SPECIAL) special = MAX_SPECIAL;
 }
 
 void Fighter::set_partner(Fighter * cpartner){
