@@ -14,13 +14,23 @@
 #define ROW_SLOTS 4
 
 CharacterSelectState::CharacterSelectState(){
-	for(int i=0;i<N_BACKGROUNDS;i++){
-		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
-	}
+	memset(cur_selection_col, 0, sizeof cur_selection_col);
+	memset(cur_selection_row, 0, sizeof cur_selection_row);
+	memset(cur_skin, 0, sizeof cur_skin);
+	memset(selected, false, sizeof selected);
 
 	planet = Sprite("character_select/planet.png", 8, FRAME_TIME);
 	character_slots = Sprite("character_select/character_slots.png");
 	selected_tag = Sprite("character_select/selected.png");
+
+	for(int i=0;i<N_BACKGROUNDS;i++){
+		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
+	}
+
+	for(int i=0;i<N_PLAYERS;i++){
+		name_tag[i] = Sprite("character_select/name_tag_" + to_string(i + 1) + ".png");
+		number[i] = Sprite("character_select/number_" + to_string(i + 1) + ".png");
+	}
 
 	for(int i=0;i<N_CHARS;i++){
 		string character_name = get_char_info(i).first;
@@ -38,23 +48,11 @@ CharacterSelectState::CharacterSelectState(){
 		}
 	}
 
-	for(int i=0;i<N_PLAYERS;i++){
-		name_tag[i] = Sprite("character_select/name_tag_" + to_string(i + 1) + ".png");
-		number[i] = Sprite("character_select/number_" + to_string(i + 1) + ".png");
-	}
-
-	names = { {"flesh",""}, {"blood",""}, {"",""}, {"",""} };
-
-	memset(cur_selection_col, 0, sizeof cur_selection_col);
-	memset(cur_selection_row, 0, sizeof cur_selection_row);
-	memset(cur_skin, 0, sizeof cur_skin);
-	memset(selected, false, sizeof selected);
-
+	names = { {"blood",""}, {"flesh",""}, {"",""}, {"",""} };
 	name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
 	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
 	name_delta = { ii(118, 53), ii(117, 55), ii(47, 54), ii(50, 54) };
 	sprite_pos = { ii(155, 32), ii(141, 379), ii(923, 34), ii(946, 381) };
-
 	col_slots = { 510, 645 };
 	row_slots = { 55, 197, 395, 536 };
 }
@@ -77,7 +75,7 @@ void CharacterSelectState::update(float delta){
 		if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, FIRST_PLAYER)){
 			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
-			Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
+			Game::get_instance().push(new BattleState("1", "swamp_song.ogg", export_players()));
 			return;
 		}
 	}
@@ -228,11 +226,11 @@ vector< pair<string, string> > CharacterSelectState::export_players(){
 		players.push_back(make_pair(char_selected, get_skin_name(cur_skin[i])));
 	}
 
-	printf("PLAYERS\n");
-	for(int i=0;i<N_PLAYERS;i++){
-		printf("Player %d chose skin [%s] of [%s]\n", i + 1, players[i].second.c_str(), players[i].first.c_str());
-	}
-	printf("END PLAYERS\n");
+	// printf("PLAYERS INFO\n");
+	// for(int i=0;i<N_PLAYERS;i++){
+	// 	printf("Player %d chose skin [%s] of [%s]\n", i + 1, players[i].second.c_str(), players[i].first.c_str());
+	// }
+	// printf("END PLAYERS INFO\n");
 	return players;
 }
 

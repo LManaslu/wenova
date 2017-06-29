@@ -23,7 +23,7 @@ private:
 	void read_level_design(string stage);
 
 public:
-	BattleState(string stage, string cmusic);
+	BattleState(string stage, string cmusic, vector< pair<string, string> > players_info);
 	~BattleState();
 
 	void update(float delta);

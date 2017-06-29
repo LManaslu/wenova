@@ -13,41 +13,53 @@
 #include "Blood.h"
 
 #define N_BACKGROUND 2
+#define N_PLAYERS 4
 
 using std::fstream;
 using std::stringstream;
 using std::to_string;
 
-BattleState::BattleState(string stage, string cmusic){
+BattleState::BattleState(string stage, string cmusic, vector< pair<string, string> > players_info){
 
 	music = Music("stage_" + stage + "/" + cmusic);
 
 	read_level_design(stage);
 
-
 	music.play();
 
-	Fighter * player_1 = new Blood("default", 177, 313, SDL_NumJoysticks() == 0 ? -1 : 0);
-	Fighter * player_2 = new Blood("default", 276, 510, SDL_NumJoysticks() == 1 ? -1 : 1);
-	Fighter * player_3 = new Blood("default", 1128, 245, SDL_NumJoysticks() == 2 ? -1 : 2);
-	Fighter * player_4 = new Blood("default", 954, 474, SDL_NumJoysticks() == 3 ? -1 : 3);
+	vector< pair<int, int> > char_positions = { ii(177, 313), ii(276, 510), ii(1128, 245), ii(954, 474) };
+	vector< pair<int, int> > hud_positions = { ii(133, 599.5), ii(133, 679.5), ii(1147, 599.5), ii(1147, 679.5) };
 
-	player_1->set_partner(player_2);
-	player_2->set_partner(player_1);
-	player_3->set_partner(player_4);
-	player_4->set_partner(player_3);
+	// vector<Fighter*> players(N_PLAYERS, nullptr);
+	Fighter* players[N_PLAYERS];
 
-	add_object(new TimeCounter());
+	for(int i = 0; i < (int)players_info.size(); i++){
+		string char_name = players_info[i].first;
+		string skin_name = players_info[i].second;
 
-	add_object(new FighterStats(player_4, 4, 1, 1147, 679.5));
-	add_object(new FighterStats(player_3, 3, 1, 1147, 599.5));
-	add_object(new FighterStats(player_2, 2, 0, 133, 679.5));
-	add_object(new FighterStats(player_1, 1, 0, 133, 599.5));
+		if(char_name == "blood"){
+			players[i] = new Blood(skin_name, char_positions[i].first, char_positions[i].second,
+									SDL_NumJoysticks() == i ? -1 : i);
+		}
+		else if(char_name == "flesh"){
+			// TODO Instantiate Flesh character
+		}
+	}
 
-	add_object(player_4);
-	add_object(player_3);
-	add_object(player_2);
-	add_object(player_1);
+	players[0]->set_partner(players[1]);
+	players[1]->set_partner(players[0]);
+	players[2]->set_partner(players[3]);
+	players[3]->set_partner(players[2]);
+
+	for(int i=N_PLAYERS-1;i>=0;i--){
+		add_object(new FighterStats(players[i], i + 1, i > 1,
+									hud_positions[i].first,
+									hud_positions[i].second));
+	}
+
+	for(int i=N_PLAYERS-1; i>=0; i--){
+		add_object(players[i]);
+	}
 
 	add_object(new TimeCounter());
 
@@ -127,7 +139,6 @@ void BattleState::read_level_design(string stage){
 		backgrounds.push_back(std::make_pair(background_sprite, position));
 	}
 
-
 	while(std::getline(level_design, s)){
 		for(auto & c : s) c -= 15;
 		stringstream floors_line(s);
@@ -135,5 +146,6 @@ void BattleState::read_level_design(string stage){
 		//printf("Battle: %.f %.f %.f %.f\n", x, y, width, crotation);
 		add_object(new Floor(x, y, width, crotation, (bool) platform));
  	}
+
 	level_design.close();
 }
