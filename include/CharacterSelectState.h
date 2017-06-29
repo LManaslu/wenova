@@ -21,6 +21,7 @@ private:
 
 	map<string, Sprite> char_name;
 	unordered_map<string, vector<Sprite> > char_sprite;
+	unordered_map<string, Sprite> disabled;
 
 	int cur_skin[4];
 	map<string, vector<bool> > available_skin;

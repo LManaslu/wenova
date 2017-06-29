@@ -39,6 +39,9 @@ CharacterSelectState::CharacterSelectState(){
 		available_skin[character_name].assign(N_SKINS, true);
 		char_name[character_name] = Sprite("character_select/name_" + character_name + ".png");
 
+		disabled[character_name] = Sprite(character_name + "/disabled.png", n_frames, 13);
+		disabled[character_name].set_scale(3);
+
 		// loop to get skins
 		for(int j=0;j<N_SKINS;j++){
 			char_sprite[character_name].push_back(
@@ -151,6 +154,10 @@ void CharacterSelectState::update(float delta){
 		}
 	}
 
+	for(auto it = disabled.begin(); it != disabled.end(); it++){
+		(*it).second.update(delta);
+	}
+
 	planet.update(delta);
 }
 
@@ -166,10 +173,12 @@ void CharacterSelectState::render(){
 
 		string char_selected = names[col_sel][row_sel];
 
-		if(i < 2)
-			char_sprite[char_selected][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second);
-		else
-			char_sprite[char_selected][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second, 0, SDL_FLIP_HORIZONTAL);
+		SDL_RendererFlip flip = i >= 2 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+		char_sprite[char_selected][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
+
+		if(not available_skin[char_selected][cur_skin[i]] && not selected[i]){
+			disabled[char_selected].render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
+		}
 
 		name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
 
@@ -177,13 +186,11 @@ void CharacterSelectState::render(){
 			name_tag_positions[i].first + name_delta[i].first,
 			name_tag_positions[i].second + name_delta[i].second
 		);
+
 		number[i].render(col_slots[col_sel] + number_delta[i].first, row_slots[row_sel] + number_delta[i].second);
 
 		if(selected[i]){
-			if(i < 2)
-				selected_tag.render(name_tag_positions[i].first, name_tag_positions[i].second);
-			else
-				selected_tag.render(name_tag_positions[i].first, name_tag_positions[i].second, 0, SDL_FLIP_HORIZONTAL);
+			selected_tag.render(name_tag_positions[i].first, name_tag_positions[i].second, 0, flip);
 		}
 	}
 }
