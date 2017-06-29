@@ -43,7 +43,9 @@ public:
 	void render(int x, int y, float angle = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
   	void set_scale_x(float scale);
-  	void set_scale_y(float scale);
+	void set_scale_y(float scale);
+	void set_scale(float scale);
+	void set_scale(float cscale_x, float cscale_y);
   	void update_scale_x(float scale);
 	void restart_count(int cframe = 0);
 	bool is_finished();

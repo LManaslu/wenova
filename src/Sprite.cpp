@@ -114,6 +114,15 @@ void Sprite::set_scale_y(float scale){
 	scale_y = scale;
 }
 
+void Sprite::set_scale(float scale){
+	scale_x = scale_y = scale;
+}
+
+void Sprite::set_scale(float cscale_x, float cscale_y){
+	scale_x = cscale_x;
+	scale_y = cscale_y;
+}
+
 void Sprite::update_scale_x(float scale){
 	scale_x += scale;
 	if(scale_x < 0.05) scale_x = 0.05;
