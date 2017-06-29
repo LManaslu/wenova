@@ -8,6 +8,7 @@
 #include <string>
 
 using std::to_string;
+using std::make_pair;
 
 class CharacterSelectState : public State {
 private:

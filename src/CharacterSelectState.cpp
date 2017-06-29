@@ -5,18 +5,16 @@
 
 #define FRAME_TIME 7.5
 
-#define AVAILABLE_CHARS 2
-#define NUMBER_OF_PLAYERS 4
-#define AVAILABLE_SKINS 4
+#define N_PLAYERS 4
+#define N_BACKGROUNDS 2
+#define N_SKINS 4
+#define N_CHARS 2
 #define FIRST_PLAYER 0
 #define COL_SLOTS 2
 #define ROW_SLOTS 4
-#define NUMBER_OF_BACKGROUNDS 2
-
-using std::make_pair;
 
 CharacterSelectState::CharacterSelectState(){
-	for(int i=0;i<NUMBER_OF_BACKGROUNDS;i++){
+	for(int i=0;i<N_BACKGROUNDS;i++){
 		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
 	}
 
@@ -24,22 +22,23 @@ CharacterSelectState::CharacterSelectState(){
 	character_slots = Sprite("character_select/character_slots.png");
 	selected_tag = Sprite("character_select/selected.png");
 
-	for(int i=0;i<AVAILABLE_CHARS;i++){
-		available_skin[get_char_info(i).first].assign(AVAILABLE_SKINS, true);
+	for(int i=0;i<N_CHARS;i++){
+		string character_name = get_char_info(i).first;
+		int n_frames = get_char_info(i).second;
 
-		char_name[get_char_info(i).first] = Sprite("character_select/chars/" + get_char_info(i).first + "/name.png");
+		available_skin[character_name].assign(N_SKINS, true);
+		char_name[character_name] = Sprite("character_select/name_" + character_name + ".png");
 
 		// loop to get skins
-		for(int j=0;j<AVAILABLE_SKINS;j++){
-			char_sprite[get_char_info(i).first].push_back(Sprite("character_select/chars/" + get_char_info(i).first + "/" + to_string(j) + ".png",
-													get_char_info(i).second,
-													13));
-			char_sprite[get_char_info(i).first][j].set_scale_x(3);
-			char_sprite[get_char_info(i).first][j].set_scale_y(3);
+		for(int j=0;j<N_SKINS;j++){
+			char_sprite[character_name].push_back(
+				Sprite(character_name + "/" + get_skin_name(j) + "/idle.png", n_frames, 13)
+			);
+			char_sprite[character_name][j].set_scale(3);
 		}
 	}
 
-	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
+	for(int i=0;i<N_PLAYERS;i++){
 		name_tag[i] = Sprite("character_select/name_tag_" + to_string(i + 1) + ".png");
 		number[i] = Sprite("character_select/number_" + to_string(i + 1) + ".png");
 	}
@@ -83,7 +82,7 @@ void CharacterSelectState::update(float delta){
 		}
 	}
 
-	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
+	for(int i=0;i<N_PLAYERS;i++){
 		if(not selected[i]){
 			if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
 			&& cur_selection_col[i] != 0){
@@ -111,11 +110,11 @@ void CharacterSelectState::update(float delta){
 
 			// skins
 			if(input_manager->key_press(SDLK_COMMA) || input_manager->joystick_button_press(InputManager::LT, i)){
-				cur_skin[i] = (cur_skin[i] - 1 + AVAILABLE_SKINS) % AVAILABLE_SKINS;
+				cur_skin[i] = (cur_skin[i] - 1 + N_SKINS) % N_SKINS;
 			}
 
 			if(input_manager->key_press(SDLK_PERIOD) || input_manager->joystick_button_press(InputManager::RT, i)){
-				cur_skin[i] = (cur_skin[i] + 1) % AVAILABLE_SKINS;
+				cur_skin[i] = (cur_skin[i] + 1) % N_SKINS;
 			}
 
 			// select character && lock skin
@@ -163,7 +162,7 @@ void CharacterSelectState::render(){
 	background[1].render(0, 0);
 	character_slots.render(0, 0);
 
-	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
+	for(int i=0;i<N_PLAYERS;i++){
 		int col_sel = cur_selection_col[i];
 		int row_sel = cur_selection_row[i];
 
@@ -191,32 +190,25 @@ void CharacterSelectState::render(){
 	}
 }
 
-void CharacterSelectState::pause(){
-
-}
-
-void CharacterSelectState::resume(){
-
-}
-
 bool CharacterSelectState::character_enabled(int row, int){
 	// Only characters in first row are available
 	return row == 0;
 }
 
-// returns name and number of frames in corresponding sprite
-pair<string, int> CharacterSelectState::get_char_info(int idx){
-	switch(idx){
-		case 0: return pair<string, int> ("flesh", 12);
-		case 1: return pair<string, int> ("blood", 8);
-	}
-	return pair<string, int>("", 0);
-}
-
 bool CharacterSelectState::all_players_selected(){
 	for(auto cur : selected)
-		if(not cur) return false;
+	if(not cur) return false;
 	return true;
+}
+
+// returns name and number of frames in corresponding sprite
+pair<string, int> CharacterSelectState::get_char_info(int idx){
+	vector< pair<string, int> > chars = {
+		make_pair("blood", 12),
+		make_pair("flesh", 8)
+	};
+
+	return chars[idx];
 }
 
 string CharacterSelectState::get_skin_name(int idx){
@@ -227,7 +219,7 @@ string CharacterSelectState::get_skin_name(int idx){
 vector< pair<string, string> > CharacterSelectState::export_players(){
 	vector< pair<string, string> > players;
 
-	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
+	for(int i=0;i<N_PLAYERS;i++){
 		int col_sel = cur_selection_col[i];
 		int row_sel = cur_selection_row[i];
 
@@ -237,9 +229,17 @@ vector< pair<string, string> > CharacterSelectState::export_players(){
 	}
 
 	printf("PLAYERS\n");
-	for(int i=0;i<NUMBER_OF_PLAYERS;i++){
+	for(int i=0;i<N_PLAYERS;i++){
 		printf("Player %d chose skin [%s] of [%s]\n", i + 1, players[i].second.c_str(), players[i].first.c_str());
 	}
 	printf("END PLAYERS\n");
 	return players;
+}
+
+void CharacterSelectState::pause(){
+
+}
+
+void CharacterSelectState::resume(){
+
 }
