@@ -31,29 +31,29 @@ EditState::EditState(string cstage) : stage(cstage){
 }
 
 void EditState::update(float delta){
-	InputManager * inputManager = InputManager::get_instance();
+	InputManager * input_manager = InputManager::get_instance();
 
-	if(inputManager->key_press(SDLK_ESCAPE) or inputManager->joystick_button_press(InputManager::SELECT, 0)){
+	if(input_manager->key_press(SDLK_ESCAPE) or input_manager->joystick_button_press(InputManager::SELECT, 0)){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;
 	}
 
-	if(inputManager->quit_requested()){
+	if(input_manager->quit_requested()){
 		m_quit_requested = true;
 		return;
 	}
 
-	if(inputManager->mouse_press(InputManager::RIGHT_MOUSE_BUTTON)){
-		int x = inputManager->get_mouse_x();
-		int y = inputManager->get_mouse_y();
+	if(input_manager->mouse_press(InputManager::RIGHT_MOUSE_BUTTON)){
+		int x = input_manager->get_mouse_x();
+		int y = input_manager->get_mouse_y();
 		test_fighter->reset_position(x, y);
 	}
 
-	if(inputManager->key_press(SDLK_f) or inputManager->key_press(SDLK_p)){
-		int x = inputManager->get_mouse_x();
-		int y = inputManager->get_mouse_y();
-		bool is_platform = inputManager->key_press(SDLK_p);
+	if(input_manager->key_press(SDLK_f) or input_manager->key_press(SDLK_p)){
+		int x = input_manager->get_mouse_x();
+		int y = input_manager->get_mouse_y();
+		bool is_platform = input_manager->key_press(SDLK_p);
 		for(auto & go : object_array){
 			if(go->is("floor")){
 				((EditableFloor *) go.get())->set_selected(false);
@@ -64,11 +64,11 @@ void EditState::update(float delta){
 		add_object(go);
 	}
 
-	if(inputManager->is_key_down(CONTROL) and inputManager->key_press(SDLK_c)){
+	if(input_manager->is_key_down(CONTROL) and input_manager->key_press(SDLK_c)){
 		update_level_design();
 	}
 
-	if(inputManager->is_key_down(SDLK_j)){
+	if(input_manager->is_key_down(SDLK_j)){
 		printf("%f, %f\n", object_array[0].get()->box.x, object_array[0].get()->box.y);
 	}
 
