@@ -270,3 +270,7 @@ void Fighter::increment_special(float increment){
 void Fighter::set_partner(Fighter * cpartner){
 	partner = cpartner;
 }
+
+Fighter * Fighter::get_partner() {
+	return partner;
+}
