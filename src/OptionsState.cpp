@@ -36,7 +36,7 @@ void OptionsState::update(float){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
-	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
+	if(input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
 		if(on_submenu){
 			on_submenu = false;
 			for(unsigned i = 0; i < options.size(); ++i){
@@ -48,6 +48,11 @@ void OptionsState::update(float){
 			Game::get_instance().push(new MenuState(true));
 			return;
 		}
+	}
+
+	if(input_manager->quit_requested()){
+		m_quit_requested = true;
+		return;
 	}
 
 	if(input_manager->key_press(SDLK_UP)  || input_manager->joystick_button_press(InputManager::UP, 0)){
