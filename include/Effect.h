@@ -16,7 +16,7 @@ public:
 
 	virtual void update(float delta) = 0;
 	virtual bool is_dead() = 0;
-	void render();
+	virtual void render();
 	void notify_collision(GameObject & object);
 
 };

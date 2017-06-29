@@ -400,6 +400,6 @@ void Blood::check_special_2(bool change){
 
 void Blood::check_ultimate() {
 	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL) {
-		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", "has_sprite", 1));
+		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", path + "/aura.png", "has_sprite", 1));
 	}
 }
