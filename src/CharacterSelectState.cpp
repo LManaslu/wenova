@@ -64,12 +64,16 @@ void CharacterSelectState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
-	if(input_manager->quit_requested() ||
-		input_manager->key_press(SDLK_ESCAPE) ||
+	if(input_manager->key_press(SDLK_ESCAPE) ||
 		(not selected[FIRST_PLAYER] && input_manager->joystick_button_press(InputManager::B, FIRST_PLAYER)) ||
 		input_manager->joystick_button_press(InputManager::SELECT, FIRST_PLAYER)){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState(true));
+		return;
+	}
+
+	if(input_manager->quit_requested()){
+		m_quit_requested = true;
 		return;
 	}
 
