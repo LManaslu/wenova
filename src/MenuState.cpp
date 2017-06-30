@@ -39,6 +39,10 @@ MenuState::MenuState(bool main_menu){
 
 	InputManager::get_instance()->set_analogic_value(32000);
 	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
+
+	blocked = Sound("menu/sound/cancel.ogg");
+	selected = Sound("menu/sound/select.ogg");
+	changed = Sound("menu/sound/cursor.ogg");
 }
 
 void MenuState::update(float delta){
@@ -59,10 +63,12 @@ void MenuState::update(float delta){
 
 	// handling options input
 	if(pressed[LEFT] && current_option != 0){
+		changed.play();
 		current_option--;
 	}
 
 	if(pressed[RIGHT] && current_option != (int)options.size() - 1){
+		changed.play();
 		current_option++;
 	}
 
@@ -73,6 +79,8 @@ void MenuState::update(float delta){
 	}
 
 	if(pressed[START] || pressed[A]){
+		selected.play();
+
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;
@@ -89,6 +97,12 @@ void MenuState::update(float delta){
 
 			return;
 		}
+	}
+
+	if(is_holding[LB] && is_holding[RT] && is_holding[Y]){
+		m_quit_requested = true;
+		Game::get_instance().push(new EditState("1"));
+		return;
 	}
 
 	if(start_pressed){

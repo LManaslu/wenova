@@ -20,7 +20,7 @@ void Music::play(int times){
 }
 
 void Music::stop(){
-	int mix_fade_out_music = Mix_FadeOutMusic(100);
+	int mix_fade_out_music = Mix_FadeOutMusic(0);
 	if(!mix_fade_out_music){
 		printf("Stop music: %s\n", Mix_GetError());
 		exit(-1);
