@@ -12,7 +12,6 @@
 
 #define WIDTH 1280
 #define HEIGHT 720
-#define CONTROL 1073742048
 
 #define N_BACKGROUND 2
 
@@ -33,42 +32,51 @@ EditState::EditState(string cstage) : stage(cstage){
 void EditState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
-	if(input_manager->key_press(SDLK_ESCAPE) or input_manager->joystick_button_press(InputManager::SELECT, 0)){
+	// leave edit state
+	if(input_manager->quit_requested() ||
+		input_manager->key_press(InputManager::K_SELECT) ||
+		input_manager->joystick_button_press(InputManager::SELECT, 0)
+	){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;
 	}
 
-	if(input_manager->quit_requested()){
-		m_quit_requested = true;
-		return;
-	}
-
+	// reset position of fighter
 	if(input_manager->mouse_press(InputManager::RIGHT_MOUSE_BUTTON)){
 		int x = input_manager->get_mouse_x();
 		int y = input_manager->get_mouse_y();
 		test_fighter->reset_position(x, y);
 	}
 
-	if(input_manager->key_press(SDLK_f) or input_manager->key_press(SDLK_p)){
+	// create floor or platform
+	if(input_manager->key_press(InputManager::K_F) ||
+		input_manager->key_press(InputManager::K_P)
+	){
 		int x = input_manager->get_mouse_x();
 		int y = input_manager->get_mouse_y();
-		bool is_platform = input_manager->key_press(SDLK_p);
+		bool is_platform = input_manager->key_press(InputManager::K_P);
+
 		for(auto & go : object_array){
 			if(go->is("floor")){
 				((EditableFloor *) go.get())->set_selected(false);
 			}
 		}
+
 		auto go = new EditableFloor(x, y, 0, is_platform);
 		go->set_selected(true);
 		add_object(go);
 	}
 
-	if(input_manager->is_key_down(CONTROL) and input_manager->key_press(SDLK_c)){
+	// save level design
+	if(input_manager->is_key_down(InputManager::K_CTRL) &&
+		input_manager->key_press(InputManager::K_C)
+	){
 		update_level_design();
 	}
 
-	if(input_manager->is_key_down(SDLK_j)){
+	// output
+	if(input_manager->is_key_down(InputManager::K_O)){
 		printf("%f, %f\n", object_array[0].get()->box.x, object_array[0].get()->box.y);
 	}
 

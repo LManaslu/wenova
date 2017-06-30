@@ -67,9 +67,13 @@ void CharacterSelectState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
-	if(input_manager->key_press(SDLK_ESCAPE) ||
-		(not selected[FIRST_PLAYER] && input_manager->joystick_button_press(InputManager::B, FIRST_PLAYER)) ||
-		input_manager->joystick_button_press(InputManager::SELECT, FIRST_PLAYER)){
+	if(input_manager->key_press(InputManager::K_SELECT) ||
+		input_manager->joystick_button_press(InputManager::SELECT, FIRST_PLAYER) ||
+		(not selected[FIRST_PLAYER] &&
+			(input_manager->key_press(InputManager::K_LB) ||
+			input_manager->joystick_button_press(InputManager::B, FIRST_PLAYER))
+		)
+	){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState(true));
 		return;
@@ -83,7 +87,10 @@ void CharacterSelectState::update(float delta){
 	// only enable start when all players have selected a character
 	if(all_players_selected()){
 		ready = true;
-		if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, FIRST_PLAYER)){
+		if(input_manager->key_press(InputManager::K_START) ||
+			input_manager->key_press(InputManager::K_X) ||
+			input_manager->joystick_button_press(InputManager::START, FIRST_PLAYER)
+		){
 			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
 			Game::get_instance().push(new BattleState("1", "swamp_song.ogg", export_players()));
@@ -94,8 +101,9 @@ void CharacterSelectState::update(float delta){
 	for(int i=0;i<N_PLAYERS;i++){
 		if(not selected[i]){
 			// random character
-			if(input_manager->key_press(SDLK_o) || input_manager->joystick_button_press(InputManager::Y, i)){
-
+			if(input_manager->key_press(InputManager::K_RANDOM) ||
+				input_manager->joystick_button_press(InputManager::Y, i)
+			){
 				int rand_col = 0, rand_row = 0, rand_skin = 0;
 
 				do{
@@ -120,28 +128,44 @@ void CharacterSelectState::update(float delta){
 			int old_row = cur_selection_row[i];
 
 			// change character
-			if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
-			&& cur_selection_col[i] != 0){
-				if(character_enabled(cur_selection_row[i], cur_selection_col[i] - 1))
+			if((input_manager->key_press(InputManager::K_LEFT) ||
+				input_manager->joystick_button_press(InputManager::LEFT, i))
+			){
+				if(cur_selection_col[i] != 0 &&
+					character_enabled(cur_selection_row[i], cur_selection_col[i] - 1)
+				){
 					cur_selection_col[i]--;
+				}
 			}
 
-			if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::RIGHT, i))
-			&& cur_selection_col[i] + 1 < COL_SLOTS){
-				if(character_enabled(cur_selection_row[i], cur_selection_col[i] + 1))
+			if((input_manager->key_press(InputManager::K_RIGHT) ||
+				input_manager->joystick_button_press(InputManager::RIGHT, i))
+			){
+				if(cur_selection_col[i] + 1 < COL_SLOTS &&
+					character_enabled(cur_selection_row[i], cur_selection_col[i] + 1)
+				){
 					cur_selection_col[i]++;
+				}
 			}
 
-			if((input_manager->key_press(SDLK_UP) || input_manager->joystick_button_press(InputManager::UP, i))
-			&& cur_selection_row[i] != 0){
-				if(character_enabled(cur_selection_row[i] - 1, cur_selection_col[i]))
+			if((input_manager->key_press(InputManager::K_UP) ||
+				input_manager->joystick_button_press(InputManager::UP, i))
+			){
+				if(cur_selection_row[i] != 0 &&
+					character_enabled(cur_selection_row[i] - 1, cur_selection_col[i])
+				){
 					cur_selection_row[i]--;
+				}
 			}
 
-			if((input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, i))
-			&& cur_selection_row[i] + 1 < ROW_SLOTS){
-				if(character_enabled(cur_selection_row[i] + 1, cur_selection_col[i]))
+			if((input_manager->key_press(InputManager::K_DOWN) ||
+				input_manager->joystick_button_press(InputManager::DOWN, i))
+			){
+				if(cur_selection_row[i] + 1 < ROW_SLOTS &&
+					character_enabled(cur_selection_row[i] + 1, cur_selection_col[i])
+				){
 					cur_selection_row[i]++;
+				}
 			}
 
 			// reset skin if character changed
@@ -150,25 +174,31 @@ void CharacterSelectState::update(float delta){
 			}
 
 			// change skin
-			if(input_manager->key_press(SDLK_COMMA) || input_manager->joystick_button_press(InputManager::LT, i)){
+			if(input_manager->key_press(InputManager::K_LT) ||
+				input_manager->joystick_button_press(InputManager::LT, i)
+			){
 				cur_skin[i] = (cur_skin[i] - 1 + N_SKINS) % N_SKINS;
 			}
 
-			if(input_manager->key_press(SDLK_PERIOD) || input_manager->joystick_button_press(InputManager::RT, i)){
+			if(input_manager->key_press(InputManager::K_RT) ||
+				input_manager->joystick_button_press(InputManager::RT, i)
+			){
 				cur_skin[i] = (cur_skin[i] + 1) % N_SKINS;
 			}
 
 			// select character && lock skin
-			if(input_manager->key_press(SDLK_x) || input_manager->joystick_button_press(InputManager::A, i)){
+			if(input_manager->key_press(InputManager::K_X) ||
+				input_manager->joystick_button_press(InputManager::A, i)
+			){
 				int col_sel = cur_selection_col[i];
 				int row_sel = cur_selection_row[i];
 				string char_selected = names[col_sel][row_sel];
 
 				if(not available_skin[char_selected][cur_skin[i]]){
-					printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
+					// printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
 				}
 				else{
-					printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
+					// printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
 					available_skin[char_selected][cur_skin[i]] = false;
 					selected[i] = true;
 				}
@@ -176,7 +206,9 @@ void CharacterSelectState::update(float delta){
 		}
 		else{
 			// unselect character
-			if(input_manager->key_press(SDLK_y) || input_manager->joystick_button_press(InputManager::B, i)){
+			if(input_manager->key_press(InputManager::K_LB) ||
+				input_manager->joystick_button_press(InputManager::B, i)
+			){
 				int col_sel = cur_selection_col[i];
 				int row_sel = cur_selection_row[i];
 				string char_selected = names[col_sel][row_sel];
@@ -184,7 +216,7 @@ void CharacterSelectState::update(float delta){
 				available_skin[char_selected][cur_skin[i]] = true;
 				selected[i] = false;
 				ready = false;
-				printf("PLAYER %d UNSELECTED SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
+				// printf("PLAYER %d UNSELECTED SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
 			}
 		}
 	}
