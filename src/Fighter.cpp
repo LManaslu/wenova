@@ -73,7 +73,6 @@ void Fighter::process_input(){
 		pressed[button.first] = alive and input_manager->joystick_button_press(button.second, id);
 		is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
 		released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
-
 	}
 }
 
