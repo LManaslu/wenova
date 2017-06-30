@@ -32,6 +32,7 @@ Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fight
 	sprite[SPECIAL_1_1] = Sprite(path + "special_1_1.png", 7, 10);
 	sprite[SPECIAL_1_2] = Sprite(path + "special_1_2.png", 11, 10);
 	sprite[SPECIAL_2] = Sprite(path + "special_2.png", 8, 10);
+	sprite[DYING] = Sprite(path + "dying.png", 12, 10);
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
@@ -41,7 +42,7 @@ Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fight
 	box = Rectangle(x, y, 84, 84);
 }
 
-void Blood::update_machine_state(){
+void Blood::update_machine_state(float delta){
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
 			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
@@ -146,12 +147,13 @@ void Blood::update_machine_state(){
 			if(sprite[state].is_finished()){
 				check_fall();
 				check_idle();
+				check_dead();
 			}
 		break;
 
 		case FighterState::SPECIAL_1_1:
 			attack_damage = 0.1 * (sprite[state].get_current_frame() > 3);
-			if(grab) remaining_life = min(remaining_life + attack_damage, MAX_LIFE * 1.0f);
+			if(grab) increment_life(attack_damage);
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				if(grab){
@@ -165,7 +167,7 @@ void Blood::update_machine_state(){
 
 		case FighterState::SPECIAL_1_2:
 			attack_damage = 0.5;
-			if(grab) remaining_life = min(remaining_life + attack_damage, MAX_LIFE * 1.0f);
+			if(grab) increment_life(attack_damage);
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished() or not grab){
 				check_fall();
@@ -174,8 +176,8 @@ void Blood::update_machine_state(){
 		break;
 
 		case FighterState::SPECIAL_2:
-			increment_special(0.2);
-			remaining_life -= 0.2;
+			increment_special(0.2 * delta);
+			increment_life(-0.2 * delta);
 			if(sprite[state].is_finished()){
 				Game::get_instance().get_current_state().add_object(new HealEffect(partner, "blood/heal_effect.png", "has_sprite", 9, 0.2));
 				check_idle();
@@ -201,6 +203,7 @@ void Blood::update_machine_state(){
 			check_ultimate();
 			check_pass_through_platform();
 			check_fall();
+			check_dead();
 		break;
 
 		case FighterState::JUMPING:
@@ -264,6 +267,12 @@ void Blood::update_machine_state(){
 			check_idle();
 			check_crouch_atk();
 			check_fall();
+		break;
+
+		case FighterState::DYING:
+			if(sprite[state].is_finished()){
+				remaining_life = 0;
+			}
 		break;
 
 		case FighterState::LAST:
@@ -418,6 +427,12 @@ void Blood::check_special_1_2(bool change){
 void Blood::check_special_2(bool change){
 	if(pressed[SPECIAL2_BUTTON] and partner) {
 		if(change) temporary_state = FighterState::SPECIAL_2;
+	}
+}
+
+void Blood::check_dead(bool change) {
+	if(is("dying")) {
+		if(change) temporary_state = FighterState::DYING;
 	}
 }
 

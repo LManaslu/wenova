@@ -79,17 +79,19 @@ void Fighter::process_input(){
 		ii(ULTIMATE_BUTTON, InputManager::Y)
 	};
 
+	bool alive = !is("dying");
+
 	if(id != -1){
 		for(ii button : joystick_buttons){
-			pressed[button.first] = input_manager->joystick_button_press(button.second, id);
-			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, id);
-			released[button.first] = input_manager->joystick_button_release(button.second, id);
+			pressed[button.first] = alive and input_manager->joystick_button_press(button.second, id);
+			is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
+			released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
 		}
 	}else{
 		for(ii button : buttons){
-			pressed[button.first] = input_manager->key_press(button.second, true);
-			is_holding[button.first] = input_manager->is_key_down(button.second, true);
-			released[button.first] = input_manager->key_release(button.second, true);
+			pressed[button.first] = alive and input_manager->key_press(button.second, true);
+			is_holding[button.first] = alive and input_manager->is_key_down(button.second, true);
+			released[button.first] = alive and input_manager->key_release(button.second, true);
 		}
 	}
 }
@@ -101,7 +103,7 @@ void Fighter::update(float delta){
 
 	sprite[state].update(delta);
 
-	update_machine_state();
+	update_machine_state(delta);
 
 	speed.y = std::min(speed.y + !on_floor * acceleration.y * delta, max_speed);
 	box.x += speed.x * delta;
@@ -140,7 +142,7 @@ void Fighter::notify_collision(GameObject & object){
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
 		pass_through = false;
-	}else if(object.is("player")){
+	}else if(object.is("player") and !is("dying") and !(object.is("dying"))){
 		Fighter & fighter = (Fighter &) object;
 
 		if(fighter.is_attacking() and fighter.get_id() != partner_id){
@@ -152,7 +154,7 @@ void Fighter::notify_collision(GameObject & object){
 			int position_mask = left | right | up | down;
 			if(position_mask & fighter.get_attack_mask()){
 				float damage = fighter.get_attack_damage() * ((state == FighterState::DEFENDING) ? 0.5 : 1);
-				remaining_life -= damage;
+				increment_life(-damage);
 				float increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1) * not_in_ultimate;
 				this->increment_special(increment_special);
 				if(state != FighterState::DEFENDING) check_stunt();
@@ -258,7 +260,13 @@ int Fighter::get_id(){
 }
 
 void Fighter::increment_life(float increment){
-	remaining_life = min(remaining_life + increment, MAX_LIFE * 1.0f);
+	remaining_life += increment;
+	if(remaining_life < 1) {
+		remaining_life = 1;
+		if(partner) partner->set_partner(nullptr);
+		add_tags("dying");
+	}
+	if(remaining_life > MAX_LIFE) remaining_life = MAX_LIFE;
 }
 
 void Fighter::increment_special(float increment){
