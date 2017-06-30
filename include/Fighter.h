@@ -78,8 +78,6 @@ protected:
 	virtual void check_special_2(bool change = true) = 0;
 	virtual void check_dead(bool change = true) = 0;
 	virtual void check_ultimate() = 0;
-	void jump_atk_down_dmg(bool change = true);
-	void jump_atk_down_fallloop(bool change = true);
 
 	AttackDirection get_attack_orientation();
 
