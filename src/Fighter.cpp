@@ -24,6 +24,7 @@ Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	state = FighterState::IDLE;
 	id = cid;
 	remaining_life = MAX_LIFE / 2;
+
 	special = 0;
 	attack_damage = 0;
 	vertical_speed = rotation = 0;
@@ -72,6 +73,7 @@ void Fighter::process_input(){
 		pressed[button.first] = alive and input_manager->joystick_button_press(button.second, id);
 		is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
 		released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
+
 	}
 }
 
@@ -99,7 +101,6 @@ void Fighter::update(float delta){
 	grab = false;
 	attack_damage *= delta;
 	on_floor = false;
-	collided_after_atk_down_fallloop = false;
 }
 
 void Fighter::notify_collision(GameObject & object){
@@ -270,27 +271,5 @@ string Fighter::get_path(){
 void Fighter::play_sound(){
 	if(sound[state].is_open()){
 		sound[state].play(0);
-	}
-}
-
-void Fighter::jump_atk_down_fallloop(bool change){
-	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
-		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_FALLLOOP;
-	}
-}
-
-void Fighter::jump_atk_down_dmg(bool change){
-	if(grab){
-//	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON] && collided_after_atk_down_fallloop){
-		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_DMG;
-	}
-}
-
-void Fighter::idle_atk_down(bool change){
-	if(is_holding[DOWN_BUTTON]) printf("to descendo\n");
-	if(is_holding[ATTACK_BUTTON]) printf("to atacando\n");
-	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
-		printf("troquei, parsa\n");
-		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
 	}
 }
