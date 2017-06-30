@@ -69,12 +69,6 @@ void MenuState::update(float delta){
 		return;
 	}
 
-	if((input_manager->is_key_down(SDLK_j) and input_manager->is_key_down(SDLK_s)) or input_manager->joystick_button_press(InputManager::SELECT, 0)){
-		m_quit_requested = true;
-		Game::get_instance().push(new JoystickConfigState(0));
-		return;
-	}
-
 	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0) || input_manager->joystick_button_press(InputManager::A, 0)) {
 		if(not start_pressed){
 			start_pressed = true;
