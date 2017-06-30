@@ -3,6 +3,7 @@
 #include "InputManager.h"
 #include "Game.h"
 #include "Config.h"
+#include "JoystickConfigState.h"
 
 #define FONT_X 640
 #define FONT_Y 680
@@ -83,9 +84,14 @@ void OptionsState::update(float){
 
 	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0) || input_manager->joystick_button_press(InputManager::A, 0)) {
 		if(not on_submenu){
-			if(current_option == 2){ // back button
+			if(current_option == (int)options.size() - 1){ // back button
 				m_quit_requested = true;
 				Game::get_instance().push(new MenuState(true));
+				return;
+			}
+			else if(current_option == 2){ // joysticks test
+				m_quit_requested = true;
+				Game::get_instance().push(new JoystickConfigState(0));
 				return;
 			}
 			else{
@@ -95,29 +101,17 @@ void OptionsState::update(float){
 		}
 		else{
 			if(current_option == 0){ // screen resolution
-				int new_width = 0, new_height = 0;
-				switch(current_sub_option[current_option]){
-					case 0:
-						new_width = 800;
-						new_height = 600;
-						break;
-					case 1:
-						new_width = 1024;
-						new_height = 768;
-						break;
-					case 2:
-						new_width = 1280;
-						new_height = 720;
-						break;
-					case 3:
-						new_width = 1366;
-						new_height = 768;
-						break;
-					case 4:
-						new_width = 1920;
-						new_height = 1080;
-						break;
-				}
+				vector< pair<int, int> > resolutions = {
+					ii(800, 600),
+					ii(1024, 768),
+					ii(1280, 720),
+					ii(1366, 768),
+					ii(1920, 1080)
+				};
+
+				int idx = current_sub_option[current_option];
+				int new_width = resolutions[idx].first;
+				int new_height = resolutions[idx].second;
 
 				Game::get_instance().change_resolution(new_width, new_height);
 			}
@@ -178,7 +172,6 @@ void OptionsState::render(){
 
 		string text = options[i]->get_text();
 		for(int j=0; j<(int)sub_options[text].size(); j++){
-			// TODO get option selected from db
 			if(on_submenu && current_option == i){
 				if(current_sub_option[i] == j)
 					sub_options[text][j]->set_color(LIGHT_GREEN);
@@ -201,6 +194,7 @@ void OptionsState::build_options(){
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "SCREEN RESOLUTION", WHITE, 100, 200));
 	options.back()->set_pos(100, 200, false, false);
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "FULLSCREEN", WHITE));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "JOYSTICKS TEST", WHITE));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "BACK", WHITE));
 
 	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "800 x 600", WHITE));

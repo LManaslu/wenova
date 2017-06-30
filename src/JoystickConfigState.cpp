@@ -2,6 +2,7 @@
 
 #include "InputManager.h"
 #include "MenuState.h"
+#include "OptionsState.h"
 #include "JoystickButton.h"
 #include "Game.h"
 
@@ -59,7 +60,7 @@ void JoystickConfigState::update(float delta){
 
 	if(input_manager->key_press(SDLK_ESCAPE) or (input_manager->is_joystick_button_down(InputManager::R3, 0) and input_manager->is_joystick_button_down(InputManager::L3, 0))){
 		m_quit_requested = true;
-		Game::get_instance().push(new MenuState());
+		Game::get_instance().push(new OptionsState());
 		return;
 	}
 
