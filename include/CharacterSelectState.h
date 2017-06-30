@@ -13,7 +13,7 @@ using std::make_pair;
 class CharacterSelectState : public State {
 private:
 	Sprite background[2], planet, character_slots;
-	Sprite name_tag[4], number[4], selected_tag;
+	Sprite name_tag[4], number[4], selected_tag, ready_to_fight;
 	int cur_selection_row[4], cur_selection_col[4];
 	vector<ii> name_tag_positions, number_delta, name_delta, sprite_pos;
 	vector<int> col_slots, row_slots;
@@ -25,7 +25,7 @@ private:
 
 	int cur_skin[4];
 	map<string, vector<bool> > available_skin;
-	bool selected[4];
+	bool selected[4], ready;
 
 public:
 	CharacterSelectState();
