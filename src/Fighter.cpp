@@ -54,16 +54,16 @@ void Fighter::process_input(){
 	InputManager * input_manager = InputManager::get_instance();
 
 	vector< pair<int, int> > buttons = {
-		ii(JUMP_BUTTON, SDLK_SPACE),
-		ii(UP_BUTTON, SDLK_w),
-		ii(DOWN_BUTTON, SDLK_s),
-		ii(LEFT_BUTTON, SDLK_a),
-		ii(RIGHT_BUTTON, SDLK_d),
-		ii(ATTACK_BUTTON, SDLK_l),
-		ii(SPECIAL1_BUTTON, SDLK_o),
-		ii(SPECIAL2_BUTTON, SDLK_k),
-		ii(BLOCK_BUTTON, SDLK_i),
-		ii(ULTIMATE_BUTTON, SDLK_u)
+		ii(JUMP_BUTTON, InputManager::K_A),
+		ii(UP_BUTTON, InputManager::K_UP),
+		ii(DOWN_BUTTON, InputManager::K_DOWN),
+		ii(LEFT_BUTTON, InputManager::K_LEFT),
+		ii(RIGHT_BUTTON, InputManager::K_RIGHT),
+		ii(ATTACK_BUTTON, InputManager::K_X),
+		ii(SPECIAL1_BUTTON, InputManager::K_B),
+		ii(SPECIAL2_BUTTON, InputManager::K_RB),
+		ii(BLOCK_BUTTON, InputManager::K_LB),
+		ii(ULTIMATE_BUTTON, InputManager::K_Y)
 	};
 
 	vector< pair<int, int> > joystick_buttons = {
