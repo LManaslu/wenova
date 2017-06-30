@@ -36,7 +36,15 @@ void OptionsState::update(float){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
-	if(input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
+	if(input_manager->quit_requested()){
+		m_quit_requested = true;
+		return;
+	}
+
+	if(input_manager->key_press(InputManager::K_SELECT) ||
+		input_manager->key_press(InputManager::K_LB) ||
+		input_manager->joystick_button_press(InputManager::B, 0)
+	){
 		if(on_submenu){
 			on_submenu = false;
 			for(unsigned i = 0; i < options.size(); ++i){
@@ -50,12 +58,9 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(input_manager->quit_requested()){
-		m_quit_requested = true;
-		return;
-	}
-
-	if(input_manager->key_press(SDLK_UP)  || input_manager->joystick_button_press(InputManager::UP, 0)){
+	if(input_manager->key_press(InputManager::K_UP) ||
+		input_manager->joystick_button_press(InputManager::UP, 0)
+	){
 		if(not on_submenu){
 			if(current_option != 0){
 				current_option--;
@@ -68,7 +73,9 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(input_manager->key_press(SDLK_DOWN) || input_manager->joystick_button_press(InputManager::DOWN, 0)){
+	if(input_manager->key_press(InputManager::K_DOWN) ||
+		input_manager->joystick_button_press(InputManager::DOWN, 0)
+	){
 		if(not on_submenu){
 			if(current_option != (int)options.size() - 1){
 				current_option++;
@@ -82,7 +89,11 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0) || input_manager->joystick_button_press(InputManager::A, 0)) {
+	if(input_manager->key_press(InputManager::K_START) ||
+		input_manager->key_press(InputManager::K_X) ||
+		input_manager->joystick_button_press(InputManager::START, 0) ||
+		input_manager->joystick_button_press(InputManager::A, 0)
+	){
 		if(not on_submenu){
 			if(current_option == (int)options.size() - 1){ // back button
 				m_quit_requested = true;

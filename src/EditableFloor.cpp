@@ -33,72 +33,84 @@ void EditableFloor::update(float delta){
 		int x = input_manager->get_mouse_x();
       	int y = input_manager->get_mouse_y();
 		Rectangle mouse = Rectangle(x, y, 1, 1);
-		if(Collision::is_colliding(box, mouse, rotation, 0)){
-			selected = true;
-		}else{
-			selected = false;
-		}
+		selected = Collision::is_colliding(box, mouse, rotation, 0);
 	}
-
 
 	if(selected){
 		static float acceleration = 1;
 		float value = 0.5 * delta * acceleration;
 		bool moved = false;
-		if(input_manager->is_key_down(SDLK_RIGHT)){
+
+		// move floor
+		if(input_manager->is_key_down(InputManager::K_ARROW_RIGHT)){
 			box.x += value; moved = true;
 		}
-		if(input_manager->is_key_down(SDLK_LEFT)){
+
+		if(input_manager->is_key_down(InputManager::K_ARROW_LEFT)){
 			box.x -= value; moved = true;
 		}
-		if(input_manager->is_key_down(SDLK_UP)){
+
+		if(input_manager->is_key_down(InputManager::K_ARROW_UP)){
 			box.y -= value; moved = true;
 		}
-		if(input_manager->is_key_down(SDLK_DOWN)){
+
+		if(input_manager->is_key_down(InputManager::K_ARROW_DOWN)){
 			box.y += value; moved = true;
 		}
+
 		if(box.x < 0) box.x = 0;
 		if(box.x > 1280) box.x = 1280;
 		if(box.y < 0) box.y = 0;
 		if(box.y > 720) box.y = 720;
 
-		if(input_manager->is_key_down(SDLK_z)){
+		// rotate floor to left
+		if(input_manager->is_key_down(InputManager::K_ROT_LEFT)){
 			rotation += 0.01 * value / acceleration;
 		}
-		if(input_manager->is_key_down(SDLK_x)){
+
+		// rotate floor to right
+		if(input_manager->is_key_down(InputManager::K_ROT_RIGHT)){
 			rotation -= 0.01 * value / acceleration;
 		}
-		if(input_manager->is_key_down(SDLK_r)){
+
+		// reset rotation
+		if(input_manager->is_key_down(InputManager::K_ROT_RESET)){
 			rotation = 0;
 		}
-		if(input_manager->key_press(SDLK_k)){
+
+		// toggle floor
+		if(input_manager->key_press(InputManager::K_C)){
 			is_platform = !is_platform;
 		}
 
-		if(input_manager->is_key_down(SDLK_PERIOD)){
+		// increase floor width
+		if(input_manager->is_key_down(InputManager::K_INC_W)){
 			normal_sprite.update_scale_x(0.005 * value);
 			platform_sprite.update_scale_x(0.005 * value);
 			selected_sprite.update_scale_x(0.005 * value);
 			box.width = normal_sprite.get_width();
 			moved = true;
 		}
-		if(input_manager->is_key_down(SDLK_COMMA)){
+
+		// decrease floor width
+		if(input_manager->is_key_down(InputManager::K_DEC_W)){
 			normal_sprite.update_scale_x(-0.005 * value);
 			platform_sprite.update_scale_x(-0.005 * value);
 			selected_sprite.update_scale_x(-0.005 * value);
 			box.width = normal_sprite.get_width();
 			moved = true;
 		}
-		if(moved) acceleration += 0.2;
-		else	acceleration = 1;
-		if(acceleration > 4) acceleration = 4;
 
-		if(input_manager->is_key_down(SDLK_DELETE)){
+		if(moved)
+			acceleration = fmin(acceleration + 0.2, 4);
+		else
+			acceleration = 1;
+
+		// delete floor
+		if(input_manager->is_key_down(InputManager::K_DEL)){
 			deleted = true;
 		}
 	}
-
-	//printf("%f, %f, %.f, %f, %f %d\n", box.x, box.y, box.width, box.height, rotation * 180.0 / PI, (int) is_platform);
 }
 
 void EditableFloor::render(){

@@ -48,28 +48,45 @@ void MenuState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
 	// handling general inputs
-	if(input_manager->quit_requested() || input_manager->key_press(SDLK_ESCAPE) || input_manager->joystick_button_press(InputManager::B, 0)){
+	if(input_manager->quit_requested() ||
+		input_manager->key_press(InputManager::K_SELECT) ||
+		input_manager->joystick_button_press(InputManager::B, 0)
+	){
 		m_quit_requested = true;
 		return;
 	}
 
 	// handling options input
-	if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, 0)) && current_option != 0){
-		current_option--;
+	if(input_manager->key_press(InputManager::K_LEFT) ||
+		input_manager->joystick_button_press(InputManager::LEFT, 0)
+	){
+		if(current_option != 0)
+			current_option--;
 	}
 
-	if((input_manager->key_press(SDLK_RIGHT) || input_manager->joystick_button_press(InputManager::RIGHT, 0)) && current_option != (int)options.size() - 1){
-		current_option++;
+	if(input_manager->key_press(InputManager::K_RIGHT) ||
+		input_manager->joystick_button_press(InputManager::RIGHT, 0)
+	){
+		if(current_option != (int)options.size() - 1)
+			current_option++;
 	}
 
-	if((input_manager->is_key_down(SDLK_w) and input_manager->is_key_down(SDLK_r) and input_manager->is_key_down(SDLK_c)) ||
-		(input_manager->is_joystick_button_down(InputManager::LB, 0) and input_manager->is_joystick_button_down(InputManager::RT, 0) and input_manager->is_joystick_button_down(InputManager::Y, 0))){
+	if((input_manager->is_key_down(InputManager::K_LB) and
+		input_manager->is_key_down(InputManager::K_RB) and
+		input_manager->is_key_down(InputManager::K_Y))
+		||
+		(input_manager->is_joystick_button_down(InputManager::LB, 0) and input_manager->is_joystick_button_down(InputManager::RT, 0) and input_manager->is_joystick_button_down(InputManager::Y, 0))
+	){
 		m_quit_requested = true;
 		Game::get_instance().push(new EditState("1"));
 		return;
 	}
 
-	if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, 0) || input_manager->joystick_button_press(InputManager::A, 0)) {
+	if(input_manager->key_press(InputManager::K_START) ||
+		input_manager->key_press(InputManager::K_X) ||
+		input_manager->joystick_button_press(InputManager::START, 0) ||
+		input_manager->joystick_button_press(InputManager::A, 0)
+	){
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;

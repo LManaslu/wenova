@@ -78,6 +78,7 @@ public:
 	void set_analogic_value(int value);
 	void connect_joysticks();
 
+	// joystick keys
 	static const int UP = SDL_CONTROLLER_BUTTON_DPAD_UP;
 	static const int RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
 	static const int DOWN = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
@@ -95,18 +96,42 @@ public:
 	static const int L3 = SDL_CONTROLLER_BUTTON_LEFTSTICK;
 	static const int R3 = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
 
-
-
-	// FIXME not being used
-	static const int LEFT_ARROW_KEY = SDLK_LEFT;
-	static const int RIGHT_ARROW_KEY = SDLK_RIGHT;
-	static const int DOWN_ARROW_KEY = SDLK_DOWN;
-	static const int UP_ARROW_KEY = SDLK_UP;
-	static const int ESCAPE_KEY = SDLK_ESCAPE;
-  	static const int SPACE_KEY = SDLK_SPACE;
+	// keyboard keys
+	static const int K_UP = SDLK_w;
+	static const int K_RIGHT = SDLK_d;
+	static const int K_DOWN = SDLK_s;
+	static const int K_LEFT = SDLK_a;
+	static const int K_A = SDLK_SPACE;
+	static const int K_B = SDLK_LSHIFT;
+	static const int K_X = SDLK_h;
+	static const int K_Y = SDLK_q;
+	static const int K_LB = SDLK_j;
+	static const int K_RB = SDLK_e;
+	static const int K_LT = SDLK_y;
+	static const int K_RT = SDLK_i;
+	static const int K_SELECT = SDLK_ESCAPE;
+	static const int K_START = SDLK_RETURN;
 	static const int LEFT_MOUSE_BUTTON = SDL_BUTTON_LEFT;
 	static const int RIGHT_MOUSE_BUTTON = SDL_BUTTON_RIGHT;
 	static const int ENTER_KEY = SDLK_RETURN;
+	static const int K_RANDOM = SDLK_u;
+
+	// keys for edit mode
+	static const int K_ARROW_UP = SDLK_UP;
+	static const int K_ARROW_RIGHT = SDLK_RIGHT;
+	static const int K_ARROW_DOWN = SDLK_DOWN;
+	static const int K_ARROW_LEFT = SDLK_LEFT;
+	static const int K_CTRL = SDLK_LCTRL;
+	static const int K_C = SDLK_c;
+	static const int K_F = SDLK_f;
+	static const int K_P = SDLK_p;
+	static const int K_O = SDLK_o;
+	static const int K_ROT_LEFT = SDLK_z;
+	static const int K_ROT_RIGHT = SDLK_x;
+	static const int K_ROT_RESET = SDLK_r;
+	static const int K_INC_W = SDLK_PERIOD;
+	static const int K_DEC_W = SDLK_COMMA;
+	static const int K_DEL = SDLK_DELETE;
 };
 
 #endif
