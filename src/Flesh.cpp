@@ -24,7 +24,6 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	box = Rectangle(x, y, 84, 84);
 }
 
-
 void Flesh::update_machine_state(float delta){
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
@@ -64,6 +63,8 @@ void Flesh::update_machine_state(float delta){
 		case FighterState::JUMP_ATK_DOWN_FALLLOOP:
 			speed.x = 3 * (orientation == LEFT ? -1 : 1);
 			speed.y = 3;
+			attack_damage = 1;
+			attack_mask = (1 << 4) - 1;
 
 			check_jump_atk_down_dmg();
 			if(on_floor){
@@ -73,6 +74,7 @@ void Flesh::update_machine_state(float delta){
 				check_idle();
 				check_left();
 				check_right();
+				check_crouch();
 			}
 		break;
 
@@ -92,6 +94,7 @@ void Flesh::update_machine_state(float delta){
 
 		case FighterState::IDLE:
 			combo = 0;
+			attack_mask = attack_damage = 0;
 			check_jump();
 			check_left();
 			check_right();
@@ -175,7 +178,7 @@ void Flesh::check_idle(bool change){
 }
 
 void Flesh::check_crouch(bool change){
-	if(is_holding[DOWN_BUTTON] and not is_holding[ATTACK_BUTTON] and on_floor){
+	if(is_holding[DOWN_BUTTON] and on_floor){
    		if(change) temporary_state = FighterState::CROUCH;
     }
 }
