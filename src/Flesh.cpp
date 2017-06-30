@@ -20,13 +20,13 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	box = Rectangle(x, y, 84, 84);
 }
 
-void Flesh::update_machine_state(){
+void Flesh::update_machine_state(float){
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
-				idle_atk_neutral_2();
+				check_idle();
+				check_crouch();
+				check_idle_atk_neutral_2();
 			}else if(pressed[ATTACK_BUTTON]){
 				combo++;
 			}
@@ -34,9 +34,9 @@ void Flesh::update_machine_state(){
 
 		case FighterState::IDLE_ATK_NEUTRAL_2:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
-				idle_atk_neutral_3();
+				check_idle();
+				check_crouch();
+				check_idle_atk_neutral_3();
 			}else if(pressed[ATTACK_BUTTON]){
 				combo++;
 			}
@@ -44,15 +44,15 @@ void Flesh::update_machine_state(){
 
 		case FighterState::IDLE_ATK_NEUTRAL_3:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
+				check_idle();
+				check_crouch();
 			}
 		break;
 
 		case FighterState::IDLE_ATK_FRONT:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
+				check_idle();
+				check_crouch();
 			}
 		break;
 
@@ -60,74 +60,74 @@ void Flesh::update_machine_state(){
 			speed.x = 3 * (orientation == LEFT ? -1 : 1);
 			speed.y = 3;
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
-				jump_atk_down_dmg();
+				check_idle();
+				check_crouch();
+				check_jump_atk_down_dmg();
 			}
 		break;
 
 		case FighterState::JUMP_ATK_DOWN_DMG:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
+				check_idle();
+				check_crouch();
 			}
 		break;
 
 		case FighterState::IDLE_ATK_DOWN:
 			if(sprite[state].is_finished()){
-				idle();
-				crouch();
+				check_idle();
+				check_crouch();
 			}
 		break;
 
 		case FighterState::IDLE:
 			combo = 0;
-			jump();
-			left();
-			right();
-			idle_atk_down();
-			crouch();
-			fall();
-			idle_atk_neutral_1();
-			idle_atk_front();
+			check_jump();
+			check_left();
+			check_right();
+			check_idle_atk_down();
+			check_crouch();
+			check_fall();
+			check_idle_atk_neutral_1();
+			check_idle_atk_front();
 		break;
 
 		case FighterState::JUMPING:
-			left(false);
-			right(false);
-			fall();
-			jump_atk_down_fallloop();
-			idle();
+			check_left(false);
+			check_right(false);
+			check_fall();
+			check_jump_atk_down_fallloop();
+			check_idle();
 		break;
 
 		case FighterState::FALLING:
-			idle();
-			left(false);
-			right(false);
-			fall();
-			crouch();
-			jump_atk_down_fallloop();
+			check_idle();
+			check_left(false);
+			check_right(false);
+			check_fall();
+			check_crouch();
+			check_jump_atk_down_fallloop();
 		break;
 
 		case FighterState::RUNNING:
-			jump();
-			left(false);
-			right(false);
-			idle();
-			crouch();
-			idle_atk_neutral_1();
-			idle_atk_front();
-			fall();
+			check_jump();
+			check_left(false);
+			check_right(false);
+			check_idle();
+			check_crouch();
+			check_idle_atk_neutral_1();
+			check_idle_atk_front();
+			check_fall();
 		break;
 
 		case FighterState::CROUCH:
-			idle();
-			fall();
+			check_idle();
+			check_fall();
 		break;
 	}
 }
 
-void Flesh::jump(bool change){
+void Flesh::check_jump(bool change){
 	if(pressed[JUMP_BUTTON]){
 		if(change) temporary_state = FighterState::JUMPING;
 		speed.y = -5;
@@ -135,13 +135,13 @@ void Flesh::jump(bool change){
 	}
 }
 
-void Flesh::fall(bool change){
+void Flesh::check_fall(bool change){
 	if(speed.y > 0){
 		if(change) temporary_state = FighterState::FALLING;
 	}
 }
 
-void Flesh::left(bool change){
+void Flesh::check_left(bool change){
 	if(is_holding[LEFT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
 		speed.x = -2;
@@ -149,7 +149,7 @@ void Flesh::left(bool change){
 	}
 }
 
-void Flesh::right(bool change){
+void Flesh::check_right(bool change){
 	if(is_holding[RIGHT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
 		speed.x = 2;
@@ -157,25 +157,25 @@ void Flesh::right(bool change){
 	}
 }
 
-void Flesh::idle(bool change){
+void Flesh::check_idle(bool change){
 	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE;
 	}
 }
 
-void Flesh::crouch(bool change){
+void Flesh::check_crouch(bool change){
 	if(is_holding[DOWN_BUTTON] and not is_holding[ATTACK_BUTTON] and on_floor){
    		if(change) temporary_state = FighterState::CROUCH;
     }
 }
 
-void Flesh::idle_atk_neutral_1(bool change){
+void Flesh::check_idle_atk_neutral_1(bool change){
 	if(pressed[ATTACK_BUTTON] and not is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_1;
 	}
 }
 
-void Flesh::idle_atk_neutral_2(bool change){
+void Flesh::check_idle_atk_neutral_2(bool change){
 	printf("Pressing: %d\n", is_holding[ATTACK_BUTTON]);
 	if(combo){
 		combo--;
@@ -183,34 +183,34 @@ void Flesh::idle_atk_neutral_2(bool change){
 	}
 }
 
-void Flesh::idle_atk_neutral_3(bool change){
+void Flesh::check_idle_atk_neutral_3(bool change){
 	if(combo){
 		combo--;
 		if(change) temporary_state = FighterState::IDLE_ATK_NEUTRAL_3;
 	}
 }
 
-void Flesh::idle_atk_front(bool change){
+void Flesh::check_idle_atk_front(bool change){
 	if(pressed[ATTACK_BUTTON] and (is_holding[LEFT_BUTTON] or is_holding[RIGHT_BUTTON])){
 		if(change) temporary_state = FighterState::IDLE_ATK_FRONT;
 		orientation = is_holding[LEFT_BUTTON] ? Orientation::LEFT : Orientation::RIGHT;
 	}
 }
 
-void Flesh::jump_atk_down_fallloop(bool change){
+void Flesh::check_jump_atk_down_fallloop(bool change){
 	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_FALLLOOP;
 	}
 }
 
-void Flesh::jump_atk_down_dmg(bool change){
+void Flesh::check_jump_atk_down_dmg(bool change){
 	if(grab){
 //	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON] && collided_after_atk_down_fallloop){
 		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_DMG;
 	}
 }
 
-void Flesh::idle_atk_down(bool change){
+void Flesh::check_idle_atk_down(bool change){
 	if(is_holding[DOWN_BUTTON]) printf("to descendo\n");
 	if(is_holding[ATTACK_BUTTON]) printf("to atacando\n");
 	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
