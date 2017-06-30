@@ -22,7 +22,7 @@ Sprite::Sprite(string file, int cframe_count, float cframe_time, int ccolumns, i
 	frame_time = cframe_time;
 	current_frame = cur_frame;
 	columns = (ccolumns ? ccolumns : frame_count);
-	rows = ceil(frame_count / columns);
+	rows = ceil((1.0 * frame_count) / columns);
 	time_elapsed = 0;
 	texture = nullptr;
 	finished = false;
