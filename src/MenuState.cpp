@@ -33,7 +33,6 @@ MenuState::MenuState(bool main_menu){
 	start_option = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "PRESS START", LIGHT_GREEN, FONT_X, FONT_Y);
 
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "START", WHITE, FONT_X, FONT_Y));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "CONTINUE", WHITE, FONT_X, FONT_Y));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, FONT_Y));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", WHITE, FONT_X, FONT_Y));
 
@@ -85,20 +84,15 @@ void MenuState::update(float delta){
 			switch(current_option){
 				case 0:
 					m_quit_requested = true;
-                    // Game::get_instance().push(new BattleState("1", "swamp_song.ogg"));
 					Game::get_instance().push(new CharacterSelectState());
 					return;
 
 				case 1:
-					printf("CONTINUE SELECTED\n");
-					break;
-
-				case 2:
 					m_quit_requested = true;
 					Game::get_instance().push(new OptionsState());
 					return;
 
-				case 3:
+				case 2:
 					m_quit_requested = true;
 					return;
 			}
