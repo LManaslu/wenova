@@ -5,9 +5,6 @@
 #include "Text.h"
 #include "Sprite.h"
 
-// maybe
-// #include "Timer.h"
-
 #include <utility>
 #include <map>
 
@@ -24,6 +21,11 @@ private:
 	vector<int> current_sub_option;
 	bool on_submenu;
 
+	enum Button { BACK, SELECT, UP, DOWN, START, A };
+	bool pressed[10];
+	bool is_holding[10];
+	bool released[10];
+
 	int get_current_sub_option(int option);
 
 public:
@@ -36,6 +38,8 @@ public:
 
 	void pause();
 	void resume();
+
+	void process_input();
 };
 
 #endif
