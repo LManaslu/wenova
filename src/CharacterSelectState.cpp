@@ -89,6 +89,29 @@ void CharacterSelectState::update(float delta){
 
 	for(int i=0;i<N_PLAYERS;i++){
 		if(not selected[i]){
+			// random character
+			if(input_manager->key_press(SDLK_o) || input_manager->joystick_button_press(InputManager::Y, i)){
+
+				int rand_col = 0, rand_row = 0, rand_skin = 0;
+
+				do{
+					rand_col = rand() % COL_SLOTS;
+					rand_row = rand() % ROW_SLOTS;
+				}while(not character_enabled(rand_row, rand_col));
+
+				string char_selected = names[rand_col][rand_row];
+
+				do{
+					rand_skin = rand() % N_SKINS;
+				}while(not available_skin[char_selected][rand_skin]);
+
+				// printf("[RANDOM] PLAYER %d -> [%s] [%s] SKIN\n", i + 1, get_skin_name(rand_skin).c_str(), char_selected.c_str());
+
+				cur_selection_col[i] = rand_col;
+				cur_selection_row[i] = rand_row;
+				cur_skin[i] = rand_skin;
+			}
+
 			if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
 			&& cur_selection_col[i] != 0){
 				if(character_enabled(cur_selection_row[i], cur_selection_col[i] - 1))
