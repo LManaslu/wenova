@@ -19,6 +19,7 @@ private:
 	void check_idle_atk_down(bool change = true, bool condition = false);
 	void check_crouch_atk(bool change = true);
 	void check_jump_atk_up(bool change = true);
+	void check_jump_atk_neutral(bool change = true);
 	void check_jump_atk_down(bool change = true);
 	void check_pass_through_platform(bool change = true);
 	void check_defense(bool change = true);

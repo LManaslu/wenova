@@ -11,30 +11,30 @@
 using std::min;
 
 Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, x, cpartner){
-	sprite[IDLE] = Sprite("blood/" + skin + "/idle.png", 12, 10);
-	sprite[RUNNING] = Sprite("blood/" + skin + "/running.png", 8, 10);
-	sprite[JUMPING] = Sprite("blood/" + skin + "/jumping.png", 6, 10);
-	sprite[FALLING] = Sprite("blood/" + skin + "/falling.png", 2, 10);
-	sprite[CROUCH] = Sprite("blood/" + skin + "/crouch.png", 3, 20);
-	sprite[IDLE_ATK_NEUTRAL_1] = Sprite("blood/" + skin + "/idle_atk_neutral_1.png", 4, 10);
-	sprite[IDLE_ATK_NEUTRAL_2] = Sprite("blood/" + skin + "/idle_atk_neutral_2.png", 4, 10);
-	sprite[IDLE_ATK_NEUTRAL_3] = Sprite("blood/" + skin + "/idle_atk_neutral_3.png", 3, 10);
-	sprite[IDLE_ATK_FRONT] = Sprite("blood/" + skin + "/idle_atk_front.png", 5, 10);
-	sprite[IDLE_ATK_UP] = Sprite("blood/" + skin + "/idle_atk_up.png", 5, 10);
-	sprite[IDLE_ATK_DOWN] = Sprite("blood/" + skin + "/idle_atk_down.png", 6, 10);
-	sprite[CROUCH_ATK] = Sprite("blood/" + skin + "/crouch_atk.png", 3, 10);
-	sprite[JUMP_ATK_DOWN] = Sprite("blood/" + skin + "/jump_atk_down.png", 4, 10);
-	sprite[JUMP_ATK_UP] = Sprite("blood/" + skin + "/jump_atk_up.png", 4, 10);
-	sprite[DEFENDING] = Sprite("blood/" + skin + "/defending.png", 2, 10);
-	sprite[STUNT] = Sprite("blood/" + skin + "/stunt.png", 2, 10);
-	sprite[SPECIAL_1_1] = Sprite("blood/" + skin + "/special_1_1.png", 7, 10);
-	sprite[SPECIAL_1_2] = Sprite("blood/" + skin + "/special_1_2.png", 11, 10);
-	sprite[SPECIAL_2] = Sprite("blood/" + skin + "/special_2.png", 8, 10);
+	path = "blood/" + skin + "/";
+	sprite[IDLE] = Sprite(path + "idle.png", 12, 10);
+	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
+	sprite[JUMPING] = Sprite(path + "jumping.png", 6, 10);
+	sprite[FALLING] = Sprite(path + "falling.png", 2, 10);
+	sprite[CROUCH] = Sprite(path + "crouch.png", 3, 20);
+	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(path + "idle_atk_neutral_1.png", 4, 10);
+	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(path + "idle_atk_neutral_2.png", 4, 10);
+	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(path + "idle_atk_neutral_3.png", 3, 10);
+	sprite[IDLE_ATK_FRONT] = Sprite(path + "idle_atk_front.png", 5, 10);
+	sprite[IDLE_ATK_UP] = Sprite(path + "idle_atk_up.png", 5, 10);
+	sprite[IDLE_ATK_DOWN] = Sprite(path + "idle_atk_down.png", 6, 10);
+	sprite[CROUCH_ATK] = Sprite(path + "crouch_atk.png", 3, 10);
+	sprite[JUMP_ATK_DOWN] = Sprite(path + "jump_atk_down.png", 4, 10);
+	sprite[JUMP_ATK_NEUTRAL] = Sprite(path + "jump_atk_neutral.png", 5, 10);
+	sprite[JUMP_ATK_UP] = Sprite(path + "jump_atk_up.png", 4, 10);
+	sprite[DEFENDING] = Sprite(path + "defending.png", 2, 10);
+	sprite[STUNT] = Sprite(path + "stunt.png", 2, 10);
+	sprite[SPECIAL_1_1] = Sprite(path + "special_1_1.png", 7, 10);
+	sprite[SPECIAL_1_2] = Sprite(path + "special_1_2.png", 11, 10);
+	sprite[SPECIAL_2] = Sprite(path + "special_2.png", 8, 10);
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
-
-	path = "blood/" + skin;
 
 	tags["blood"] = true;
 	tags[skin] = true;
@@ -110,6 +110,21 @@ void Blood::update_machine_state(){
 			if(on_floor){
 				n_sprite_start = 2;
 				check_idle_atk_down(true, true);
+			}
+		break;
+
+		case FighterState::JUMP_ATK_NEUTRAL:
+			attack_damage = 7 * (sprite[state].get_current_frame() < 1);
+			attack_mask = get_attack_orientation();
+			check_right(false);
+			check_left(false);
+			if(sprite[state].is_finished()){
+				check_fall();
+			}
+			if(on_floor){
+				check_idle();
+				check_right();
+				check_left();
 			}
 		break;
 
@@ -193,10 +208,11 @@ void Blood::update_machine_state(){
 			attack_mask = 0;
 			check_left(on_floor);
 			check_right(on_floor);
-			check_jump_atk_down();
 			check_fall();
 			check_idle();
+			check_jump_atk_neutral();
 			check_jump_atk_up();
+			check_jump_atk_down();
 			check_ultimate();
 		break;
 
@@ -208,6 +224,7 @@ void Blood::update_machine_state(){
 			check_right(on_floor);
 			check_fall();
 			check_crouch();
+			check_jump_atk_neutral();
 			check_jump_atk_up();
 			check_jump_atk_down();
 			check_ultimate();
@@ -360,6 +377,12 @@ void Blood::check_jump_atk_down(bool change){
 	}
 }
 
+void Blood::check_jump_atk_neutral(bool change){
+	if(pressed[ATTACK_BUTTON]){
+		if(change) temporary_state = FighterState::JUMP_ATK_NEUTRAL;
+	}
+}
+
 void Blood::check_jump_atk_up(bool change) {
 	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
 		if(combo) return;
@@ -400,6 +423,6 @@ void Blood::check_special_2(bool change){
 
 void Blood::check_ultimate() {
 	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL) {
-		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "/ult_effect.png", path + "/aura.png", "has_sprite", 1));
+		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "ult_effect.png", path + "aura.png", "has_sprite", 1));
 	}
 }
