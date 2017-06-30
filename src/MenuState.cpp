@@ -40,6 +40,8 @@ MenuState::MenuState(bool main_menu){
 }
 
 void MenuState::update(float delta){
+	process_input();
+
 	title.update(delta);
 	planet.update(delta);
 	green_ship.update(delta);
@@ -47,66 +49,40 @@ void MenuState::update(float delta){
 
 	InputManager * input_manager = InputManager::get_instance();
 
-	// handling general inputs
-	if(input_manager->quit_requested() ||
-		input_manager->key_press(InputManager::K_SELECT) ||
-		input_manager->joystick_button_press(InputManager::B, 0)
-	){
+	// inputs
+	if(input_manager->quit_requested() || pressed[BACK]){
 		m_quit_requested = true;
 		return;
 	}
 
-	// handling options input
-	if(input_manager->key_press(InputManager::K_LEFT) ||
-		input_manager->joystick_button_press(InputManager::LEFT, 0)
-	){
-		if(current_option != 0)
-			current_option--;
+	if(pressed[LEFT]){
+		current_option = (current_option - 1 + options.size()) % options.size();
 	}
 
-	if(input_manager->key_press(InputManager::K_RIGHT) ||
-		input_manager->joystick_button_press(InputManager::RIGHT, 0)
-	){
-		if(current_option != (int)options.size() - 1)
-			current_option++;
+	if(pressed[RIGHT]){
+		current_option = (current_option + 1) % options.size();
 	}
 
-	if((input_manager->is_key_down(InputManager::K_LB) and
-		input_manager->is_key_down(InputManager::K_RB) and
-		input_manager->is_key_down(InputManager::K_Y))
-		||
-		(input_manager->is_joystick_button_down(InputManager::LB, 0) and input_manager->is_joystick_button_down(InputManager::RT, 0) and input_manager->is_joystick_button_down(InputManager::Y, 0))
-	){
+	if(is_holding[LB] && is_holding[RT] && is_holding[Y]){
 		m_quit_requested = true;
 		Game::get_instance().push(new EditState("1"));
 		return;
 	}
 
-	if(input_manager->key_press(InputManager::K_START) ||
-		input_manager->key_press(InputManager::K_X) ||
-		input_manager->joystick_button_press(InputManager::START, 0) ||
-		input_manager->joystick_button_press(InputManager::A, 0)
-	){
+	if(pressed[START] || pressed[A]){
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;
 		}
 		else{
-			switch(current_option){
-				case 0:
-					m_quit_requested = true;
-					Game::get_instance().push(new CharacterSelectState());
-					return;
+			m_quit_requested = true;
 
-				case 1:
-					m_quit_requested = true;
-					Game::get_instance().push(new OptionsState());
-					return;
+			if(current_option == 0)
+				Game::get_instance().push(new CharacterSelectState());
+			else if(current_option == 1)
+				Game::get_instance().push(new OptionsState());
 
-				case 2:
-					m_quit_requested = true;
-					return;
-			}
+			return;
 		}
 	}
 
@@ -115,25 +91,20 @@ void MenuState::update(float delta){
 		options[current_option]->set_pos(FONT_X, FONT_Y, true, true);
 		options[current_option]->set_color(LIGHT_GREEN);
 
-		// positioning options before current option
-		for(int idx = 0; idx < current_option; idx++){
-			Text* next_option = options[idx + 1];
+		for(int idx = 0; idx < options.size(); idx++){
+			if(idx == current_option) continue;
+			bool before = idx < current_option;
+			Text* option = options[idx + (before ? 1 : -1)];
 
-			int new_x = next_option->get_x() - options[idx]->get_width() - OPTION_OFFSET;
-			options[idx]->set_pos(new_x, FONT_Y, false, true);
-			options[idx]->set_color(WHITE);
-		}
-
-		// positioning options after current option
-		for(unsigned int idx = current_option + 1; idx < options.size(); idx++){
-			Text* prev_option = options[idx - 1];
-
-			int new_x = prev_option->get_x() + prev_option->get_width() + OPTION_OFFSET;
+			int factor_prev = - options[idx]->get_width() - OPTION_OFFSET;
+			int factor_next = option->get_width() + OPTION_OFFSET;
+			int new_x = option->get_x() + (before ? factor_prev : factor_next);
 			options[idx]->set_pos(new_x, FONT_Y, false, true);
 			options[idx]->set_color(WHITE);
 		}
 	}
 
+	// text timer
 	if(text_timer.get() > TEXT_TIMER_COOLDOWN){
 		show_text = !show_text;
 		text_timer.restart();
@@ -152,11 +123,11 @@ void MenuState::render(){
 
 	if(start_pressed){
 		for(auto option_text : options){
-			option_text->render(0, 0);
+			option_text->render();
 		}
 	}
 	else if(show_text){
-		start_option->render(0, 0);
+		start_option->render();
 	}
 }
 
@@ -166,4 +137,46 @@ void MenuState::pause(){
 
 void MenuState::resume(){
 
+}
+
+void MenuState::process_input(){
+	InputManager * input_manager = InputManager::get_instance();
+
+	vector< pair<int, int> > buttons = {
+		ii(BACK, InputManager::K_SELECT),
+		ii(LEFT, InputManager::K_LEFT),
+		ii(RIGHT, InputManager::K_RIGHT),
+		ii(LB, InputManager::K_LB),
+		ii(RT, InputManager::K_RT),
+		ii(Y, InputManager::K_Y),
+		ii(START, InputManager::K_START),
+		ii(A, InputManager::K_X)
+	};
+
+	vector< pair<int, int> > joystick_buttons = {
+		ii(BACK, InputManager::B),
+		ii(LEFT, InputManager::LEFT),
+		ii(RIGHT, InputManager::RIGHT),
+		ii(LB, InputManager::LB),
+		ii(RT, InputManager::RT),
+		ii(Y, InputManager::Y),
+		ii(START, InputManager::START),
+		ii(A, InputManager::A)
+	};
+
+	int id = (SDL_NumJoysticks() == 0 ? -1 : 0);
+
+	if(id != -1){
+		for(ii button : joystick_buttons){
+			pressed[button.first] = input_manager->joystick_button_press(button.second, id);
+			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, id);
+			released[button.first] = input_manager->joystick_button_release(button.second, id);
+		}
+	}else{
+		for(ii button : buttons){
+			pressed[button.first] = input_manager->key_press(button.second, true);
+			is_holding[button.first] = input_manager->is_key_down(button.second, true);
+			released[button.first] = input_manager->key_release(button.second, true);
+		}
+	}
 }
