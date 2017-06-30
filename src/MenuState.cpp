@@ -37,6 +37,10 @@ MenuState::MenuState(bool main_menu){
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", WHITE, FONT_X, FONT_Y));
 
 	InputManager::get_instance()->set_analogic_value(32000);
+
+	blocked = Sound("menu/sound/cancel.ogg");
+	selected = Sound("menu/sound/select.ogg");
+	changed = Sound("menu/sound/cursor.ogg");
 }
 
 void MenuState::update(float delta){
@@ -56,20 +60,18 @@ void MenuState::update(float delta){
 	}
 
 	if(pressed[LEFT]){
+		changed.play();
 		current_option = (current_option - 1 + options.size()) % options.size();
 	}
 
 	if(pressed[RIGHT]){
+		changed.play();
 		current_option = (current_option + 1) % options.size();
 	}
 
-	if(is_holding[LB] && is_holding[RT] && is_holding[Y]){
-		m_quit_requested = true;
-		Game::get_instance().push(new EditState("1"));
-		return;
-	}
-
 	if(pressed[START] || pressed[A]){
+		selected.play();
+
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;
@@ -84,6 +86,12 @@ void MenuState::update(float delta){
 
 			return;
 		}
+	}
+
+	if(is_holding[LB] && is_holding[RT] && is_holding[Y]){
+		m_quit_requested = true;
+		Game::get_instance().push(new EditState("1"));
+		return;
 	}
 
 	if(start_pressed){
