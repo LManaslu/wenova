@@ -24,10 +24,10 @@ void Camera::update(float delta){
 
 	if(focus == nullptr){
 		bool directions[] = {
-			input_manager->is_key_down(InputManager::LEFT_ARROW_KEY),
-			input_manager->is_key_down(InputManager::UP_ARROW_KEY),
-			input_manager->is_key_down(InputManager::RIGHT_ARROW_KEY),
-			input_manager->is_key_down(InputManager::DOWN_ARROW_KEY)
+			input_manager->is_key_down(InputManager::K_LEFT),
+			input_manager->is_key_down(InputManager::K_UP),
+			input_manager->is_key_down(InputManager::K_RIGHT),
+			input_manager->is_key_down(InputManager::K_DOWN)
 		};
 
 		speed.x = 0;
