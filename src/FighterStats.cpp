@@ -45,10 +45,8 @@ void FighterStats::update(float){
 
 	condition = (percent_to_draw_special == 1.0) ? 1 : 0;
 	if(fighter->is("in_ultimate")) condition = 2;
-	if(fighter->get_id() == -1) printf("percent = %f\n", percent_to_draw_special);
 	//Left
 	if(side == 0){
-		if(fighter->get_id() == -1) printf("Tam: %f\n", special[condition].get_width() * (1 - percent_to_draw_special));
 		special[condition].set_clip(special[condition].get_width() * (1 - percent_to_draw_special) , 0, special[condition].get_width() * percent_to_draw_special, special[condition].get_height());
 		life.set_clip(0, 0, life.get_width() * percent_to_draw_life, life.get_height());
 	}
