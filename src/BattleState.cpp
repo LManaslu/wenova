@@ -11,6 +11,7 @@
 #include "TimeCounter.h"
 #include "Config.h"
 #include "Blood.h"
+#include "Flesh.h"
 
 #define N_BACKGROUND 2
 #define N_PLAYERS 4
@@ -25,7 +26,7 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 
 	read_level_design(stage);
 
-	music.play();
+//	music.play();
 
 	vector< pair<int, int> > char_positions;
 	vector< pair<int, int> > hud_positions = { ii(133, 599.5), ii(133, 679.5), ii(1147, 599.5), ii(1147, 679.5) };
@@ -45,7 +46,8 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 			players[i] = new Blood(skin_name, char_positions[i].first, char_positions[i].second, i);
 		}
 		else if(char_name == "flesh"){
-			// TODO Instantiate Flesh character
+			players[i] = new Flesh(skin_name, char_positions[i].first, char_positions[i].second,
+									SDL_NumJoysticks() == i ? -1 : i);
 		}
 	}
 

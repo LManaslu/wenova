@@ -64,20 +64,7 @@ protected:
 	virtual void check_idle_atk_neutral_1(bool change = true) = 0;
 	virtual void check_idle_atk_neutral_2(bool change = true) = 0;
 	virtual void check_idle_atk_neutral_3(bool change = true) = 0;
-	virtual void check_idle_atk_front(bool change = true) = 0;
-	virtual void check_idle_atk_up(bool change = true) = 0;
-	virtual void check_idle_atk_down(bool change = true, bool condition = false) = 0;
-	virtual void check_crouch_atk(bool change = true) = 0;
-	virtual void check_jump_atk_up(bool change = true) = 0;
-	virtual void check_jump_atk_down(bool change = true) = 0;
-	virtual void check_pass_through_platform(bool change = true) = 0;
-	virtual void check_defense(bool change = true) = 0;
 	virtual void check_stunt(bool change = true) = 0;
-	virtual void check_special_1_1(bool change = true) = 0;
-	virtual void check_special_1_2(bool change = true) = 0;
-	virtual void check_special_2(bool change = true) = 0;
-	virtual void check_dead(bool change = true) = 0;
-	virtual void check_ultimate() = 0;
 
 	AttackDirection get_attack_orientation();
 
