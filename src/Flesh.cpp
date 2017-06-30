@@ -1,26 +1,31 @@
 #include "Flesh.h"
 
 Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighter(cid, x, cpartner){
+	path = "flesh/" + skin + "/";
 
-	string name = "flesh";
+	sprite[IDLE] = Sprite(path + "idle.png", 8, 10);
+	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
+	sprite[JUMPING] = Sprite(path + "jumping.png", 6, 10);
+	sprite[FALLING] = Sprite(path + "falling.png", 7, 10);
+	sprite[CROUCH] = Sprite(path + "crouch.png", 6, 20);
+	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(path + "idle_atk_neutral.png", 12, 10);
+	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(path + "idle_atk_neutral.png", 12, 10);
+	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(path + "idle_atk_neutral.png", 12, 10);
+	sprite[IDLE_ATK_FRONT] = Sprite(path + "idle_atk_front.png", 4, 10);
+	sprite[JUMP_ATK_DOWN_FALLLOOP] = Sprite(path + "jump_atk_down_fallloop.png", 3, 10);
+	sprite[JUMP_ATK_DOWN_DMG] = Sprite(path + "jump_atk_down_dmg.png", 3, 10);
+	sprite[IDLE_ATK_DOWN] = Sprite(path + "idle_atk_down.png", 4, 10);
 
-	sprite[IDLE] = Sprite(name + "/idle.png", 8, 10);
-	sprite[RUNNING] = Sprite(name + "/running.png", 8, 10);
-	sprite[JUMPING] = Sprite(name + "/jumping.png", 6, 10);
-	sprite[FALLING] = Sprite(name + "/falling.png", 7, 10);
-	sprite[CROUCH] = Sprite(name + "/crouch.png", 6, 20);
-	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(name + "/idle_atk_neutral.png", 12, 10);
-	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(name + "/idle_atk_neutral.png", 12, 10);
-	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(name + "/idle_atk_neutral.png", 12, 10);
-	sprite[IDLE_ATK_FRONT] = Sprite(name + "/idle_atk_front.png", 4, 10);
-	sprite[JUMP_ATK_DOWN_FALLLOOP] = Sprite(name + "/jump_atk_down_fallloop.png", 3, 10);
-	sprite[JUMP_ATK_DOWN_DMG] = Sprite(name + "/jump_atk_down_dmg.png", 3, 10);
-	sprite[IDLE_ATK_DOWN] = Sprite(name + "/idle_atk_down.png", 4, 10);
+	crouching_size = Vector(84, 59);
+	not_crouching_size = Vector(84, 84);
 
+	tags["flesh"] = true;
+	tags[skin] = true;
 	box = Rectangle(x, y, 84, 84);
 }
 
-void Flesh::update_machine_state(float){
+
+void Flesh::update_machine_state(float delta){
 	switch(state){
 		case FighterState::IDLE_ATK_NEUTRAL_1:
 			if(sprite[state].is_finished()){
@@ -59,10 +64,15 @@ void Flesh::update_machine_state(float){
 		case FighterState::JUMP_ATK_DOWN_FALLLOOP:
 			speed.x = 3 * (orientation == LEFT ? -1 : 1);
 			speed.y = 3;
-			if(sprite[state].is_finished()){
+
+			check_jump_atk_down_dmg();
+			if(on_floor){
+				printf("to no chao, parsa\n");
+				speed.x = 0;
+				speed.y = 0;
 				check_idle();
-				check_crouch();
-				check_jump_atk_down_dmg();
+				check_left();
+				check_right();
 			}
 		break;
 
@@ -160,6 +170,7 @@ void Flesh::check_right(bool change){
 void Flesh::check_idle(bool change){
 	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE;
+		printf("Temporary state = %d\n", temporary_state);
 	}
 }
 
@@ -198,23 +209,35 @@ void Flesh::check_idle_atk_front(bool change){
 }
 
 void Flesh::check_jump_atk_down_fallloop(bool change){
-	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
+	if(pressed[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_FALLLOOP;
 	}
 }
 
 void Flesh::check_jump_atk_down_dmg(bool change){
 	if(grab){
-//	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON] && collided_after_atk_down_fallloop){
 		if(change) temporary_state = FighterState::JUMP_ATK_DOWN_DMG;
 	}
 }
 
 void Flesh::check_idle_atk_down(bool change){
-	if(is_holding[DOWN_BUTTON]) printf("to descendo\n");
-	if(is_holding[ATTACK_BUTTON]) printf("to atacando\n");
 	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
-		printf("troquei, parsa\n");
 		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
 	}
+}
+
+void Flesh::check_pass_through_platform(bool change){
+
+}
+
+void Flesh::check_defense(bool change){
+
+}
+
+void Flesh::check_stunt(bool change){
+
+}
+
+void Flesh::check_dead(bool change){
+
 }
