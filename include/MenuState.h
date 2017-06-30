@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "Timer.h"
+#include "Sound.h"
 
 class MenuState : public State {
 private:
@@ -14,6 +15,7 @@ private:
 	int current_option;
 	bool start_pressed, show_text;
 	Timer text_timer;
+	Sound blocked, selected, changed;
 
 	enum Button { A, B, Y, LEFT, RIGHT, SELECT, START, LB, RT };
 	bool pressed[15], is_holding[15];

@@ -18,7 +18,7 @@ public:
 	Sound();
 	Sound(string file);
 
-	void play(int times);
+	void play(int times = 0); // plays 1 time with times = 0
 	void stop();
 	void open(string file);
 	bool is_open();
