@@ -71,8 +71,12 @@ BattleState::~BattleState(){
 void BattleState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
-	if(input_manager->quit_requested() ||
-		input_manager->key_press(InputManager::K_SELECT) ||
+	if(input_manager->quit_requested()){
+		m_quit_requested = true;
+		return;
+	}
+
+	if(input_manager->key_press(InputManager::K_SELECT) ||
 		input_manager->joystick_button_press(InputManager::SELECT, 0)
 	){
 		music.stop();
