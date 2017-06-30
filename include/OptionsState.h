@@ -4,6 +4,7 @@
 #include "State.h"
 #include "Text.h"
 #include "Sprite.h"
+#include "Sound.h"
 
 // maybe
 // #include "Timer.h"
@@ -17,12 +18,13 @@ using std::map;
 class OptionsState : public State {
 private:
 	Sprite background;
-	vector<Text*> options;
-	map<string, vector<Text*> > sub_options;
 	Text *title;
+	Sound blocked, selected, changed;
 	int current_option;
-	vector<int> current_sub_option;
 	bool on_submenu;
+	map<string, vector<Text*> > sub_options;
+	vector<Text*> options;
+	vector<int> current_sub_option;
 
 	int get_current_sub_option(int option);
 
