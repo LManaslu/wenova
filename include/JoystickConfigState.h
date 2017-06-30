@@ -8,8 +8,9 @@
 
 class JoystickConfigState : public State{
 private:
-	string stage;
-
+	Sprite background, joystick_help, back_btn, test_btn, analogic;
+	Text *back_txt, *test_txt, *press_both, *to_go_back;
+	bool on_test;
 
 public:
 	JoystickConfigState(int joystick_id);
