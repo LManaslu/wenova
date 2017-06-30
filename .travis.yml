@@ -8,5 +8,4 @@ install:
 compiler:
    - g++
 script:
-  - make dist-clean
-  - make -j
+  - make

@@ -15,6 +15,19 @@ const int InputManager::A, InputManager::B, InputManager::X, InputManager::Y;
 const int InputManager::LB, InputManager::RB, InputManager::START, InputManager::SELECT;
 const int InputManager::LT, InputManager::RT;
 
+const int InputManager::K_UP, InputManager::K_RIGHT, InputManager::K_DOWN;
+const int InputManager::K_LEFT, InputManager::K_A, InputManager::K_B, InputManager::K_X;
+const int InputManager::K_Y, InputManager::K_LB, InputManager::K_RB, InputManager::K_LT;
+const int InputManager::K_RT, InputManager::K_SELECT, InputManager::K_START;
+const int InputManager::LEFT_MOUSE_BUTTON, InputManager::RIGHT_MOUSE_BUTTON;
+const int InputManager::ENTER_KEY, InputManager::K_RANDOM;
+
+const int InputManager::K_ARROW_UP, InputManager::K_ARROW_RIGHT, InputManager::K_ARROW_DOWN;
+const int InputManager::K_ARROW_LEFT, InputManager::K_CTRL, InputManager::K_C, InputManager::K_F;
+const int InputManager::K_P, InputManager::K_O, InputManager::K_ROT_LEFT;
+const int InputManager::K_ROT_RIGHT, InputManager::K_ROT_RESET, InputManager::K_INC_W;
+const int InputManager::K_DEC_W, InputManager::K_DEL;
+
 InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);

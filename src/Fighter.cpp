@@ -1,6 +1,5 @@
 #include "Fighter.h"
 
-#include "InputManager.h"
 #include "Floor.h"
 
 #include <algorithm>

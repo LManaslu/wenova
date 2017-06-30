@@ -1,6 +1,7 @@
 #ifndef FIGHTER_H
 #define FIGHTER_H
 
+#include "InputManager.h"
 #include "GameObject.h"
 #include "Sprite.h"
 #include "Vector.h"
