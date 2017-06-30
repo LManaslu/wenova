@@ -10,12 +10,12 @@
 class MenuState : public State {
 private:
 	Sprite background, green_ship, red_ship, title, planet;
-	vector<Text*> options;
 	Text* start_option;
+	Sound blocked, selected, changed;
+	Timer text_timer;
 	int current_option;
 	bool start_pressed, show_text;
-	Timer text_timer;
-	Sound blocked, selected, changed;
+	vector<Text*> options;
 
 	enum Button { BACK, LEFT, RIGHT, LB, RT, Y, START, A };
 	bool pressed[10];
