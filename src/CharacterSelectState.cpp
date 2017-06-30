@@ -22,6 +22,9 @@ CharacterSelectState::CharacterSelectState(){
 	planet = Sprite("character_select/planet.png", 8, FRAME_TIME);
 	character_slots = Sprite("character_select/character_slots.png");
 	selected_tag = Sprite("character_select/selected.png");
+	ready_to_fight = Sprite("character_select/ready_to_fight.png");
+
+	ready = false;
 
 	for(int i=0;i<N_BACKGROUNDS;i++){
 		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
@@ -79,6 +82,7 @@ void CharacterSelectState::update(float delta){
 
 	// only enable start when all players have selected a character
 	if(all_players_selected()){
+		ready = true;
 		if(input_manager->key_press(SDLK_RETURN) || input_manager->joystick_button_press(InputManager::START, FIRST_PLAYER)){
 			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
@@ -112,6 +116,10 @@ void CharacterSelectState::update(float delta){
 				cur_skin[i] = rand_skin;
 			}
 
+			int old_col = cur_selection_col[i];
+			int old_row = cur_selection_row[i];
+
+			// change character
 			if((input_manager->key_press(SDLK_LEFT) || input_manager->joystick_button_press(InputManager::LEFT, i))
 			&& cur_selection_col[i] != 0){
 				if(character_enabled(cur_selection_row[i], cur_selection_col[i] - 1))
@@ -136,7 +144,12 @@ void CharacterSelectState::update(float delta){
 					cur_selection_row[i]++;
 			}
 
-			// skins
+			// reset skin if character changed
+			if(cur_selection_col[i] != old_col || cur_selection_row[i] != old_row){
+				cur_skin[i] = 0;
+			}
+
+			// change skin
 			if(input_manager->key_press(SDLK_COMMA) || input_manager->joystick_button_press(InputManager::LT, i)){
 				cur_skin[i] = (cur_skin[i] - 1 + N_SKINS) % N_SKINS;
 			}
@@ -170,6 +183,7 @@ void CharacterSelectState::update(float delta){
 
 				available_skin[char_selected][cur_skin[i]] = true;
 				selected[i] = false;
+				ready = false;
 				printf("PLAYER %d UNSELECTED SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
 			}
 		}
@@ -219,6 +233,10 @@ void CharacterSelectState::render(){
 		if(selected[i]){
 			selected_tag.render(name_tag_positions[i].first, name_tag_positions[i].second, 0, flip);
 		}
+	}
+
+	if(ready){
+		ready_to_fight.render(0, 0);
 	}
 }
 
