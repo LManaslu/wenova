@@ -28,9 +28,9 @@ CharacterSelectState::CharacterSelectState(){
 	selected_tag = Sprite("character_select/selected.png");
 	ready_to_fight = Sprite("character_select/ready_to_fight.png");
 
-	blocked = Sound("menu/sound/cancel.ogg");
-	selected_sound = Sound("menu/sound/select.ogg");
-	changed = Sound("menu/sound/cursor.ogg");
+	blocked = Sound("sound/cancel.ogg");
+	selected_sound = Sound("sound/select.ogg");
+	changed = Sound("sound/cursor.ogg");
 
 	for(int i=0;i<N_BACKGROUNDS;i++){
 		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
@@ -45,6 +45,7 @@ CharacterSelectState::CharacterSelectState(){
 		string character_name = get_char_info(i).first;
 		int n_frames = get_char_info(i).second;
 
+		char_sound[character_name] = Sound("sound/" + character_name + ".ogg");
 		available_skin[character_name].assign(N_SKINS, true);
 		char_name[character_name] = Sprite("character_select/name_" + character_name + ".png");
 
@@ -186,11 +187,9 @@ void CharacterSelectState::update(float delta){
 
 				if(not available_skin[char_selected][cur_skin[i]]){
 					blocked.play();
-					// printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
 				}
 				else{
-					selected_sound.play();
-					// printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
+					char_sound[char_selected].play();
 					available_skin[char_selected][cur_skin[i]] = false;
 					selected[i] = true;
 				}
@@ -203,6 +202,7 @@ void CharacterSelectState::update(float delta){
 				int row_sel = cur_selection_row[i];
 				string char_selected = names[col_sel][row_sel];
 
+				char_sound[char_selected].stop();
 				available_skin[char_selected][cur_skin[i]] = true;
 				selected[i] = false;
 				ready = false;
@@ -340,7 +340,8 @@ void CharacterSelectState::process_input(){
 
 	for(ii button : buttons){
 		if(input_manager->key_press(button.second, true)){
-			for(int i=0;i<N_PLAYERS; i++) pressed[i][button.first] = true;
+			// NOTE change this to pressed[i][button.first] to control all players with keyboard
+			for(int i=0;i<N_PLAYERS; i++) pressed[FIRST_PLAYER][button.first] = true;
 		}
 	}
 }
