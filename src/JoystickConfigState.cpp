@@ -46,9 +46,9 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 	test_txt->set_pos(970, 650);
 	back_txt->set_pos(1154, 650);
 
-	blocked = Sound("menu/sound/cancel.ogg");
-	selected = Sound("menu/sound/select.ogg");
-	changed = Sound("menu/sound/cursor.ogg");
+	blocked = Sound("sound/cancel.ogg");
+	selected = Sound("sound/select.ogg");
+	changed = Sound("sound/cursor.ogg");
 
 	on_test = false;
 
