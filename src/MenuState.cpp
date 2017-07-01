@@ -180,7 +180,8 @@ void MenuState::process_input(){
 			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, id);
 			released[button.first] = input_manager->joystick_button_release(button.second, id);
 		}
-	}else{
+	}
+	else{
 		for(ii button : buttons){
 			pressed[button.first] = input_manager->key_press(button.second, true);
 			is_holding[button.first] = input_manager->is_key_down(button.second, true);
