@@ -4,6 +4,7 @@
 #include "State.h"
 #include "Sprite.h"
 #include "InputManager.h"
+#include "Sound.h"
 
 #include <string>
 
@@ -14,6 +15,7 @@ class CharacterSelectState : public State {
 private:
 	Sprite background[2], planet, character_slots;
 	Sprite name_tag[4], number[4], selected_tag, ready_to_fight;
+	Sound blocked, selected_sound, changed;
 	int cur_selection_row[4], cur_selection_col[4], cur_skin[4];
 	bool selected[4], ready;
 

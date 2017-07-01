@@ -1,5 +1,6 @@
-#include "JoystickConfigState.h"
+#include "SDL_mixer.h"
 
+#include "JoystickConfigState.h"
 #include "InputManager.h"
 #include "MenuState.h"
 #include "OptionsState.h"
@@ -29,6 +30,8 @@
 
 
 JoystickConfigState::JoystickConfigState(int joystick_id){
+	Mix_AllocateChannels(50);
+
 	background = Sprite("joysticks/help/background.png");
 	joystick_help = Sprite("joysticks/help/controls_help.png");
 	test_btn = Sprite("joysticks/help/a.png");
@@ -42,6 +45,10 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 
 	test_txt->set_pos(970, 650);
 	back_txt->set_pos(1154, 650);
+
+	blocked = Sound("menu/sound/cancel.ogg");
+	selected = Sound("menu/sound/select.ogg");
+	changed = Sound("menu/sound/cursor.ogg");
 
 	on_test = false;
 
@@ -82,6 +89,7 @@ void JoystickConfigState::update(float delta){
 	if(input_manager->key_press(InputManager::K_X) ||
 		input_manager->joystick_button_press(InputManager::A, 0)
 	){
+		selected.play();
 		on_test = true;
 	}
 
@@ -90,9 +98,11 @@ void JoystickConfigState::update(float delta){
 		input_manager->key_press(InputManager::K_LB)
 	){
 		if(on_test){
+			selected.play();
 			on_test = false;
 		}
 		else{
+			selected.play();
 			m_quit_requested = true;
 			Game::get_instance().push(new OptionsState());
 			return;
@@ -103,10 +113,12 @@ void JoystickConfigState::update(float delta){
 	if((input_manager->is_joystick_button_down(InputManager::R3, 0) &&
 		input_manager->is_joystick_button_down(InputManager::L3, 0))
 	){
+		selected.play();
 		on_test = false;
 	}
 
 	if(input_manager->joystick_button_press(InputManager::B, 0)){
+		selected.play();
 		m_quit_requested = true;
 		Game::get_instance().push(new OptionsState());
 		return;

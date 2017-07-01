@@ -1,3 +1,5 @@
+#include "SDL_mixer.h"
+
 #include "OptionsState.h"
 #include "MenuState.h"
 #include "InputManager.h"
@@ -18,6 +20,8 @@
 #define WHITE { 255, 255, 255, 255 }
 
 OptionsState::OptionsState(){
+	Mix_AllocateChannels(50);
+
 	current_option = 0;
 	on_submenu = false;
 
@@ -56,6 +60,7 @@ void OptionsState::update(float){
 			}
 		}
 		else{
+			selected.play();
 			m_quit_requested = true;
 			Game::get_instance().push(new MenuState(true));
 			return;
