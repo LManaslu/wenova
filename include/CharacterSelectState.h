@@ -4,6 +4,7 @@
 #include "State.h"
 #include "Sprite.h"
 #include "InputManager.h"
+#include "Sound.h"
 
 #include <string>
 
@@ -16,6 +17,7 @@ private:
 	Sprite name_tag[4], number[4], selected_tag, ready_to_fight;
 	int cur_selection_row[4], cur_selection_col[4];
 	string selected_stage;
+	Sound blocked, selected_sound, changed;
 
 	vector<ii> name_tag_positions, number_delta, name_delta, sprite_pos;
 	vector<int> col_slots, row_slots;
