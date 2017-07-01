@@ -6,12 +6,14 @@
 #include "Text.h"
 #include "Timer.h"
 #include "Sound.h"
+#include "Music.h"
 
 class MenuState : public State {
 private:
 	Sprite background, green_ship, red_ship, title, planet;
 	Text* start_option;
 	Sound blocked, selected, changed;
+	Music music;
 	Timer text_timer;
 	int current_option;
 	bool start_pressed, show_text;

@@ -25,6 +25,9 @@ void Music::stop(){
 		printf("Stop music: %s\n", Mix_GetError());
 		exit(-1);
 	}
+
+	Mix_FreeMusic(music.get());
+	music = nullptr;
 }
 
 void Music::open(string file){
