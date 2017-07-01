@@ -47,6 +47,10 @@ MenuState::MenuState(bool main_menu){
 	blocked = Sound("menu/sound/cancel.ogg");
 	selected = Sound("menu/sound/select.ogg");
 	changed = Sound("menu/sound/cursor.ogg");
+
+	music = Music("menu/wenova.ogg");
+	if(!Mix_PlayingMusic())
+		music.play();
 }
 
 void MenuState::update(float delta){
@@ -59,8 +63,8 @@ void MenuState::update(float delta){
 
 	InputManager * input_manager = InputManager::get_instance();
 
-	// handling general inputs
 	if(input_manager->quit_requested() || pressed[SELECT] || pressed[B]){
+		music.stop();
 		m_quit_requested = true;
 		return;
 	}
