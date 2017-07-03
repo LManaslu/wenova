@@ -20,6 +20,7 @@ CharacterSelectState::CharacterSelectState(){
 	memset(selected, false, sizeof selected);
 
 	planet = Sprite("character_select/planet.png", 8, FRAME_TIME);
+	planet.set_scale(1.5);
 	character_slots = Sprite("character_select/character_slots.png");
 	selected_tag = Sprite("character_select/selected.png");
 	ready_to_fight = Sprite("character_select/ready_to_fight.png");
@@ -236,7 +237,7 @@ void CharacterSelectState::update(float delta){
 
 void CharacterSelectState::render(){
 	background[0].render(0, 0);
-	planet.render(423, 177);
+	planet.render(640 - planet.get_width() / 2, 360 - planet.get_height() / 2);
 	background[1].render(0, 0);
 	character_slots.render(0, 0);
 
