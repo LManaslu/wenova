@@ -7,7 +7,6 @@ State::State(){
 }
 
 State::~State(){
-
 }
 
 void State::add_object(GameObject * object){
