@@ -1,4 +1,5 @@
 #include "CharacterSelectState.h"
+#include "StageSelectState.h"
 #include "Game.h"
 #include "MenuState.h"
 #include "BattleState.h"
@@ -13,7 +14,7 @@
 #define COL_SLOTS 2
 #define ROW_SLOTS 4
 
-CharacterSelectState::CharacterSelectState(){
+CharacterSelectState::CharacterSelectState(string cselected_stage){
 	memset(cur_selection_col, 0, sizeof cur_selection_col);
 	memset(cur_selection_row, 0, sizeof cur_selection_row);
 	memset(cur_skin, 0, sizeof cur_skin);
@@ -26,6 +27,8 @@ CharacterSelectState::CharacterSelectState(){
 	ready_to_fight = Sprite("character_select/ready_to_fight.png");
 
 	ready = false;
+
+	selected_stage = cselected_stage;
 
 	for(int i=0;i<N_BACKGROUNDS;i++){
 		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
@@ -82,6 +85,7 @@ void CharacterSelectState::update(float delta){
 
 	if(input_manager->quit_requested()){
 		m_quit_requested = true;
+		Game::get_instance().push(new StageSelectState());
 		return;
 	}
 
@@ -94,7 +98,7 @@ void CharacterSelectState::update(float delta){
 		){
 			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
-			Game::get_instance().push(new BattleState("1", "swamp_song.ogg", export_players()));
+			Game::get_instance().push(new BattleState(selected_stage, "music.ogg", export_players()));
 			return;
 		}
 	}

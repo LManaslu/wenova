@@ -1,4 +1,7 @@
 #include "StageSelectState.h"
+#include "MenuState.h"
+#include "CharacterSelectState.h"
+#include "Game.h"
 #include <string>
 
 using std::to_string;
@@ -33,6 +36,16 @@ void StageSelectState::update(float delta) {
 	}
 	if(input_manager->key_press(InputManager::K_RIGHT)) {
 		update_stage_select(1);
+	}
+
+	if(input_manager->key_press(InputManager::K_A)) {
+		Game::get_instance().push(new CharacterSelectState(to_string(stage_select + 1)));
+	}
+
+	if(input_manager->key_press(InputManager::K_B)) {
+		m_quit_requested = true;
+		Game::get_instance().push(new MenuState(true));
+		return;
 	}
 
 	planet.update(delta);
