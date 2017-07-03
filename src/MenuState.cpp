@@ -78,7 +78,7 @@ void MenuState::update(float delta){
 		(input_manager->is_joystick_button_down(InputManager::LB, 0) and input_manager->is_joystick_button_down(InputManager::RT, 0) and input_manager->is_joystick_button_down(InputManager::Y, 0))
 	){
 		m_quit_requested = true;
-		Game::get_instance().push(new EditState("1"));
+		Game::get_instance().push(new EditState("2"));
 		return;
 	}
 
@@ -101,12 +101,6 @@ void MenuState::update(float delta){
 
 			return;
 		}
-	}
-
-	if(is_holding[LB] && is_holding[RT] && is_holding[Y]){
-		m_quit_requested = true;
-		Game::get_instance().push(new EditState("2"));
-		return;
 	}
 
 	if(start_pressed){

@@ -125,7 +125,7 @@ void Fighter::notify_collision(GameObject & object){
 	int not_in_ultimate = (tags["in_ultimate"] ? 0 : 1);
 	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
-	if(object.is("floor") && speed.y >= 0 && not on_floor && abs(floor_y - (box.y + box.height * 0.5)) < 10){
+	if(object.is("floor") && speed.y >= 0 && abs(floor_y - (box.y + box.height * 0.5)) < 10){
 		if(pass_through){
 			if(object.is("platform")){
 				if(((Floor&)object).get_id() == last_collided_floor)
@@ -135,8 +135,12 @@ void Fighter::notify_collision(GameObject & object){
 			}
 		}
 
+		int floor_id = ((Floor&)object).get_id();
 		speed.y = 0;
-		box.y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+		float new_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - (box.height + object.box.height ) * 0.5;
+		if(last_collided_floor != floor_id) box.y = min(box.y, new_y);
+		else box.y = new_y;
+
 
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
