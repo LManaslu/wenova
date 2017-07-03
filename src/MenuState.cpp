@@ -6,7 +6,7 @@
 #include "EditState.h"
 #include "Game.h"
 #include "Resources.h"
-#include "CharacterSelectState.h"
+#include "StageSelectState.h"
 
 #define OPTION_OFFSET 50
 
@@ -92,21 +92,14 @@ void MenuState::update(float delta){
 			current_option = 0;
 		}
 		else{
-			switch(current_option){
-				case 0:
-					m_quit_requested = true;
-					Game::get_instance().push(new CharacterSelectState());
-					return;
+			m_quit_requested = true;
 
-				case 1:
-					m_quit_requested = true;
-					Game::get_instance().push(new OptionsState());
-					return;
+			if(current_option == 0)
+				Game::get_instance().push(new StageSelectState());
+			else if(current_option == 1)
+				Game::get_instance().push(new OptionsState());
 
-				case 2:
-					m_quit_requested = true;
-					return;
-			}
+			return;
 		}
 	}
 
