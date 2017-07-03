@@ -13,7 +13,12 @@ class StageSelectState : public State {
 private:
 	Sprite background[N_BACKGROUNDS], planet, stage[N_STAGES];
 	int stage_select = 0;
+	enum Button{LEFT_BUTTON, RIGHT_BUTTON, SELECT_BUTTON, BACK_BUTTON};
+	bool pressed[5];
+	bool is_holding[5];
+	bool released[5];
 
+	void process_input();
 public:
 	StageSelectState();
 
