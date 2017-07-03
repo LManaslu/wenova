@@ -1,5 +1,7 @@
 #include "StageSelectState.h"
+
 #include "MenuState.h"
+#include "EditState.h"
 #include "CharacterSelectState.h"
 #include "Game.h"
 #include <string>
@@ -8,16 +10,18 @@
 
 using std::to_string;
 
-StageSelectState::StageSelectState() {
+StageSelectState::StageSelectState(bool cgo_to_edit) {
 	planet = Sprite("stage_select/planet.png", 8, FRAME_TIME);
 	planet.set_scale(1.5);
+	go_to_edit = cgo_to_edit;
+	n_stages = 2 + (go_to_edit ? 0 : 1);
 
 	for(int i=0;i<N_BACKGROUNDS;i++){
 		background[i] = Sprite("stage_select/background_" + to_string(i) + ".png");
 	}
 
-	for(int i=0;i<N_STAGES;i++){
-		stage[i] = Sprite("stage_select/stage_" + to_string(i) + ".png");
+	for(int i=0;i<n_stages;i++){
+		stage[i] = Sprite("stage_select/stage_" + to_string(i + 1) + ".png");
 	}
 }
 
@@ -39,11 +43,15 @@ void StageSelectState::update(float delta) {
 
 	if(pressed[SELECT_BUTTON]) {
 		m_quit_requested = true;
-		if(stage_select == 0){
+		if(stage_select == 2){
 			srand(clock());
-			stage_select = rand() % (N_STAGES - 1) + 1;
+			stage_select = rand() % (n_stages - (go_to_edit ? 0 : 1));
 		}
-		Game::get_instance().push(new CharacterSelectState(to_string(stage_select)));
+		if(go_to_edit)
+			Game::get_instance().push(new EditState(to_string(stage_select + 1)));
+		else
+			Game::get_instance().push(new CharacterSelectState(to_string(stage_select + 1)));
+
 	}
 
 	if(pressed[BACK_BUTTON]) {
@@ -60,7 +68,7 @@ void StageSelectState::render() {
 	planet.render(640 - planet.get_width() / 2, 360 - planet.get_height() / 2);
 	background[1].render();
 
-	for(int i=0;i<N_STAGES;i++){
+	for(int i=0;i<n_stages;i++){
 		stage[i].render(i * 780 - stage_select * 780);
 	}
 }
@@ -76,7 +84,7 @@ void StageSelectState::resume() {
 void StageSelectState::update_stage_select(int increment) {
 	stage_select += increment;
 	if(stage_select < 0) stage_select = 0;
-	if(stage_select > N_STAGES - 1) stage_select = N_STAGES - 1;
+	if(stage_select > n_stages - 1) stage_select = n_stages - 1;
 }
 
 void StageSelectState::process_input(){
