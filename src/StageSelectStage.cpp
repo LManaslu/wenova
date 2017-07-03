@@ -4,11 +4,9 @@
 #include "Game.h"
 #include <string>
 
-using std::to_string;
+#include <cstdlib>
 
-#define N_BACKGROUNDS 2
-#define N_STAGES 2
-#define FRAME_TIME 7.5
+using std::to_string;
 
 StageSelectState::StageSelectState() {
 	planet = Sprite("stage_select/planet.png", 8, FRAME_TIME);
@@ -19,7 +17,7 @@ StageSelectState::StageSelectState() {
 	}
 
 	for(int i=0;i<N_STAGES;i++){
-		stage[i] = Sprite("stage_select/stage_" + to_string(i + 1) + ".png");
+		stage[i] = Sprite("stage_select/stage_" + to_string(i) + ".png");
 	}
 }
 
@@ -39,7 +37,12 @@ void StageSelectState::update(float delta) {
 	}
 
 	if(input_manager->key_press(InputManager::K_A)) {
-		Game::get_instance().push(new CharacterSelectState(to_string(stage_select + 1)));
+		m_quit_requested = true;
+		if(stage_select == 0){
+			srand(clock());
+			stage_select = rand() % (N_STAGES - 1) + 1;
+		}
+		Game::get_instance().push(new CharacterSelectState(to_string(stage_select)));
 	}
 
 	if(input_manager->key_press(InputManager::K_B)) {
@@ -58,7 +61,7 @@ void StageSelectState::render() {
 
 	for(int i=0;i<N_STAGES;i++){
 		stage[i].render(i * 780 - stage_select * 780);
-	}	
+	}
 }
 
 void StageSelectState::pause() {

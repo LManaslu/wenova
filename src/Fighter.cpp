@@ -149,7 +149,6 @@ void Fighter::notify_collision(GameObject & object){
 		Fighter & fighter = (Fighter &) object;
 
 		if(fighter.is_attacking() and fighter.get_id() != partner_id){
-			printf("In fighter stunt\n");
 			int left = AttackDirection::ATK_LEFT * (fighter.box.x > box.x);
 			int right = AttackDirection::ATK_RIGHT * (fighter.box.x <= box.x);
 			int up = AttackDirection::ATK_UP * (fighter.box.y > box.y);
