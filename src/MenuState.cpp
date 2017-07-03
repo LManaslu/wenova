@@ -42,9 +42,9 @@ MenuState::MenuState(bool main_menu){
 
 	InputManager::get_instance()->set_analogic_value(32000);
 
-	blocked = Sound("sound/cancel.ogg");
-	selected = Sound("sound/select.ogg");
-	changed = Sound("sound/cursor.ogg");
+	blocked = Sound("menu/sound/cancel.ogg");
+	selected = Sound("menu/sound/select.ogg");
+	changed = Sound("menu/sound/cursor.ogg");
 }
 
 void MenuState::update(float delta){

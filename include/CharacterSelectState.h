@@ -23,7 +23,6 @@ private:
 	vector<int> col_slots, row_slots;
 	vector< vector<string> > names;
 
-	map<string, Sound> char_sound;
 	map<string, Sprite> char_name;
 	map<string, vector<bool> > available_skin;
 	unordered_map<string, vector<Sprite> > char_sprite;

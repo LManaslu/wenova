@@ -12,6 +12,7 @@
 #define TEXT_OFFSET 8
 #define TEXT_HEIGHT 30
 #define OPTION_OFFSET 70
+#define BACK_BUTTON 2
 
 #define DARK_GREY { 80, 80, 80, 1 }
 #define DARK_GREEN { 55, 74, 38, 1 }
@@ -27,9 +28,9 @@ OptionsState::OptionsState(){
 	background = Sprite("menu/background.jpg");
 	title = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, 100);
 
-	blocked = Sound("sound/cancel.ogg");
-	selected = Sound("sound/select.ogg");
-	changed = Sound("sound/cursor.ogg");
+	blocked = Sound("menu/sound/cancel.ogg");
+	selected = Sound("menu/sound/select.ogg");
+	changed = Sound("menu/sound/cursor.ogg");
 
 	build_options();
 
@@ -175,7 +176,7 @@ void OptionsState::render(){
 	title->render();
 
 	for(int i=0; i<(int)options.size(); i++){
-		if(on_submenu && i != current_option && i != (int)options.size()-1){
+		if(on_submenu && i != BACK_BUTTON && i != current_option){
 			options[i]->set_color(DARK_GREY);
 		}
 		else{
