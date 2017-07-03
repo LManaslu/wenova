@@ -27,8 +27,13 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 
 	music.play();
 
-	vector< pair<int, int> > char_positions = { ii(177, 313), ii(276, 510), ii(1128, 245), ii(954, 474) };
+	vector< pair<int, int> > char_positions;
 	vector< pair<int, int> > hud_positions = { ii(133, 599.5), ii(133, 679.5), ii(1147, 599.5), ii(1147, 679.5) };
+
+	if(stage == "1") 
+		char_positions = { ii(177, 313), ii(276, 510), ii(1128, 245), ii(954, 474) };
+	else
+		char_positions = { ii(116, 227), ii(146, 394), ii(1036, 221), ii(1063, 382) };
 
 	Fighter* players[N_PLAYERS];
 
