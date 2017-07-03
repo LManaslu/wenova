@@ -79,8 +79,8 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 void JoystickConfigState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
-	if(input_manager->key_press(InputManager::K_X) ||
-		input_manager->joystick_button_press(InputManager::A, 0)
+	if(((input_manager->key_press(InputManager::K_X) ||
+		input_manager->joystick_button_press(InputManager::A, 0)) && !on_test)
 	){
 		on_test = true;
 	}
@@ -101,12 +101,12 @@ void JoystickConfigState::update(float delta){
 
 	// joystick
 	if((input_manager->is_joystick_button_down(InputManager::R3, 0) &&
-		input_manager->is_joystick_button_down(InputManager::L3, 0))
+		input_manager->is_joystick_button_down(InputManager::L3, 0) && on_test)
 	){
 		on_test = false;
 	}
 
-	if(input_manager->joystick_button_press(InputManager::B, 0)){
+	if(input_manager->joystick_button_press(InputManager::B, 0) && !on_test){
 		m_quit_requested = true;
 		Game::get_instance().push(new OptionsState());
 		return;
