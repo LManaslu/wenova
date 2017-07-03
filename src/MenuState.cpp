@@ -103,6 +103,12 @@ void MenuState::update(float delta){
 		}
 	}
 
+	if(is_holding[LB] && is_holding[RT] && is_holding[Y]){
+		m_quit_requested = true;
+		Game::get_instance().push(new EditState("2"));
+		return;
+	}
+
 	if(start_pressed){
 		// handling options positioning
 		options[current_option]->set_pos(FONT_X, FONT_Y, true, true);
