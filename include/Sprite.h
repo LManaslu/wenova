@@ -40,7 +40,7 @@ public:
 	void set_frame_time(float cframe_time);
 
 	void update(float delta);
-	void render(int x, int y, float angle = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void render(int x = 0, int y = 0, float angle = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
   	void set_scale_x(float scale);
 	void set_scale_y(float scale);
