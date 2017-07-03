@@ -1,5 +1,3 @@
-#include "SDL_mixer.h"
-
 #include "OptionsState.h"
 #include "MenuState.h"
 #include "InputManager.h"
@@ -12,6 +10,7 @@
 #define TEXT_OFFSET 8
 #define TEXT_HEIGHT 30
 #define OPTION_OFFSET 70
+#define BACK_BUTTON 2
 
 #define DARK_GREY { 80, 80, 80, 1 }
 #define DARK_GREEN { 55, 74, 38, 1 }
@@ -19,17 +18,12 @@
 #define WHITE { 255, 255, 255, 255 }
 
 OptionsState::OptionsState(){
-	Mix_AllocateChannels(50);
-
 	current_option = 0;
 	on_submenu = false;
 
 	background = Sprite("menu/background.jpg");
-	title = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, 100);
 
-	blocked = Sound("sound/cancel.ogg");
-	selected = Sound("sound/select.ogg");
-	changed = Sound("sound/cursor.ogg");
+	title = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, 100);
 
 	build_options();
 
@@ -39,8 +33,6 @@ OptionsState::OptionsState(){
 }
 
 void OptionsState::update(float){
-	process_input();
-
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
@@ -49,26 +41,26 @@ void OptionsState::update(float){
 		return;
 	}
 
-	if(pressed[BACK] || pressed[SELECT]){
+	if(input_manager->key_press(InputManager::K_SELECT) ||
+		input_manager->key_press(InputManager::K_LB) ||
+		input_manager->joystick_button_press(InputManager::B, 0)
+	){
 		if(on_submenu){
-			// FIXME insert back sound
-			selected.play();
 			on_submenu = false;
 			for(unsigned i = 0; i < options.size(); ++i){
 				current_sub_option[i] = get_current_sub_option(i);
 			}
 		}
 		else{
-			selected.play();
 			m_quit_requested = true;
 			Game::get_instance().push(new MenuState(true));
 			return;
 		}
 	}
 
-	if(pressed[UP]){
-		changed.play();
-
+	if(input_manager->key_press(InputManager::K_UP) ||
+		input_manager->joystick_button_press(InputManager::UP, 0)
+	){
 		if(not on_submenu){
 			if(current_option != 0){
 				current_option--;
@@ -81,9 +73,9 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(pressed[DOWN]){
-		changed.play();
-
+	if(input_manager->key_press(InputManager::K_DOWN) ||
+		input_manager->joystick_button_press(InputManager::DOWN, 0)
+	){
 		if(not on_submenu){
 			if(current_option != (int)options.size() - 1){
 				current_option++;
@@ -97,9 +89,11 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(pressed[START] || pressed[A]){
-		selected.play();
-
+	if(input_manager->key_press(InputManager::K_START) ||
+		input_manager->key_press(InputManager::K_X) ||
+		input_manager->joystick_button_press(InputManager::START, 0) ||
+		input_manager->joystick_button_press(InputManager::A, 0)
+	){
 		if(not on_submenu){
 			if(current_option == (int)options.size() - 1){ // back button
 				m_quit_requested = true;
@@ -175,7 +169,7 @@ void OptionsState::render(){
 	title->render();
 
 	for(int i=0; i<(int)options.size(); i++){
-		if(on_submenu && i != current_option && i != (int)options.size()-1){
+		if(on_submenu && i != BACK_BUTTON && i != current_option){
 			options[i]->set_color(DARK_GREY);
 		}
 		else{
@@ -245,43 +239,5 @@ int OptionsState::get_current_sub_option(int option){
 		return 0;
 	}else{ //fullscreen
 		return Config::is_fullscreen();
-	}
-}
-
-void OptionsState::process_input(){
-	InputManager * input_manager = InputManager::get_instance();
-
-	vector< pair<int, int> > buttons = {
-		ii(BACK, InputManager::K_LB),
-		ii(SELECT, InputManager::K_SELECT),
-		ii(UP, InputManager::K_UP),
-		ii(DOWN, InputManager::K_DOWN),
-		ii(START, InputManager::K_START),
-		ii(A, InputManager::K_X)
-	};
-
-	vector< pair<int, int> > joystick_buttons = {
-		ii(BACK, InputManager::B),
-		ii(SELECT, InputManager::SELECT),
-		ii(UP, InputManager::UP),
-		ii(DOWN, InputManager::DOWN),
-		ii(START, InputManager::START),
-		ii(A, InputManager::A)
-	};
-
-	int id = (SDL_NumJoysticks() == 0 ? -1 : 0);
-
-	if(id != -1){
-		for(ii button : joystick_buttons){
-			pressed[button.first] = input_manager->joystick_button_press(button.second, id);
-			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, id);
-			released[button.first] = input_manager->joystick_button_release(button.second, id);
-		}
-	}else{
-		for(ii button : buttons){
-			pressed[button.first] = input_manager->key_press(button.second, true);
-			is_holding[button.first] = input_manager->is_key_down(button.second, true);
-			released[button.first] = input_manager->key_release(button.second, true);
-		}
 	}
 }

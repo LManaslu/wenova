@@ -4,7 +4,9 @@
 #include "State.h"
 #include "Text.h"
 #include "Sprite.h"
-#include "Sound.h"
+
+// maybe
+// #include "Timer.h"
 
 #include <utility>
 #include <map>
@@ -15,18 +17,12 @@ using std::map;
 class OptionsState : public State {
 private:
 	Sprite background;
-	Text *title;
-	Sound blocked, selected, changed;
-	int current_option;
-	bool on_submenu;
-	map<string, vector<Text*> > sub_options;
 	vector<Text*> options;
+	map<string, vector<Text*> > sub_options;
+	Text *title;
+	int current_option;
 	vector<int> current_sub_option;
-
-	enum Button { BACK, SELECT, UP, DOWN, START, A };
-	bool pressed[10];
-	bool is_holding[10];
-	bool released[10];
+	bool on_submenu;
 
 	int get_current_sub_option(int option);
 
@@ -40,8 +36,6 @@ public:
 
 	void pause();
 	void resume();
-
-	void process_input();
 };
 
 #endif
