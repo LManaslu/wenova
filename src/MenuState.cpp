@@ -33,6 +33,7 @@ MenuState::MenuState(bool main_menu){
 	start_option = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "PRESS START", LIGHT_GREEN, FONT_X, FONT_Y);
 
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "START", WHITE, FONT_X, FONT_Y));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EDIT", WHITE, FONT_X, FONT_Y));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, FONT_Y));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", WHITE, FONT_X, FONT_Y));
 
@@ -97,6 +98,8 @@ void MenuState::update(float delta){
 			if(current_option == 0)
 				Game::get_instance().push(new StageSelectState());
 			else if(current_option == 1)
+				Game::get_instance().push(new StageSelectState(true));
+			else if(current_option == 2)
 				Game::get_instance().push(new OptionsState());
 
 			return;
