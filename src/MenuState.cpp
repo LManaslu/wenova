@@ -99,7 +99,7 @@ void MenuState::update(float delta){
 		options[current_option]->set_pos(FONT_X, FONT_Y, true, true);
 		options[current_option]->set_color(LIGHT_GREEN);
 
-		for(int idx = 0; idx < (int)options.size(); idx++){
+		for(int idx = 0; idx < options.size(); idx++){
 			if(idx == current_option) continue;
 			bool before = idx < current_option;
 			Text* option = options[idx + (before ? 1 : -1)];
