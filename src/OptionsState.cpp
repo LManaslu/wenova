@@ -22,11 +22,8 @@ OptionsState::OptionsState(){
 	on_submenu = false;
 
 	background = Sprite("menu/background.jpg");
-	title = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, 100);
 
-	blocked = Sound("menu/sound/cancel.ogg");
-	selected = Sound("menu/sound/select.ogg");
-	changed = Sound("menu/sound/cursor.ogg");
+	title = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "OPTIONS", WHITE, FONT_X, 100);
 
 	build_options();
 
@@ -48,8 +45,6 @@ void OptionsState::update(float){
 
 	if(pressed[BACK] || pressed[SELECT]){
 		if(on_submenu){
-			// FIXME insert back sound
-			selected.play();
 			on_submenu = false;
 			for(unsigned i = 0; i < options.size(); ++i){
 				current_sub_option[i] = get_current_sub_option(i);
@@ -63,8 +58,6 @@ void OptionsState::update(float){
 	}
 
 	if(pressed[UP]){
-		changed.play();
-
 		if(not on_submenu){
 			if(current_option != 0){
 				current_option--;
@@ -78,8 +71,6 @@ void OptionsState::update(float){
 	}
 
 	if(pressed[DOWN]){
-		changed.play();
-
 		if(not on_submenu){
 			if(current_option != (int)options.size() - 1){
 				current_option++;
@@ -94,8 +85,6 @@ void OptionsState::update(float){
 	}
 
 	if(pressed[START] || pressed[A]){
-		selected.play();
-
 		if(not on_submenu){
 			if(current_option == (int)options.size() - 1){ // back button
 				m_quit_requested = true;
