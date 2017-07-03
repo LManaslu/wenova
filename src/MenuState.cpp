@@ -1,5 +1,3 @@
-#include "SDL_mixer.h"
-
 #include "MenuState.h"
 #include "OptionsState.h"
 #include "InputManager.h"
@@ -22,8 +20,6 @@
 #define TEXT_TIMER_COOLDOWN 50
 
 MenuState::MenuState(bool main_menu){
-	Mix_AllocateChannels(50);
-
 	current_option = 0;
 	start_pressed = main_menu;
 	show_text = true;

@@ -1,5 +1,3 @@
-#include "SDL_mixer.h"
-
 #include "CharacterSelectState.h"
 #include "Game.h"
 #include "MenuState.h"
@@ -16,8 +14,6 @@
 #define ROW_SLOTS 4
 
 CharacterSelectState::CharacterSelectState(){
-	Mix_AllocateChannels(50);
-
 	memset(cur_selection_col, 0, sizeof cur_selection_col);
 	memset(cur_selection_row, 0, sizeof cur_selection_row);
 	memset(cur_skin, 0, sizeof cur_skin);
@@ -27,10 +23,6 @@ CharacterSelectState::CharacterSelectState(){
 	character_slots = Sprite("character_select/character_slots.png");
 	selected_tag = Sprite("character_select/selected.png");
 	ready_to_fight = Sprite("character_select/ready_to_fight.png");
-
-	blocked = Sound("menu/sound/cancel.ogg");
-	selected_sound = Sound("menu/sound/select.ogg");
-	changed = Sound("menu/sound/cursor.ogg");
 
 	for(int i=0;i<N_BACKGROUNDS;i++){
 		background[i] = Sprite("character_select/background_" + to_string(i + 1) + ".png");
@@ -81,7 +73,6 @@ void CharacterSelectState::update(float delta){
 	}
 
 	if(pressed[FIRST_PLAYER][SELECT] || (not selected[FIRST_PLAYER] && pressed[FIRST_PLAYER][BACK])){
-		selected_sound.play();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState(true));
 		return;
@@ -91,7 +82,6 @@ void CharacterSelectState::update(float delta){
 	if(all_players_selected()){
 		ready = true;
 		if(pressed[FIRST_PLAYER][START] || pressed[FIRST_PLAYER][A]){
-			selected_sound.play();
 			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
 			Game::get_instance().push(new BattleState("1", "swamp_song.ogg", export_players()));
@@ -103,7 +93,6 @@ void CharacterSelectState::update(float delta){
 		if(not selected[i]){
 			// random character
 			if(pressed[i][Y]){
-				selected_sound.play();
 				int rand_col = 0, rand_row = 0, rand_skin = 0;
 
 				do{
@@ -127,7 +116,6 @@ void CharacterSelectState::update(float delta){
 
 			// change character
 			if(pressed[i][LEFT]){
-				changed.play();
 				if(cur_selection_col[i] != 0 &&
 					character_enabled(cur_selection_row[i], cur_selection_col[i] - 1)
 				){
@@ -136,7 +124,6 @@ void CharacterSelectState::update(float delta){
 			}
 
 			if(pressed[i][RIGHT]){
-				changed.play();
 				if(cur_selection_col[i] + 1 < COL_SLOTS &&
 					character_enabled(cur_selection_row[i], cur_selection_col[i] + 1)
 				){
@@ -145,7 +132,6 @@ void CharacterSelectState::update(float delta){
 			}
 
 			if(pressed[i][UP]){
-				changed.play();
 				if(cur_selection_row[i] != 0 &&
 					character_enabled(cur_selection_row[i] - 1, cur_selection_col[i])
 				){
@@ -154,7 +140,6 @@ void CharacterSelectState::update(float delta){
 			}
 
 			if(pressed[i][DOWN]){
-				changed.play();
 				if(cur_selection_row[i] + 1 < ROW_SLOTS &&
 					character_enabled(cur_selection_row[i] + 1, cur_selection_col[i])
 				){
@@ -169,12 +154,10 @@ void CharacterSelectState::update(float delta){
 
 			// change skin
 			if(pressed[i][LT]){
-				changed.play();
 				cur_skin[i] = (cur_skin[i] - 1 + N_SKINS) % N_SKINS;
 			}
 
 			if(pressed[i][RT]){
-				changed.play();
 				cur_skin[i] = (cur_skin[i] + 1) % N_SKINS;
 			}
 
@@ -185,11 +168,9 @@ void CharacterSelectState::update(float delta){
 				string char_selected = names[col_sel][row_sel];
 
 				if(not available_skin[char_selected][cur_skin[i]]){
-					blocked.play();
 					// printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
 				}
 				else{
-					selected_sound.play();
 					// printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
 					available_skin[char_selected][cur_skin[i]] = false;
 					selected[i] = true;
