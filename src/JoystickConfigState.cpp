@@ -80,26 +80,19 @@ void JoystickConfigState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
 	if(on_test){
-		if((input_manager->is_joystick_button_down(InputManager::R3, 0) &&
-			input_manager->is_joystick_button_down(InputManager::L3, 0)) ||
-			input_manager->key_press(InputManager::K_SELECT) ||
-			input_manager->key_press(InputManager::K_MENU_B)){
+		if(input_manager->is_joystick_button_down(InputManager::R3, 0) &&
+			input_manager->is_joystick_button_down(InputManager::L3, 0)){
 			on_test = false;
 		}
 	}else{
-		if(input_manager->key_press(InputManager::K_SELECT) ||
-			input_manager->key_press(InputManager::K_MENU_B) ||
-			input_manager->joystick_button_press(InputManager::SELECT, 0) ||
-			input_manager->joystick_button_press(InputManager::B, 0)
-		){
+		if(input_manager->joystick_button_press(InputManager::SELECT, 0) ||
+		   input_manager->joystick_button_press(InputManager::B, 0)){
 			m_quit_requested = true;
 			Game::get_instance().push(new OptionsState());
 			return;
 		}
 
-		if(((input_manager->key_press(InputManager::K_MENU_A) ||
-			input_manager->joystick_button_press(InputManager::A, 0)))
-		){
+		if(input_manager->joystick_button_press(InputManager::A, 0)){
 			on_test = true;
 		}
 	}
