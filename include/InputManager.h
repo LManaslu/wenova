@@ -51,8 +51,8 @@ private:
 	int analogic_value = 20000;
 	int trigger_value = 32000;
 
-	void emulate_joystick(int key_id, bool state, int update_counter);
-
+	void emulate_joystick(int key_id, bool state);
+	void reset_keyboard_to_joystick();
 public:
 	InputManager();
 	~InputManager();
@@ -120,6 +120,8 @@ public:
 	static const int RIGHT_MOUSE_BUTTON = SDL_BUTTON_RIGHT;
 	static const int ENTER_KEY = SDLK_RETURN;
 	static const int K_RANDOM = SDLK_u;
+	static const int K_L3 = SDLK_COMMA;
+	static const int K_R3 = SDLK_PERIOD;
 
 	// keys for menus
 	static const int K_MENU_A = SDLK_h;
