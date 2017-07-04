@@ -116,7 +116,7 @@ public:
 	static const int ENTER_KEY = SDLK_RETURN;
 	static const int K_RANDOM = SDLK_u;
 
-  // keys for menus
+	// keys for menus
 	static const int K_MENU_A = SDLK_h;
 	static const int K_MENU_B = SDLK_j;
 	static const int K_MENU_Y = SDLK_u;
