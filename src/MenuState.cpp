@@ -46,48 +46,32 @@ void MenuState::update(float delta){
 	green_ship.update(delta);
 	red_ship.update(delta);
 
+	process_input();
+
 	InputManager * input_manager = InputManager::get_instance();
 
 	// handling general inputs
-	if(input_manager->quit_requested() ||
-		input_manager->key_press(InputManager::K_SELECT) ||
-		input_manager->joystick_button_press(InputManager::B, 0)
-	){
+	if(input_manager->quit_requested() || pressed[SELECT] || pressed[B]){
 		m_quit_requested = true;
 		return;
 	}
 
 	// handling options input
-	if(input_manager->key_press(InputManager::K_LEFT) ||
-		input_manager->joystick_button_press(InputManager::LEFT, 0)
-	){
-		if(current_option != 0)
-			current_option--;
+	if(pressed[LEFT] && current_option != 0){
+		current_option--;
 	}
 
-	if(input_manager->key_press(InputManager::K_RIGHT) ||
-		input_manager->joystick_button_press(InputManager::RIGHT, 0)
-	){
-		if(current_option != (int)options.size() - 1)
-			current_option++;
+	if(pressed[RIGHT] && current_option != (int)options.size() - 1){
+		current_option++;
 	}
 
-	if((input_manager->is_key_down(InputManager::K_LB) and
-		input_manager->is_key_down(InputManager::K_RB) and
-		input_manager->is_key_down(InputManager::K_Y))
-		||
-		(input_manager->is_joystick_button_down(InputManager::LB, 0) and input_manager->is_joystick_button_down(InputManager::RT, 0) and input_manager->is_joystick_button_down(InputManager::Y, 0))
-	){
+	if(is_holding[LB] and is_holding[RT] and is_holding[Y]){
 		m_quit_requested = true;
 		Game::get_instance().push(new EditState("2"));
 		return;
 	}
 
-	if(input_manager->key_press(InputManager::K_START) ||
-		input_manager->key_press(InputManager::K_X) ||
-		input_manager->joystick_button_press(InputManager::START, 0) ||
-		input_manager->joystick_button_press(InputManager::A, 0)
-	){
+	if(pressed[START] || pressed[A]){
 		if(not start_pressed){
 			start_pressed = true;
 			current_option = 0;
@@ -153,6 +137,48 @@ void MenuState::render(){
 	}
 	else if(show_text){
 		start_option->render(0, 0);
+	}
+}
+
+void MenuState::process_input(){
+	InputManager * input_manager = InputManager::get_instance();
+
+	vector< pair<int, int> > buttons = {
+		ii(A, InputManager::K_MENU_A),
+		ii(B, InputManager::K_MENU_B),
+		ii(Y, InputManager::K_MENU_Y),
+		ii(LEFT, InputManager::K_LEFT),
+		ii(RIGHT, InputManager::K_RIGHT),
+		ii(SELECT, InputManager::K_SELECT),
+		ii(START, InputManager::K_START),
+		ii(LB, InputManager::K_MENU_LB),
+		ii(RT, InputManager::K_RT)
+	};
+
+	vector< pair<int, int> > joystick_buttons = {
+		ii(A, InputManager::A),
+		ii(B, InputManager::B),
+		ii(Y, InputManager::Y),
+		ii(LEFT, InputManager::LEFT),
+		ii(RIGHT, InputManager::RIGHT),
+		ii(SELECT, InputManager::SELECT),
+		ii(START, InputManager::START),
+		ii(LB, InputManager::LB),
+		ii(RT, InputManager::RT)
+	};
+
+	int id = (SDL_NumJoysticks() == 0 ? -1 : 0);
+
+	if(id != -1){
+		for(ii button : joystick_buttons){
+			pressed[button.first] = input_manager->joystick_button_press(button.second, id);
+			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, id);
+		}
+	}else{
+		for(ii button : buttons){
+			pressed[button.first] = input_manager->key_press(button.second, true);
+			is_holding[button.first] = input_manager->is_key_down(button.second, true);
+		}
 	}
 }
 
