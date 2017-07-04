@@ -34,6 +34,8 @@ InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);
 
+	map_keyboard_to_joystick();
+
 	for(int i = 0; i < 4; ++i) controllers[i] = nullptr;
 	m_quit_requested = false;
 	update_counter = 0;
@@ -47,6 +49,7 @@ InputManager::~InputManager(){
 		joystick_state[i].clear();
 		joystick_update[i].clear();
 	}
+	keyboard_to_joystick.clear();
 	key_state.clear();
 	key_update.clear();
 }
@@ -75,12 +78,16 @@ void InputManager::update(){
 			key_id = event.key.keysym.sym;
 			key_state[key_id] = true;
 			key_update[key_id] = update_counter;
+			joystick_state[0][keyboard_to_joystick[key_id] - 1] = true;
+			joystick_update[0][keyboard_to_joystick[key_id] - 1] = update_counter;
 			break;
 
 			case SDL_KEYUP:
 			key_id = event.key.keysym.sym;
 			key_state[key_id] = false;
 			key_update[key_id] = update_counter;
+			joystick_state[0][keyboard_to_joystick[key_id] - 1] = false;
+			joystick_update[0][keyboard_to_joystick[key_id] - 1] = update_counter;
 			break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -133,7 +140,7 @@ void InputManager::update(){
 			button_id = event.cbutton.button;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			//printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
+			printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
 			case SDL_JOYBUTTONUP:
@@ -262,4 +269,23 @@ void InputManager::connect_joysticks(){
 			//exit(11);
 		}
 	}
+}
+
+void InputManager::map_keyboard_to_joystick(int joystick_id, int){
+	keyboard_to_joystick = {
+		{K_LEFT , LEFT + 1},
+		{K_RIGHT , RIGHT + 1},
+		{K_UP , UP + 1},
+		{K_DOWN , DOWN + 1},
+		{K_A, A + 1},
+		{K_B , B + 1},
+		{K_X , X + 1},
+		{K_Y , Y + 1},
+		{K_LB , LB + 1},
+		{K_RB , RB + 1},
+		{K_LT , LT + 1},
+		{K_RT , RT + 1},
+		{K_SELECT , SELECT + 1},
+		{K_START , START + 1}
+	};
 }
