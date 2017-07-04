@@ -299,7 +299,6 @@ vector< pair<string, string> > CharacterSelectState::export_players(){
 void CharacterSelectState::process_input(){
 	InputManager * input_manager = InputManager::get_instance();
 
-	// enum Button { A, B, Y, LEFT, RIGHT, UP, DOWN, SELECT, START, LT, RT };
 	vector< pair<int, int> > buttons = {
 		ii(A, InputManager::K_MENU_A),
 		ii(B, InputManager::K_MENU_B),

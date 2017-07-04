@@ -15,6 +15,9 @@ private:
 	bool start_pressed, show_text;
 	Timer text_timer;
 
+	enum Button { A, B, Y, LEFT, RIGHT, SELECT, START, LB, RT };
+	bool pressed[15], is_holding[15];
+
 public:
 	MenuState(bool main_menu = false);
 
@@ -23,6 +26,8 @@ public:
 
 	void pause();
 	void resume();
+
+	void process_input();
 };
 
 #endif
