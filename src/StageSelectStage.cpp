@@ -23,6 +23,8 @@ StageSelectState::StageSelectState(bool cgo_to_edit) {
 	for(int i=0;i<n_stages;i++){
 		stage[i] = Sprite("stage_select/stage_" + to_string(i + 1) + ".png");
 	}
+
+	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
 }
 
 void StageSelectState::update(float delta) {

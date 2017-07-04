@@ -29,6 +29,8 @@ OptionsState::OptionsState(){
 	for(unsigned i = 0; i < options.size(); ++i){
 		current_sub_option.push_back(get_current_sub_option(i));
 	}
+	
+	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
 }
 
 void OptionsState::update(float){

@@ -81,7 +81,7 @@ public:
 	void set_mouse_scale(float scale, int offset_x, int offset_y);
 	void set_analogic_value(int value);
 	void connect_joysticks();
-	void map_keyboard_to_joystick(int joystick_id = 0, int map_id = 0);
+	void map_keyboard_to_joystick(int map_id = 0);
 
 	// joystick keys
 	static const int UP = SDL_CONTROLLER_BUTTON_DPAD_UP;
@@ -145,6 +145,9 @@ public:
 	static const int K_INC_W = SDLK_PERIOD;
 	static const int K_DEC_W = SDLK_COMMA;
 	static const int K_DEL = SDLK_DELETE;
+
+	static const int MENU_MODE = 0;
+	static const int BATTLE_MODE = 1;
 };
 
 #endif

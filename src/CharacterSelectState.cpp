@@ -65,6 +65,8 @@ CharacterSelectState::CharacterSelectState(string cselected_stage){
 	sprite_pos = { ii(155, 32), ii(141, 379), ii(923, 34), ii(946, 381) };
 	col_slots = { 510, 645 };
 	row_slots = { 55, 197, 395, 536 };
+
+	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
 }
 
 void CharacterSelectState::update(float delta){

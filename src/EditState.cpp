@@ -27,6 +27,7 @@ EditState::EditState(string cstage) : stage(cstage){
 
 	read_level_design();
 	InputManager::get_instance()->set_analogic_value(20000);
+	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::BATTLE_MODE);
 }
 
 void EditState::update(float delta){
