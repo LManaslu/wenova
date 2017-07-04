@@ -26,6 +26,9 @@ private:
 
 	int get_current_sub_option(int option);
 
+	enum Button { A, B, UP, DOWN, SELECT, START };
+	bool pressed[15];
+
 public:
 	OptionsState();
 
@@ -36,6 +39,8 @@ public:
 
 	void pause();
 	void resume();
+
+	void process_input();
 };
 
 #endif
