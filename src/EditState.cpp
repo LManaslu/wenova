@@ -21,7 +21,7 @@ using std::stringstream;
 using std::to_string;
 
 EditState::EditState(string cstage) : stage(cstage){
-	int joystick_id = (SDL_NumJoysticks() == 0 ? -1 : 0);
+	int joystick_id = 0;
 	test_fighter = new Blood("test", WIDTH/2, HEIGHT/2 - 200, joystick_id);
 	add_object(test_fighter);
 
@@ -38,9 +38,7 @@ void EditState::update(float delta){
 	}
 
 	// leave edit state
-	if(input_manager->key_press(InputManager::K_SELECT) ||
-		input_manager->joystick_button_press(InputManager::SELECT, 0)
-	){
+	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;

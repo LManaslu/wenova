@@ -51,20 +51,6 @@ Fighter::~Fighter(){
 
 void Fighter::process_input(){
 	InputManager * input_manager = InputManager::get_instance();
-
-	vector< pair<int, int> > buttons = {
-		ii(JUMP_BUTTON, InputManager::K_A),
-		ii(UP_BUTTON, InputManager::K_UP),
-		ii(DOWN_BUTTON, InputManager::K_DOWN),
-		ii(LEFT_BUTTON, InputManager::K_LEFT),
-		ii(RIGHT_BUTTON, InputManager::K_RIGHT),
-		ii(ATTACK_BUTTON, InputManager::K_X),
-		ii(SPECIAL1_BUTTON, InputManager::K_B),
-		ii(SPECIAL2_BUTTON, InputManager::K_RB),
-		ii(BLOCK_BUTTON, InputManager::K_LB),
-		ii(ULTIMATE_BUTTON, InputManager::K_Y)
-	};
-
 	vector< pair<int, int> > joystick_buttons = {
 		ii(JUMP_BUTTON, InputManager::A),
 		ii(UP_BUTTON, InputManager::UP),
@@ -80,18 +66,10 @@ void Fighter::process_input(){
 
 	bool alive = !is("dying");
 
-	if(id != -1){
-		for(ii button : joystick_buttons){
-			pressed[button.first] = alive and input_manager->joystick_button_press(button.second, id);
-			is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
-			released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
-		}
-	}else{
-		for(ii button : buttons){
-			pressed[button.first] = alive and input_manager->key_press(button.second);
-			is_holding[button.first] = alive and input_manager->is_key_down(button.second);
-			released[button.first] = alive and input_manager->key_release(button.second);
-		}
+	for(ii button : joystick_buttons){
+		pressed[button.first] = alive and input_manager->joystick_button_press(button.second, id);
+		is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
+		released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
 	}
 }
 

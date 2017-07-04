@@ -143,18 +143,7 @@ void MenuState::render(){
 void MenuState::process_input(){
 	InputManager * input_manager = InputManager::get_instance();
 
-	vector< pair<int, int> > buttons = {
-		ii(A, InputManager::K_MENU_A),
-		ii(B, InputManager::K_MENU_B),
-		ii(Y, InputManager::K_MENU_Y),
-		ii(LEFT, InputManager::K_LEFT),
-		ii(RIGHT, InputManager::K_RIGHT),
-		ii(SELECT, InputManager::K_SELECT),
-		ii(START, InputManager::K_START),
-		ii(LB, InputManager::K_MENU_LB),
-		ii(RT, InputManager::K_RT)
-	};
-
+	//MENU BUTTONS HERE
 	vector< pair<int, int> > joystick_buttons = {
 		ii(A, InputManager::A),
 		ii(B, InputManager::B),
@@ -167,18 +156,9 @@ void MenuState::process_input(){
 		ii(RT, InputManager::RT)
 	};
 
-	int id = (SDL_NumJoysticks() == 0 ? -1 : 0);
-
-	if(id != -1){
-		for(ii button : joystick_buttons){
-			pressed[button.first] = input_manager->joystick_button_press(button.second, id);
-			is_holding[button.first] = input_manager->is_joystick_button_down(button.second, id);
-		}
-	}else{
-		for(ii button : buttons){
-			pressed[button.first] = input_manager->key_press(button.second);
-			is_holding[button.first] = input_manager->is_key_down(button.second);
-		}
+	for(ii button : joystick_buttons){
+		pressed[button.first] = input_manager->joystick_button_press(button.second, 0);
+		is_holding[button.first] = input_manager->is_joystick_button_down(button.second, 0);
 	}
 }
 

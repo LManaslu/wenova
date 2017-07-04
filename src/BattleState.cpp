@@ -30,7 +30,7 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 	vector< pair<int, int> > char_positions;
 	vector< pair<int, int> > hud_positions = { ii(133, 599.5), ii(133, 679.5), ii(1147, 599.5), ii(1147, 679.5) };
 
-	if(stage == "1") 
+	if(stage == "1")
 		char_positions = { ii(177, 313), ii(276, 510), ii(1128, 245), ii(954, 474) };
 	else
 		char_positions = { ii(116, 227), ii(146, 394), ii(1036, 221), ii(1063, 382) };
@@ -42,8 +42,7 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 		string skin_name = players_info[i].second;
 
 		if(char_name == "blood"){
-			players[i] = new Blood(skin_name, char_positions[i].first, char_positions[i].second,
-									SDL_NumJoysticks() == i ? -1 : i);
+			players[i] = new Blood(skin_name, char_positions[i].first, char_positions[i].second, i);
 		}
 		else if(char_name == "flesh"){
 			// TODO Instantiate Flesh character
@@ -81,9 +80,7 @@ void BattleState::update(float delta){
 		return;
 	}
 
-	if(input_manager->key_press(InputManager::K_SELECT) ||
-		input_manager->joystick_button_press(InputManager::SELECT, 0)
-	){
+	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
 		music.stop();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
