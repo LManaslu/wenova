@@ -28,6 +28,8 @@ const int InputManager::K_P, InputManager::K_O, InputManager::K_ROT_LEFT;
 const int InputManager::K_ROT_RIGHT, InputManager::K_ROT_RESET, InputManager::K_INC_W;
 const int InputManager::K_DEC_W, InputManager::K_DEL;
 
+const int InputManager::K_MENU_A, InputManager::K_MENU_B, InputManager::K_MENU_Y;
+
 InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);
