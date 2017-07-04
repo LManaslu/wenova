@@ -34,7 +34,8 @@ InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
 	memset(mouse_update, 0, sizeof mouse_update);
 
-	map_keyboard_to_joystick();
+	keyboard_to_joystick_id = 0;
+	map_keyboard_to_joystick(keyboard_to_joystick_id);
 
 	for(int i = 0; i < 4; ++i) controllers[i] = nullptr;
 	m_quit_requested = false;
@@ -78,16 +79,14 @@ void InputManager::update(){
 			key_id = event.key.keysym.sym;
 			key_state[key_id] = true;
 			key_update[key_id] = update_counter;
-			joystick_state[0][keyboard_to_joystick[key_id] - 1] = true;
-			joystick_update[0][keyboard_to_joystick[key_id] - 1] = update_counter;
+			emulate_joystick(key_id, true, update_counter);
 			break;
 
 			case SDL_KEYUP:
 			key_id = event.key.keysym.sym;
 			key_state[key_id] = false;
 			key_update[key_id] = update_counter;
-			joystick_state[0][keyboard_to_joystick[key_id] - 1] = false;
-			joystick_update[0][keyboard_to_joystick[key_id] - 1] = update_counter;
+			emulate_joystick(key_id, false, update_counter);
 			break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -288,4 +287,37 @@ void InputManager::map_keyboard_to_joystick(int joystick_id, int){
 		{K_SELECT , SELECT + 1},
 		{K_START , START + 1}
 	};
+}
+
+void InputManager::emulate_joystick(int key_id, bool state, int update_counter){
+	switch(key_id){
+		case SDLK_0:
+			keyboard_to_joystick_id = -1;
+		break;
+		case SDLK_1:
+			keyboard_to_joystick_id = 0;
+		break;
+		case SDLK_2:
+			keyboard_to_joystick_id = 1;
+		break;
+		case SDLK_3:
+			keyboard_to_joystick_id = 2;
+		break;
+		case SDLK_4:
+			keyboard_to_joystick_id = 3;
+		break;
+		case SDLK_5:
+			keyboard_to_joystick_id = 4;
+		break;
+	}
+
+	if(keyboard_to_joystick_id == 4){
+		for(int i = 0; i < 4; ++i){
+			joystick_state[i][keyboard_to_joystick[key_id] - 1] = state;
+			joystick_update[i][keyboard_to_joystick[key_id] - 1] = update_counter;
+		}
+	}else if(keyboard_to_joystick_id >= 0){
+		joystick_state[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = state;
+		joystick_update[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = update_counter;
+	}
 }
