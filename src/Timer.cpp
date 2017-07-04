@@ -15,3 +15,7 @@ void Timer::restart(){
 float Timer::get(){
 	return time;
 }
+
+void Timer::set(float ctime){
+	time = ctime;
+}

@@ -343,7 +343,7 @@ void InputManager::emulate_joystick(int key_id, bool state){
 	}else if(keyboard_to_joystick_id >= 0){
 		joystick_state[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = state;
 		joystick_update[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = update_counter;
-		printf("Pressed or released %d\n", keyboard_to_joystick[key_id] - 1);
+		//printf("Pressed or released %d\n", keyboard_to_joystick[key_id] - 1);
 	}
 }
 

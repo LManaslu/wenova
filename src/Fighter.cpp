@@ -32,13 +32,13 @@ Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	attack_mask = 0;
 	sprite = vector<Sprite>(LAST);
 	temporary_state = state;
+	pass_through_timer.set(100);
 
 	orientation = (x > 640 ? LEFT : RIGHT);
 
 	on_floor = false;
 	last_collided_floor = 0;
 	grab = false;
-	pass_through = false;
 
 	ultimate_ready = false;
 
@@ -79,6 +79,7 @@ void Fighter::update(float delta){
 	temporary_state = state;
 
 	sprite[state].update(delta);
+	pass_through_timer.update(delta);
 
 	update_machine_state(delta);
 
@@ -104,14 +105,8 @@ void Fighter::notify_collision(GameObject & object){
 	//FIXME tá feio
 	float floor_y = object.box.y + (box.x - object.box.x) * tan(object.rotation) - object.box.height * 0.5;
 	if(object.is("floor") && speed.y >= 0 && abs(floor_y - (box.y + box.height * 0.5)) < 10){
-		if(pass_through){
-			if(object.is("platform")){
-				if(((Floor&)object).get_id() == last_collided_floor)
-					return;
-				else
-					pass_through = false;
-			}
-		}
+		if(pass_through_timer.get() < 30 and object.is("platform"))
+			return;
 
 		int floor_id = ((Floor&)object).get_id();
 		speed.y = 0;
@@ -122,7 +117,6 @@ void Fighter::notify_collision(GameObject & object){
 
 		on_floor = true;
 		last_collided_floor = ((Floor&)object).get_id();
-		pass_through = false;
 	}else if(object.is("player") and !is("dying") and !(object.is("dying"))){
 		Fighter & fighter = (Fighter &) object;
 
@@ -201,11 +195,9 @@ void Fighter::test_limits(){
 	if(box.x > 1280 - box.width / 2) box.x = 1280 - box.width / 2;
 	if(box.y < -100){
 		box.y = -100;
-		pass_through = false;
 	}
 
 	if(box.y > 900){
-		pass_through = false;
 		if(is("test")) box.y = -100;
 		else remaining_life = 0;
 		//Comentar linha acima e descomentar abaixo para não morrer ao cair
