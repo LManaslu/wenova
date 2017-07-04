@@ -79,14 +79,14 @@ void InputManager::update(){
 			key_id = event.key.keysym.sym;
 			key_state[key_id] = true;
 			key_update[key_id] = update_counter;
-			emulate_joystick(key_id, true, update_counter);
+			emulate_joystick(key_id, true);
 			break;
 
 			case SDL_KEYUP:
 			key_id = event.key.keysym.sym;
 			key_state[key_id] = false;
 			key_update[key_id] = update_counter;
-			emulate_joystick(key_id, false, update_counter);
+			emulate_joystick(key_id, false);
 			break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -139,7 +139,7 @@ void InputManager::update(){
 			button_id = event.cbutton.button;
 			joystick_state[joystick_id][button_id] = true;
 			joystick_update[joystick_id][button_id] = update_counter;
-			printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
+			//printf("apertou joystick: %d (%s), joystick: %d %d\n", button_id, SDL_GameControllerGetStringForButton((SDL_GameControllerButton)button_id),joystick_id, joystick_button_press(button_id, joystick_id));
 			break;
 
 			case SDL_JOYBUTTONUP:
@@ -285,28 +285,36 @@ void InputManager::map_keyboard_to_joystick(int joystick_id, int){
 		{K_LT , LT + 1},
 		{K_RT , RT + 1},
 		{K_SELECT , SELECT + 1},
-		{K_START , START + 1}
+		{K_START , START + 1},
+		{K_L3, L3 + 1},
+		{K_R3, R3 + 1}
 	};
 }
 
-void InputManager::emulate_joystick(int key_id, bool state, int update_counter){
+void InputManager::emulate_joystick(int key_id, bool state){
 	switch(key_id){
 		case SDLK_0:
+			reset_keyboard_to_joystick();
 			keyboard_to_joystick_id = -1;
 		break;
 		case SDLK_1:
+			reset_keyboard_to_joystick();
 			keyboard_to_joystick_id = 0;
 		break;
 		case SDLK_2:
+			reset_keyboard_to_joystick();
 			keyboard_to_joystick_id = 1;
 		break;
 		case SDLK_3:
+			reset_keyboard_to_joystick();
 			keyboard_to_joystick_id = 2;
 		break;
 		case SDLK_4:
+			reset_keyboard_to_joystick();
 			keyboard_to_joystick_id = 3;
 		break;
 		case SDLK_5:
+			reset_keyboard_to_joystick();
 			keyboard_to_joystick_id = 4;
 		break;
 	}
@@ -319,5 +327,12 @@ void InputManager::emulate_joystick(int key_id, bool state, int update_counter){
 	}else if(keyboard_to_joystick_id >= 0){
 		joystick_state[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = state;
 		joystick_update[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = update_counter;
+		//printf("Pressed or released %d\n", keyboard_to_joystick[key_id] - 1);
+	}
+}
+
+void InputManager::reset_keyboard_to_joystick(){
+	for(auto & c : joystick_state[keyboard_to_joystick_id]){
+		c.second = false;
 	}
 }
