@@ -96,7 +96,7 @@ public:
 	static const int L3 = SDL_CONTROLLER_BUTTON_LEFTSTICK;
 	static const int R3 = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
 
-	// keyboard keys
+	// keys for battle
 	static const int K_UP = SDLK_w;
 	static const int K_RIGHT = SDLK_d;
 	static const int K_DOWN = SDLK_s;
@@ -115,6 +115,11 @@ public:
 	static const int RIGHT_MOUSE_BUTTON = SDL_BUTTON_RIGHT;
 	static const int ENTER_KEY = SDLK_RETURN;
 	static const int K_RANDOM = SDLK_u;
+
+  // keys for menus
+	static const int K_MENU_A = SDLK_h;
+	static const int K_MENU_B = SDLK_j;
+	static const int K_MENU_Y = SDLK_u;
 
 	// keys for edit mode
 	static const int K_ARROW_UP = SDLK_UP;
