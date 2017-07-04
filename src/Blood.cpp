@@ -368,7 +368,7 @@ void Blood::check_pass_through_platform(bool change) {
 	if(pressed[DOWN_BUTTON] and not is_holding[ATTACK_BUTTON]){
 		if(crouch_timer.get() < CROUCH_COOLDOWN){
 			if (change) temporary_state = FighterState::FALLING;
-			pass_through = true;
+			pass_through_timer.restart();
 		}
 		crouch_timer.restart();
 	}
@@ -395,7 +395,6 @@ void Blood::check_jump_atk_neutral(bool change){
 void Blood::check_jump_atk_up(bool change) {
 	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
 		if(combo) return;
-		pass_through = false;
 		combo++;
 		speed.y = -5;
 		if(change) temporary_state = FighterState::JUMP_ATK_UP;

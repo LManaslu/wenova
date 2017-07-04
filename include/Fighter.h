@@ -24,7 +24,7 @@ protected:
 	Vector acceleration;
 	Vector crouching_size, not_crouching_size;
 	float vertical_speed;
-	bool on_floor, pass_through, grab;
+	bool on_floor, grab;
 	int last_collided_floor;
 	float max_speed;
 	float remaining_life;
@@ -39,6 +39,7 @@ protected:
 
 	float special;
 	Timer crouch_timer;
+	Timer pass_through_timer;
 
 	bool pressed[10];
 	bool is_holding[10];
