@@ -68,34 +68,29 @@ CharacterSelectState::CharacterSelectState(string cselected_stage){
 }
 
 void CharacterSelectState::update(float delta){
+	process_input();
+
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
-	if(input_manager->key_press(InputManager::K_SELECT) ||
-		input_manager->joystick_button_press(InputManager::SELECT, FIRST_PLAYER) ||
-		(not selected[FIRST_PLAYER] &&
-			(input_manager->key_press(InputManager::K_LB) ||
-			input_manager->joystick_button_press(InputManager::B, FIRST_PLAYER))
-		)
-	){
-		m_quit_requested = true;
-		Game::get_instance().push(new MenuState(true));
-		return;
-	}
-
 	if(input_manager->quit_requested()){
 		m_quit_requested = true;
 		Game::get_instance().push(new StageSelectState());
 		return;
 	}
 
+	if(pressed[FIRST_PLAYER][SELECT] ||
+		(not selected[FIRST_PLAYER] && pressed[FIRST_PLAYER][B])
+	){
+		m_quit_requested = true;
+		Game::get_instance().push(new MenuState(true));
+		return;
+	}
+
 	// only enable start when all players have selected a character
 	if(all_players_selected()){
 		ready = true;
-		if(input_manager->key_press(InputManager::K_START) ||
-			input_manager->key_press(InputManager::K_X) ||
-			input_manager->joystick_button_press(InputManager::START, FIRST_PLAYER)
-		){
+		if(pressed[FIRST_PLAYER][START] || pressed[FIRST_PLAYER][A]){
 			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
 			Game::get_instance().push(new BattleState(selected_stage, "music.ogg", export_players()));
@@ -106,9 +101,7 @@ void CharacterSelectState::update(float delta){
 	for(int i=0;i<N_PLAYERS;i++){
 		if(not selected[i]){
 			// random character
-			if(input_manager->key_press(InputManager::K_RANDOM) ||
-				input_manager->joystick_button_press(InputManager::Y, i)
-			){
+			if(pressed[i][Y]){
 				int rand_col = 0, rand_row = 0, rand_skin = 0;
 
 				do{
@@ -116,6 +109,7 @@ void CharacterSelectState::update(float delta){
 					rand_row = rand() % ROW_SLOTS;
 				}while(not character_enabled(rand_row, rand_col));
 
+				printf("rand_col: %d, rand_row: %d\n", rand_col, rand_row);
 				string char_selected = names[rand_col][rand_row];
 
 				do{
@@ -133,9 +127,7 @@ void CharacterSelectState::update(float delta){
 			int old_row = cur_selection_row[i];
 
 			// change character
-			if((input_manager->key_press(InputManager::K_LEFT) ||
-				input_manager->joystick_button_press(InputManager::LEFT, i))
-			){
+			if(pressed[i][LEFT]){
 				if(cur_selection_col[i] != 0 &&
 					character_enabled(cur_selection_row[i], cur_selection_col[i] - 1)
 				){
@@ -143,9 +135,7 @@ void CharacterSelectState::update(float delta){
 				}
 			}
 
-			if((input_manager->key_press(InputManager::K_RIGHT) ||
-				input_manager->joystick_button_press(InputManager::RIGHT, i))
-			){
+			if(pressed[i][RIGHT]){
 				if(cur_selection_col[i] + 1 < COL_SLOTS &&
 					character_enabled(cur_selection_row[i], cur_selection_col[i] + 1)
 				){
@@ -153,9 +143,7 @@ void CharacterSelectState::update(float delta){
 				}
 			}
 
-			if((input_manager->key_press(InputManager::K_UP) ||
-				input_manager->joystick_button_press(InputManager::UP, i))
-			){
+			if(pressed[i][UP]){
 				if(cur_selection_row[i] != 0 &&
 					character_enabled(cur_selection_row[i] - 1, cur_selection_col[i])
 				){
@@ -163,9 +151,7 @@ void CharacterSelectState::update(float delta){
 				}
 			}
 
-			if((input_manager->key_press(InputManager::K_DOWN) ||
-				input_manager->joystick_button_press(InputManager::DOWN, i))
-			){
+			if(pressed[i][DOWN]){
 				if(cur_selection_row[i] + 1 < ROW_SLOTS &&
 					character_enabled(cur_selection_row[i] + 1, cur_selection_col[i])
 				){
@@ -179,22 +165,16 @@ void CharacterSelectState::update(float delta){
 			}
 
 			// change skin
-			if(input_manager->key_press(InputManager::K_LT) ||
-				input_manager->joystick_button_press(InputManager::LT, i)
-			){
+			if(pressed[i][LT]){
 				cur_skin[i] = (cur_skin[i] - 1 + N_SKINS) % N_SKINS;
 			}
 
-			if(input_manager->key_press(InputManager::K_RT) ||
-				input_manager->joystick_button_press(InputManager::RT, i)
-			){
+			if(pressed[i][RT]){
 				cur_skin[i] = (cur_skin[i] + 1) % N_SKINS;
 			}
 
 			// select character && lock skin
-			if(input_manager->key_press(InputManager::K_X) ||
-				input_manager->joystick_button_press(InputManager::A, i)
-			){
+			if(pressed[i][A]){
 				int col_sel = cur_selection_col[i];
 				int row_sel = cur_selection_row[i];
 				string char_selected = names[col_sel][row_sel];
@@ -211,9 +191,7 @@ void CharacterSelectState::update(float delta){
 		}
 		else{
 			// unselect character
-			if(input_manager->key_press(InputManager::K_LB) ||
-				input_manager->joystick_button_press(InputManager::B, i)
-			){
+			if(pressed[i][B]){
 				int col_sel = cur_selection_col[i];
 				int row_sel = cur_selection_row[i];
 				string char_selected = names[col_sel][row_sel];
@@ -315,12 +293,54 @@ vector< pair<string, string> > CharacterSelectState::export_players(){
 		players.push_back(make_pair(char_selected, get_skin_name(cur_skin[i])));
 	}
 
-	// printf("PLAYERS INFO\n");
-	// for(int i=0;i<N_PLAYERS;i++){
-	// 	printf("Player %d chose skin [%s] of [%s]\n", i + 1, players[i].second.c_str(), players[i].first.c_str());
-	// }
-	// printf("END PLAYERS INFO\n");
 	return players;
+}
+
+void CharacterSelectState::process_input(){
+	InputManager * input_manager = InputManager::get_instance();
+
+	// enum Button { A, B, Y, LEFT, RIGHT, UP, DOWN, SELECT, START, LT, RT };
+	vector< pair<int, int> > buttons = {
+		ii(A, InputManager::K_MENU_A),
+		ii(B, InputManager::K_MENU_B),
+		ii(Y, InputManager::K_MENU_Y),
+		ii(LEFT, InputManager::K_LEFT),
+		ii(RIGHT, InputManager::K_RIGHT),
+		ii(UP, InputManager::K_UP),
+		ii(DOWN, InputManager::K_DOWN),
+		ii(SELECT, InputManager::K_SELECT),
+		ii(START, InputManager::K_START),
+		ii(LT, InputManager::K_LT),
+		ii(RT, InputManager::K_RT)
+	};
+
+	vector< pair<int, int> > joystick_buttons = {
+		ii(A, InputManager::A),
+		ii(B, InputManager::B),
+		ii(Y, InputManager::Y),
+		ii(LEFT, InputManager::LEFT),
+		ii(RIGHT, InputManager::RIGHT),
+		ii(UP, InputManager::UP),
+		ii(DOWN, InputManager::DOWN),
+		ii(SELECT, InputManager::SELECT),
+		ii(START, InputManager::START),
+		ii(LT, InputManager::LT),
+		ii(RT, InputManager::RT)
+	};
+
+	for(int id = 0; id < N_PLAYERS; id++){
+		for(ii button : joystick_buttons){
+			pressed[id][button.first] = input_manager->joystick_button_press(button.second, id);
+		}
+	}
+
+	for(ii button : buttons){
+		if(input_manager->key_press(button.second, true)){
+			// NOTE change this to pressed[i][button.first] to control all players with keyboard
+			// NOTE change this to pressed[FIRST_PLAYER][button.first] to control only first player
+			for(int i=0;i<N_PLAYERS; i++) pressed[i][button.first] = true;
+		}
+	}
 }
 
 void CharacterSelectState::pause(){
