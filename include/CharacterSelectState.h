@@ -29,6 +29,9 @@ private:
 	map<string, vector<bool> > available_skin;
 	bool selected[4], ready;
 
+	enum Button { A, B, Y, LEFT, RIGHT, UP, DOWN, SELECT, START, LT, RT };
+	bool pressed[4][15];
+
 public:
 	CharacterSelectState(string cselected_stage);
 
@@ -43,6 +46,8 @@ public:
 	bool all_players_selected();
 	string get_skin_name(int idx);
 	vector< pair<string, string> > export_players();
+
+	void process_input();
 };
 
 #endif
