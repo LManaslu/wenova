@@ -67,6 +67,7 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 	add_object(new TimeCounter());
 
 	InputManager::get_instance()->set_analogic_value(20000);
+	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::BATTLE_MODE);
 }
 
 BattleState::~BattleState(){
