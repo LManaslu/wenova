@@ -23,8 +23,8 @@ private:
 	bool mouse_state[6];
 	int mouse_update[6];
 
-	unordered_map<int, bool> joystick_state[4];
-	unordered_map<int, int> joystick_update[4];
+	unordered_map<int, bool> joystick_state[10];
+	unordered_map<int, int> joystick_update[10];
 
 
 	unordered_map<int, bool> key_state;
@@ -46,9 +46,12 @@ private:
 	int offset_x;
 	int offset_y;
 	float scale;
+	int keyboard_to_joystick_id;
 
 	int analogic_value = 20000;
 	int trigger_value = 32000;
+
+	void emulate_joystick(int key_id, bool state, int update_counter);
 
 public:
 	InputManager();
