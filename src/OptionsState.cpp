@@ -33,6 +33,8 @@ OptionsState::OptionsState(){
 }
 
 void OptionsState::update(float){
+	process_input();
+
 	InputManager * input_manager = InputManager::get_instance();
 
 	// inputs
@@ -41,10 +43,7 @@ void OptionsState::update(float){
 		return;
 	}
 
-	if(input_manager->key_press(InputManager::K_SELECT) ||
-		input_manager->key_press(InputManager::K_LB) ||
-		input_manager->joystick_button_press(InputManager::B, 0)
-	){
+	if(pressed[SELECT] || pressed[B]){
 		if(on_submenu){
 			on_submenu = false;
 			for(unsigned i = 0; i < options.size(); ++i){
@@ -58,9 +57,7 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(input_manager->key_press(InputManager::K_UP) ||
-		input_manager->joystick_button_press(InputManager::UP, 0)
-	){
+	if(pressed[UP]){
 		if(not on_submenu){
 			if(current_option != 0){
 				current_option--;
@@ -73,9 +70,7 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(input_manager->key_press(InputManager::K_DOWN) ||
-		input_manager->joystick_button_press(InputManager::DOWN, 0)
-	){
+	if(pressed[DOWN]){
 		if(not on_submenu){
 			if(current_option != (int)options.size() - 1){
 				current_option++;
@@ -89,11 +84,7 @@ void OptionsState::update(float){
 		}
 	}
 
-	if(input_manager->key_press(InputManager::K_START) ||
-		input_manager->key_press(InputManager::K_X) ||
-		input_manager->joystick_button_press(InputManager::START, 0) ||
-		input_manager->joystick_button_press(InputManager::A, 0)
-	){
+	if(pressed[START] || pressed[A]){
 		if(not on_submenu){
 			if(current_option == (int)options.size() - 1){ // back button
 				m_quit_requested = true;
@@ -239,5 +230,39 @@ int OptionsState::get_current_sub_option(int option){
 		return 0;
 	}else{ //fullscreen
 		return Config::is_fullscreen();
+	}
+}
+
+void OptionsState::process_input(){
+	InputManager * input_manager = InputManager::get_instance();
+
+	vector< pair<int, int> > buttons = {
+		ii(A, InputManager::K_MENU_A),
+		ii(B, InputManager::K_MENU_B),
+		ii(UP, InputManager::K_UP),
+		ii(DOWN, InputManager::K_DOWN),
+		ii(SELECT, InputManager::K_SELECT),
+		ii(START, InputManager::K_START)
+	};
+
+	vector< pair<int, int> > joystick_buttons = {
+		ii(A, InputManager::A),
+		ii(B, InputManager::B),
+		ii(UP, InputManager::UP),
+		ii(DOWN, InputManager::DOWN),
+		ii(SELECT, InputManager::SELECT),
+		ii(START, InputManager::START)
+	};
+
+	int id = (SDL_NumJoysticks() == 0 ? -1 : 0);
+
+	if(id != -1){
+		for(ii button : joystick_buttons){
+			pressed[button.first] = input_manager->joystick_button_press(button.second, id);
+		}
+	}else{
+		for(ii button : buttons){
+			pressed[button.first] = input_manager->key_press(button.second, true);
+		}
 	}
 }
