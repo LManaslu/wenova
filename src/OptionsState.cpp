@@ -10,7 +10,6 @@
 #define TEXT_OFFSET 8
 #define TEXT_HEIGHT 30
 #define OPTION_OFFSET 70
-#define BACK_BUTTON 2
 
 #define DARK_GREY { 80, 80, 80, 1 }
 #define DARK_GREEN { 55, 74, 38, 1 }
@@ -160,7 +159,7 @@ void OptionsState::render(){
 	title->render();
 
 	for(int i=0; i<(int)options.size(); i++){
-		if(on_submenu && i != BACK_BUTTON && i != current_option){
+		if(on_submenu && i != (int)options.size() - 1 && i != current_option){
 			options[i]->set_color(DARK_GREY);
 		}
 		else{
