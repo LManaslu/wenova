@@ -38,6 +38,7 @@ MenuState::MenuState(bool main_menu){
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "EXIT", WHITE, FONT_X, FONT_Y));
 
 	InputManager::get_instance()->set_analogic_value(32000);
+	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
 }
 
 void MenuState::update(float delta){

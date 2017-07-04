@@ -135,8 +135,8 @@ void Fighter::notify_collision(GameObject & object){
 			if(position_mask & fighter.get_attack_mask()){
 				float damage = fighter.get_attack_damage() * ((state == FighterState::DEFENDING) ? 0.5 : 1);
 				increment_life(-damage);
-				float increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1) * not_in_ultimate;
-				this->increment_special(increment_special);
+				float m_increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1) * not_in_ultimate;
+				this->increment_special(m_increment_special);
 				if(state != FighterState::DEFENDING) check_stunt();
 			}
 		}else if(is_attacking() and fighter.get_id() != partner_id){

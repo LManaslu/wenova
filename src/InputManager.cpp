@@ -14,6 +14,8 @@ const int InputManager::UP, InputManager::DOWN, InputManager::RIGHT, InputManage
 const int InputManager::A, InputManager::B, InputManager::X, InputManager::Y;
 const int InputManager::LB, InputManager::RB, InputManager::START, InputManager::SELECT;
 const int InputManager::LT, InputManager::RT;
+const int InputManager::L3, InputManager::R3;
+const int InputManager::K_L3, InputManager::K_R3;
 
 const int InputManager::K_UP, InputManager::K_RIGHT, InputManager::K_DOWN;
 const int InputManager::K_LEFT, InputManager::K_A, InputManager::K_B, InputManager::K_X;
@@ -29,6 +31,7 @@ const int InputManager::K_ROT_RIGHT, InputManager::K_ROT_RESET, InputManager::K_
 const int InputManager::K_DEC_W, InputManager::K_DEL;
 
 const int InputManager::K_MENU_A, InputManager::K_MENU_B, InputManager::K_MENU_Y, InputManager::K_MENU_LB;
+const int InputManager::MENU_MODE, InputManager::BATTLE_MODE;
 
 InputManager::InputManager(){
 	memset(mouse_state, false, sizeof mouse_state);
@@ -270,7 +273,7 @@ void InputManager::connect_joysticks(){
 	}
 }
 
-void InputManager::map_keyboard_to_joystick(int joystick_id, int){
+void InputManager::map_keyboard_to_joystick(int map_id){
 	keyboard_to_joystick = {
 		{K_LEFT , LEFT + 1},
 		{K_RIGHT , RIGHT + 1},
@@ -289,6 +292,17 @@ void InputManager::map_keyboard_to_joystick(int joystick_id, int){
 		{K_L3, L3 + 1},
 		{K_R3, R3 + 1}
 	};
+
+	if(map_id == MENU_MODE){
+		keyboard_to_joystick[K_A] = 0;
+		keyboard_to_joystick[K_B] = 0;
+		keyboard_to_joystick[K_Y] = 0;
+		keyboard_to_joystick[K_LB] = 0;
+		keyboard_to_joystick[K_MENU_A] = A + 1;
+		keyboard_to_joystick[K_MENU_B] = B + 1;
+		keyboard_to_joystick[K_MENU_Y] = Y + 1;
+		keyboard_to_joystick[K_MENU_LB] = LB + 1;
+	}
 }
 
 void InputManager::emulate_joystick(int key_id, bool state){
@@ -329,7 +343,7 @@ void InputManager::emulate_joystick(int key_id, bool state){
 	}else if(keyboard_to_joystick_id >= 0){
 		joystick_state[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = state;
 		joystick_update[keyboard_to_joystick_id][keyboard_to_joystick[key_id] - 1] = update_counter;
-		//printf("Pressed or released %d\n", keyboard_to_joystick[key_id] - 1);
+		printf("Pressed or released %d\n", keyboard_to_joystick[key_id] - 1);
 	}
 }
 
