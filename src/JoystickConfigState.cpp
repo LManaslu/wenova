@@ -79,6 +79,11 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 void JoystickConfigState::update(float delta){
 	InputManager * input_manager = InputManager::get_instance();
 
+	if(input_manager->quit_requested()){
+		m_quit_requested = true;
+		return;
+	}
+
 	if(on_test){
 		if(input_manager->is_joystick_button_down(InputManager::R3, 0) &&
 			input_manager->is_joystick_button_down(InputManager::L3, 0)){

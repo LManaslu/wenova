@@ -292,31 +292,33 @@ void InputManager::map_keyboard_to_joystick(int joystick_id, int){
 }
 
 void InputManager::emulate_joystick(int key_id, bool state){
-	switch(key_id){
-		case SDLK_0:
-			reset_keyboard_to_joystick();
-			keyboard_to_joystick_id = -1;
-		break;
-		case SDLK_1:
-			reset_keyboard_to_joystick();
-			keyboard_to_joystick_id = 0;
-		break;
-		case SDLK_2:
-			reset_keyboard_to_joystick();
-			keyboard_to_joystick_id = 1;
-		break;
-		case SDLK_3:
-			reset_keyboard_to_joystick();
-			keyboard_to_joystick_id = 2;
-		break;
-		case SDLK_4:
-			reset_keyboard_to_joystick();
-			keyboard_to_joystick_id = 3;
-		break;
-		case SDLK_5:
-			reset_keyboard_to_joystick();
-			keyboard_to_joystick_id = 4;
-		break;
+	if(state){
+		switch(key_id){
+			case SDLK_0:
+				reset_keyboard_to_joystick();
+				keyboard_to_joystick_id = -1;
+			break;
+			case SDLK_1:
+				reset_keyboard_to_joystick();
+				keyboard_to_joystick_id = 0;
+			break;
+			case SDLK_2:
+				reset_keyboard_to_joystick();
+				keyboard_to_joystick_id = 1;
+			break;
+			case SDLK_3:
+				reset_keyboard_to_joystick();
+				keyboard_to_joystick_id = 2;
+			break;
+			case SDLK_4:
+				reset_keyboard_to_joystick();
+				keyboard_to_joystick_id = 3;
+			break;
+			case SDLK_5:
+				reset_keyboard_to_joystick();
+				keyboard_to_joystick_id = 4;
+			break;
+		}
 	}
 
 	if(keyboard_to_joystick_id == 4){
@@ -332,6 +334,7 @@ void InputManager::emulate_joystick(int key_id, bool state){
 }
 
 void InputManager::reset_keyboard_to_joystick(){
+	if(keyboard_to_joystick_id < 0 or keyboard_to_joystick_id > 3) return;
 	for(auto & c : joystick_state[keyboard_to_joystick_id]){
 		c.second = false;
 	}
