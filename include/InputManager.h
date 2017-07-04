@@ -120,6 +120,7 @@ public:
 	static const int K_MENU_A = SDLK_h;
 	static const int K_MENU_B = SDLK_j;
 	static const int K_MENU_Y = SDLK_u;
+	static const int K_MENU_LB = SDLK_y;
 
 	// keys for edit mode
 	static const int K_ARROW_UP = SDLK_UP;
