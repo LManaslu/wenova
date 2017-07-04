@@ -10,6 +10,7 @@ public:
 	void update(float delta);
 	void restart();
 	float get();
+	void set(float ctime);
 };
 
 #endif
