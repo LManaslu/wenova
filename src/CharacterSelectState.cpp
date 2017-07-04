@@ -83,7 +83,7 @@ void CharacterSelectState::update(float delta){
 		(not selected[FIRST_PLAYER] && pressed[FIRST_PLAYER][B])
 	){
 		m_quit_requested = true;
-		Game::get_instance().push(new MenuState(true));
+		Game::get_instance().push(new StageSelectState());
 		return;
 	}
 
