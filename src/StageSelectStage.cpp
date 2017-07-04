@@ -84,14 +84,7 @@ void StageSelectState::update_stage_select(int increment) {
 void StageSelectState::process_input(){
 	InputManager * input_manager = InputManager::get_instance();
 
-	vector< pair<int, int> > buttons = {
-		ii(LEFT, InputManager::K_LEFT),
-		ii(RIGHT, InputManager::K_RIGHT),
-		ii(A, InputManager::K_MENU_A),
-		ii(B, InputManager::K_MENU_B),
-		ii(SELECT, InputManager::K_SELECT)
-	};
-
+	//MENU BUTTONS HERE
 	vector< pair<int, int> > joystick_buttons = {
 		ii(LEFT, InputManager::LEFT),
 		ii(RIGHT, InputManager::RIGHT),
@@ -100,14 +93,8 @@ void StageSelectState::process_input(){
 		ii(SELECT, InputManager::SELECT)
 	};
 
-	if(SDL_NumJoysticks() != 0){
-		for(ii button : joystick_buttons){
-			pressed[button.first] = input_manager->joystick_button_press(button.second, 0);
-		}
-	}else{
-		for(ii button : buttons){
-			pressed[button.first] = input_manager->key_press(button.second);
-		}
+	for(ii button : joystick_buttons){
+		pressed[button.first] = input_manager->joystick_button_press(button.second, 0);
 	}
 }
 
