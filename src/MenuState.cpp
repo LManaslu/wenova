@@ -176,8 +176,8 @@ void MenuState::process_input(){
 		}
 	}else{
 		for(ii button : buttons){
-			pressed[button.first] = input_manager->key_press(button.second, true);
-			is_holding[button.first] = input_manager->is_key_down(button.second, true);
+			pressed[button.first] = input_manager->key_press(button.second);
+			is_holding[button.first] = input_manager->is_key_down(button.second);
 		}
 	}
 }

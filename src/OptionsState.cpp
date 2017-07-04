@@ -261,7 +261,7 @@ void OptionsState::process_input(){
 		}
 	}else{
 		for(ii button : buttons){
-			pressed[button.first] = input_manager->key_press(button.second, true);
+			pressed[button.first] = input_manager->key_press(button.second);
 		}
 	}
 }
