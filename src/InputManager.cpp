@@ -49,7 +49,6 @@ InputManager::~InputManager(){
 	}
 	key_state.clear();
 	key_update.clear();
-	event_responded.clear();
 }
 
 void InputManager::update(){
@@ -59,7 +58,6 @@ void InputManager::update(){
 
 	update_counter++;
 
-	event_responded.clear();
 	SDL_GetMouseState(&mouse_x, &mouse_y);
 	mouse_x = mouse_x * scale + offset_x;
 	mouse_y = mouse_y * scale + offset_y;
@@ -170,22 +168,16 @@ void InputManager::update(){
 	}
 }
 
-bool InputManager::key_press(int key, bool response){
-	if(not can_respond(key, 0, response)) return false;
-	bool v = (key_state[key] && key_update[key] == update_counter);
-	return v;
+bool InputManager::key_press(int key){
+	return key_state[key] && key_update[key] == update_counter;
 }
 
-bool InputManager::key_release(int key, bool response){
-	if(not can_respond(key, 1, response)) return false;
-	bool v = (!key_state[key] && key_update[key] == update_counter);
-	return v;
+bool InputManager::key_release(int key){
+	return !key_state[key] && key_update[key] == update_counter;
 }
 
-bool InputManager::is_key_down(int key, bool response){
-	if(not can_respond(key, 2, response)) return false;
-	bool v = key_state[key];
-	return v;
+bool InputManager::is_key_down(int key){
+	return key_state[key];
 }
 
 bool InputManager::mouse_press(int button){
@@ -225,15 +217,6 @@ bool InputManager::quit_requested(){
 InputManager * InputManager::get_instance(){
 	if(input_manager == nullptr) input_manager = new InputManager();
 	return input_manager;
-}
-
-bool InputManager::can_respond(int key, int operation, bool response){
-	//TODO mudar pra ser id de gameObject
-	if(not response) return true;
-	if(event_responded[ii(key, operation)])
-		return false;
-	else
-		return (event_responded[ii(key, operation)] = true);
 }
 
 void InputManager::set_mouse_scale(float cscale, int coffset_x, int coffset_y){

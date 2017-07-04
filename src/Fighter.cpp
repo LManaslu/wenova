@@ -88,9 +88,9 @@ void Fighter::process_input(){
 		}
 	}else{
 		for(ii button : buttons){
-			pressed[button.first] = alive and input_manager->key_press(button.second, true);
-			is_holding[button.first] = alive and input_manager->is_key_down(button.second, true);
-			released[button.first] = alive and input_manager->key_release(button.second, true);
+			pressed[button.first] = alive and input_manager->key_press(button.second);
+			is_holding[button.first] = alive and input_manager->is_key_down(button.second);
+			released[button.first] = alive and input_manager->key_release(button.second);
 		}
 	}
 }

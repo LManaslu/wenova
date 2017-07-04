@@ -334,7 +334,7 @@ void CharacterSelectState::process_input(){
 	}
 
 	for(ii button : buttons){
-		if(input_manager->key_press(button.second, true)){
+		if(input_manager->key_press(button.second)){
 			// NOTE change this to pressed[i][button.first] to control all players with keyboard
 			// NOTE change this to pressed[FIRST_PLAYER][button.first] to control only first player
 			for(int i=0;i<N_PLAYERS; i++) pressed[i][button.first] = true;

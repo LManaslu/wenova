@@ -29,7 +29,6 @@ private:
 
 	unordered_map<int, bool> key_state;
 	unordered_map<int, int> key_update;
-	map<ii, int> event_responded;
 
 	unordered_map<int, int> button_map;
 	unordered_map<int, int> controllers_id;
@@ -41,7 +40,6 @@ private:
 	int mouse_x;
 	int mouse_y;
 
-	bool can_respond(int key, int operation, bool response);
 	int offset_x;
 	int offset_y;
 	float scale;
@@ -55,9 +53,9 @@ public:
 
 	void update();
 
-	bool key_press(int key, bool response = false);
-	bool key_release(int key, bool response = false);
-	bool is_key_down(int key, bool response = false);
+	bool key_press(int key);
+	bool key_release(int key);
+	bool is_key_down(int key);
 
 	bool mouse_press(int button);
 	bool mouse_release(int button);
