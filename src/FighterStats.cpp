@@ -42,7 +42,7 @@ FighterStats::~FighterStats(){
 }
 
 void FighterStats::update(float){
-	percent_to_draw_life = (fighter->get_remaining_life() * 1.0) / Fighter::MAX_LIFE;
+	percent_to_draw_life = (fighter->get_remaining_life() * 1.0) / fighter->get_max_life();
 	percent_to_draw_special = (fighter->get_special() * 1.0) / Fighter::MAX_SPECIAL;
 
 	condition = (percent_to_draw_special == 1.0) ? 1 : 0;
