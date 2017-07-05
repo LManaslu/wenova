@@ -32,6 +32,8 @@ FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side, 
 		special[2] = Sprite("hud/in_ultimate_right_special_bar.png");
 	}
 
+	player_image = Sprite(fighter->get_path() + "miniature.png");
+
 	box = Rectangle(x, y, bg.get_width(), bg.get_height());
 }
 
@@ -66,15 +68,18 @@ void FighterStats::render(){
 		special[condition].render(82, box.get_draw_y());
 
 		empty_bg.render(82, box.get_draw_y() + 22 + offset);
+		player_image.render(box.get_draw_x() + 7, box.get_draw_y() + 9);
 		bg.render(box.get_draw_x(), box.get_draw_y());
 		life.render(box.get_draw_x() + 82, box.get_draw_y() + 22 + offset);
 	}
 
 	//Right
 	if(side == 1){
+		SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
 		special[condition].render(box.get_draw_x() - 12 + special[condition].get_width() * (1 - percent_to_draw_special), box.get_draw_y());
 
 		empty_bg.render(box.get_draw_x() + 8, box.get_draw_y() + 22 + offset);
+		player_image.render(box.get_draw_x() + 197, box.get_draw_y() + 9, 0, flip);
 		bg.render(box.get_draw_x(), box.get_draw_y());
 		life.render(box.get_draw_x() + 8 + life.get_width() * (1 - percent_to_draw_life), box.get_draw_y() + 22 + offset);
 	}
