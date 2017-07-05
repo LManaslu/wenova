@@ -15,7 +15,7 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	sprite[JUMP_ATK_DOWN_FALLLOOP] = Sprite(path + "jump_atk_down_fallloop.png", 3, 10);
 	sprite[JUMP_ATK_DOWN_DMG] = Sprite(path + "jump_atk_down_dmg.png", 3, 10);
 	sprite[IDLE_ATK_DOWN] = Sprite(path + "idle_atk_down.png", 4, 10);
-	sprite[SPECIAL_1_1] = Sprite(path + "special_1_1.png", 3, 30);
+	sprite[SPECIAL_1] = Sprite(path + "special_1.png", 3, 30);
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
@@ -23,6 +23,7 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	tags["flesh"] = true;
 	tags[skin] = true;
 	box = Rectangle(x, y, 84, 84);
+	additional_attack_damage = 0;
 }
 
 void Flesh::update_machine_state(float delta){
@@ -64,7 +65,7 @@ void Flesh::update_machine_state(float delta){
 		case FighterState::JUMP_ATK_DOWN_FALLLOOP:
 			speed.x = 3 * (orientation == LEFT ? -1 : 1);
 			speed.y = 3;
-			attack_damage = 1;
+			attack_damage = BASIC_ATTACK_DAMAGE + additional_attack_damage;
 			attack_mask = get_attack_orientation();
 
 			check_jump_atk_down_dmg();
@@ -87,7 +88,7 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::IDLE_ATK_DOWN:
-			attack_damage = 1;
+			attack_damage = BASIC_ATTACK_DAMAGE + additional_attack_damage;
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
@@ -95,9 +96,19 @@ void Flesh::update_machine_state(float delta){
 			}
 		break;
 
-		case FighterState::SPECIAL_1_1:
-			attack_damage = 2;
-			if(grab) increment_life(attack_damage);
+		case FighterState::STUNT:
+			attack_damage = 0;
+			attack_mask = 0;
+			check_special_2();
+			if(sprite[state].is_finished()){
+				check_fall();
+				check_idle();
+				check_dead();
+			}
+		break;
+
+		case FighterState::SPECIAL_1:
+			attack_damage = SPECIAL_1_DAMAGE + additional_attack_damage;
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_fall();
@@ -116,7 +127,7 @@ void Flesh::update_machine_state(float delta){
 			check_fall();
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
-			check_special_1_1();
+			check_special_1();
 		break;
 
 		case FighterState::JUMPING:
@@ -145,7 +156,7 @@ void Flesh::update_machine_state(float delta){
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
 			check_fall();
-			check_special_1_1();
+			check_special_1();
 		break;
 
 		case FighterState::CROUCH:
@@ -244,10 +255,14 @@ void Flesh::check_idle_atk_down(bool change){
 	}
 }
 
-void Flesh::check_special_1_1(bool change){
+void Flesh::check_special_1(bool change){
 	if(pressed[SPECIAL1_BUTTON]) {
-		if(change) temporary_state = FighterState::SPECIAL_1_1;
+		if(change) temporary_state = FighterState::SPECIAL_1;
 	}
+}
+
+void Flesh::check_special_2(bool){
+	additional_attack_damage = get_remaining_life() / Fighter::MAX_LIFE * BASIC_ATTACK_DAMAGE; 
 }
 
 void Flesh::check_pass_through_platform(bool change){
@@ -259,7 +274,8 @@ void Flesh::check_defense(bool change){
 }
 
 void Flesh::check_stunt(bool change){
-
+	speed.x = 0;
+	if(change) temporary_state = FighterState::STUNT;
 }
 
 void Flesh::check_dead(bool change){
