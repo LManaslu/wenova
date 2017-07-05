@@ -103,6 +103,7 @@ public:
 	void increment_special(float increment);
 	void set_partner(Fighter * cpartner);
 	Fighter * get_partner();
+	string get_path();
 
 	static const int MAX_LIFE = 2000;
 	static const int MAX_SPECIAL = 250;

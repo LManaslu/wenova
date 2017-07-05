@@ -27,6 +27,7 @@ class FighterStats : public GameObject{
 		Sprite empty_bg;
 		Sprite life;
 		Sprite special[3];
+		Sprite player_image;
 		double percent_to_draw_life;
 		double percent_to_draw_special;
 		int index_fighter;
