@@ -12,9 +12,10 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	sprite[JUMPING] = Sprite(path + "jumping.png", 6, 10);
 	sprite[FALLING] = Sprite(path + "falling.png", 7, 10);
 	sprite[CROUCH] = Sprite(path + "crouch.png", 6, 20);
-	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(path + "idle_atk_neutral.png", 12, 10);
-	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(path + "idle_atk_neutral.png", 12, 10);
-	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(path + "idle_atk_neutral.png", 12, 10);
+	sprite[IDLE_ATK_NEUTRAL_1] = Sprite(path + "idle_atk_neutral_1.png", 4, 10);
+	sprite[IDLE_ATK_NEUTRAL_2] = Sprite(path + "idle_atk_neutral_2.png", 3, 10);
+	sprite[IDLE_ATK_NEUTRAL_3] = Sprite(path + "idle_atk_neutral_3.png", 5, 10);
+	sprite[IDLE_ATK_UP] = Sprite(path + "idle_atk_up.png", 4, 10);
 	sprite[IDLE_ATK_FRONT] = Sprite(path + "idle_atk_front.png", 4, 10);
 	sprite[JUMP_ATK_DOWN_FALLLOOP] = Sprite(path + "jump_atk_down_fallloop.png", 3, 10);
 	sprite[JUMP_ATK_DOWN_DMG] = Sprite(path + "jump_atk_down_dmg.png", 3, 10);
@@ -44,6 +45,15 @@ void Flesh::update_machine_state(float delta){
 				speed.y = 0.1;
 				check_fall();
 				check_idle();
+			}
+		break;
+
+		case FighterState::IDLE_ATK_UP:
+			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
+			attack_mask = get_attack_orientation();
+			if(sprite[state].is_finished()){
+				check_idle();
+				check_crouch();
 			}
 		break;
 
@@ -165,6 +175,7 @@ void Flesh::update_machine_state(float delta){
 			check_defense();
 			check_pass_through_platform();
 			check_dead();
+			check_idle_atk_up();
 		break;
 
 		case FighterState::JUMPING:
@@ -201,6 +212,7 @@ void Flesh::update_machine_state(float delta){
 			check_ultimate();
 			check_defense();
 			check_pass_through_platform();
+			check_idle_atk_up();
 		break;
 
 		case FighterState::CROUCH:
@@ -373,5 +385,11 @@ void Flesh::check_jump_atk_up(bool change) {
 	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
 		speed.y = -5;
 		if(change) temporary_state = FighterState::JUMP_ATK_UP;
+	}
+}
+
+void Flesh::check_idle_atk_up(bool change) {
+	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
+		if(change) temporary_state = FighterState::IDLE_ATK_UP;
 	}
 }
