@@ -29,7 +29,7 @@ class TimeCounter : public GameObject{
 		Sprite bg;
 		Timer timer;
 		Text *text;
-		int remaining_seconds;
+		float remaining_seconds;
 
 		string get_time_string();
 };
