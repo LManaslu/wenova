@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "UltimateEffect.h"
 
+#define CROUCH_COOLDOWN 100.0
+
 Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighter(cid, x, cpartner){
 	path = "flesh/" + skin + "/";
 
@@ -132,6 +134,9 @@ void Flesh::update_machine_state(float delta){
 			check_idle_atk_front();
 			check_special_1();
 			check_ultimate();
+			check_defense();
+			check_pass_through_platform();
+			check_dead();
 		break;
 
 		case FighterState::JUMPING:
@@ -164,11 +169,32 @@ void Flesh::update_machine_state(float delta){
 			check_fall();
 			check_special_1();
 			check_ultimate();
+			check_defense();
+			check_pass_through_platform();
 		break;
 
 		case FighterState::CROUCH:
 			check_idle();
 			check_fall();
+		break;
+
+		case FighterState::DEFENDING:
+			attack_damage = 0;
+			attack_mask = 0;
+			check_idle();
+			check_fall();
+		break;
+
+
+		case FighterState::DYING:
+			if(sprite[state].is_finished()){
+				remaining_life = 0;
+			}
+		break;
+
+		case FighterState::LAST:
+			printf("Invalid blood %d state\n", id);
+			exit(-1);
 		break;
 	}
 }
@@ -280,12 +306,20 @@ void Flesh::check_ultimate(bool) {
 	}
 }
 
-void Flesh::check_pass_through_platform(bool change){
-
+void Flesh::check_pass_through_platform(bool change) {
+	if(pressed[DOWN_BUTTON] and not is_holding[ATTACK_BUTTON]){
+		if(crouch_timer.get() < CROUCH_COOLDOWN){
+			if (change) temporary_state = FighterState::FALLING;
+			pass_through = true;
+		}
+		crouch_timer.restart();
+	}
 }
 
 void Flesh::check_defense(bool change){
-
+	if(is_holding[BLOCK_BUTTON] and on_floor){
+   		if(change) temporary_state = FighterState::DEFENDING;
+    }
 }
 
 void Flesh::check_stunt(bool change){
@@ -293,6 +327,8 @@ void Flesh::check_stunt(bool change){
 	if(change) temporary_state = FighterState::STUNT;
 }
 
-void Flesh::check_dead(bool change){
-
+void Flesh::check_dead(bool change) {
+	if(is("dying")) {
+		if(change) temporary_state = FighterState::DYING;
+	}
 }
