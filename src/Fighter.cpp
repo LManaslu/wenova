@@ -254,3 +254,7 @@ void Fighter::set_partner(Fighter * cpartner){
 Fighter * Fighter::get_partner() {
 	return partner;
 }
+
+string Fighter::get_path(){
+	return path;
+}
