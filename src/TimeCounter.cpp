@@ -8,10 +8,10 @@ TimeCounter::TimeCounter(){
 	text = new Text("font/8-BIT WONDER.ttf", 50, Text::TextStyle::SOLID, "99", 
 					{255, 255, 255, 255});
 
-	text->set_pos(640, 664, true, true);
-
 	bg = Sprite("hud/time_board.png");
 	box = Rectangle(640, 664, bg.get_width(), bg.get_height());
+
+	text->set_pos(640, 664, true, true);
 }
 
 TimeCounter::~TimeCounter(){
@@ -19,8 +19,9 @@ TimeCounter::~TimeCounter(){
 }
 
 void TimeCounter::update(float delta){
+	text->set_pos(640, 664, true, true);
 	timer.update(delta);
-	remaining_seconds = total_time - (timer.get() / total_time); 
+	remaining_seconds -= delta * 0.01; 
 	//FIXME
 	if(remaining_seconds < 0)
 		remaining_seconds = 0;
@@ -33,7 +34,7 @@ void TimeCounter::render(){
 }
 
 string TimeCounter::get_time_string(){
-	return (remaining_seconds < 10 ? "0" : "") + to_string(remaining_seconds);
+	return to_string((int)remaining_seconds);
 }
 
 bool TimeCounter::is_dead(){
