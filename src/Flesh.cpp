@@ -1,6 +1,6 @@
 #include "Flesh.h"
 #include "Game.h"
-#include "UltimateEffect.h"
+#include "FleshUltimateEffect.h"
 
 #define CROUCH_COOLDOWN 400.0
 
@@ -98,12 +98,13 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::CROUCH_ATK:
-		attack_damage = 3 * (sprite[state].get_current_frame() == 1);
-		attack_mask = get_attack_orientation() | AttackDirection::ATK_DOWN;
-		if(sprite[state].is_finished()){
-			check_idle();
-			check_crouch();
-		}
+			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
+			attack_mask = get_attack_orientation() | AttackDirection::ATK_DOWN;
+			if(sprite[state].is_finished()){
+				check_idle();
+				check_crouch();
+			}
+		break;
 
 		case FighterState::JUMP_ATK_DOWN_FALLLOOP:
 			speed.x = 3 * (orientation == LEFT ? -1 : 1);
@@ -179,8 +180,8 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::JUMPING:
-			check_left(false);
-			check_right(false);
+			check_left(on_floor);
+			check_right(on_floor);
 			check_fall();
 			check_jump_atk_down_fallloop();
 			check_idle();
@@ -344,7 +345,7 @@ void Flesh::check_special_2(bool){
 void Flesh::check_ultimate(bool) {
 	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL){
 		MAX_LIFE += 500;
-		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "ult_effect.png", path + "aura.png", "has_sprite", 1));
+		Game::get_instance().get_current_state().add_object(new FleshUltimateEffect(this, path + "ult_effect.png", path + "aura.png", "has_sprite", 1));
 	}
 }
 
