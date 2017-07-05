@@ -90,6 +90,7 @@ public:
 	float get_attack_damage();
 	int get_attack_mask();
 	int get_id();
+	int get_max_life();
 	void increment_life(float increment);
 	void increment_special(float increment);
 	void set_partner(Fighter * cpartner);

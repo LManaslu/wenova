@@ -274,3 +274,6 @@ void Fighter::play_sound(){
 		sound[state].play(0);
 	}
 }
+int Fighter::get_max_life(){
+	return MAX_LIFE;
+}
