@@ -4,7 +4,7 @@
 #include "HealEffect.h"
 #include "UltimateEffect.h"
 
-#define CROUCH_COOLDOWN 100.0
+#define CROUCH_COOLDOWN 50.0
 
 #include <algorithm>
 
@@ -12,6 +12,7 @@ using std::min;
 
 Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, x, cpartner){
 	path = "blood/" + skin + "/";
+	string sound_path = "blood/sound/";
 	sprite[IDLE] = Sprite(path + "idle.png", 12, 10);
 	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
 	sprite[JUMPING] = Sprite(path + "jumping.png", 6, 10);
@@ -33,6 +34,19 @@ Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fight
 	sprite[SPECIAL_1_2] = Sprite(path + "special_1_2.png", 11, 10);
 	sprite[SPECIAL_2] = Sprite(path + "special_2.png", 8, 10);
 	sprite[DYING] = Sprite(path + "dying.png", 12, 10);
+
+	sound[JUMPING] = Sound(sound_path + "jump.ogg");
+	sound[IDLE_ATK_NEUTRAL_1] = Sound(sound_path + "attack_1.ogg");
+	sound[IDLE_ATK_NEUTRAL_2] = Sound(sound_path + "attack_2.ogg");
+	sound[IDLE_ATK_NEUTRAL_3] = Sound(sound_path + "slash.ogg");
+	sound[IDLE_ATK_FRONT] = Sound(sound_path + "attack_2.ogg");
+	sound[IDLE_ATK_UP] = Sound(sound_path + "slash.ogg");
+	sound[JUMP_ATK_NEUTRAL] = Sound(sound_path + "slash.ogg");
+	sound[JUMP_ATK_UP] = Sound(sound_path + "slash.ogg");
+	sound[CROUCH_ATK] = Sound(sound_path + "slash.ogg");
+	sound[SPECIAL_2] = Sound(sound_path + "heal.ogg");
+
+	land_sound = Sound(sound_path + "land.ogg");
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);

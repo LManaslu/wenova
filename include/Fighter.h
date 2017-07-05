@@ -4,6 +4,7 @@
 #include "InputManager.h"
 #include "GameObject.h"
 #include "Sprite.h"
+#include "Sound.h"
 #include "Vector.h"
 #include "Timer.h"
 
@@ -18,10 +19,12 @@ protected:
 	enum Orientation {LEFT, RIGHT};
 	enum AttackDirection{ATK_DOWN = 1, ATK_LEFT = 2, ATK_UP = 4, ATK_RIGHT = 8};
 	vector<Sprite> sprite;
+	vector<Sound> sound;
 	FighterState state, temporary_state;
 	Orientation orientation;
 	Vector speed;
 	Vector acceleration;
+	Sound land_sound;
 	Vector crouching_size, not_crouching_size;
 	float vertical_speed;
 	bool on_floor, grab;
@@ -36,6 +39,7 @@ protected:
 	Fighter * partner;
 
 	void test_limits();
+	void play_sound();
 
 	float special;
 	Timer crouch_timer;

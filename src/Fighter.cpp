@@ -31,6 +31,7 @@ Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	max_speed = 9;
 	attack_mask = 0;
 	sprite = vector<Sprite>(LAST);
+	sound = vector<Sound>(LAST);
 	temporary_state = state;
 	pass_through_timer.set(100);
 
@@ -176,6 +177,9 @@ void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
 	float old_height = box.height;
+
+	if((state == FALLING or state == JUMPING) and (cstate == IDLE or cstate == RUNNING))
+		land_sound.play();
 	state = cstate;
 	Vector csize;
 	if(cstate == CROUCH or cstate == CROUCH_ATK) csize = crouching_size;
@@ -184,6 +188,7 @@ void Fighter::change_state(FighterState cstate){
 
 	sprite[state].restart_count(n_sprite_start);
 	n_sprite_start = 0;
+	play_sound();
 
 	float y = box.y - (new_height - old_height) * 0.5;
 
@@ -257,4 +262,10 @@ Fighter * Fighter::get_partner() {
 
 string Fighter::get_path(){
 	return path;
+}
+
+void Fighter::play_sound(){
+	if(sound[state].is_open()){
+		sound[state].play(0);
+	}
 }
