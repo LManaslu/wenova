@@ -21,6 +21,8 @@ using std::vector;
 Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	partner = cpartner;
 
+	MAX_LIFE = 2000;
+
 	state = FighterState::IDLE;
 	id = cid;
 	remaining_life = MAX_LIFE / 2;

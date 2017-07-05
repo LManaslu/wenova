@@ -1,4 +1,6 @@
 #include "Flesh.h"
+#include "Game.h"
+#include "UltimateEffect.h"
 
 Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighter(cid, x, cpartner){
 	path = "flesh/" + skin + "/";
@@ -24,6 +26,7 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	tags[skin] = true;
 	box = Rectangle(x, y, 84, 84);
 	additional_attack_damage = 0;
+	additional_speed = 0;
 }
 
 void Flesh::update_machine_state(float delta){
@@ -128,6 +131,7 @@ void Flesh::update_machine_state(float delta){
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
 			check_special_1();
+			check_ultimate();
 		break;
 
 		case FighterState::JUMPING:
@@ -136,6 +140,7 @@ void Flesh::update_machine_state(float delta){
 			check_fall();
 			check_jump_atk_down_fallloop();
 			check_idle();
+			check_ultimate();
 		break;
 
 		case FighterState::FALLING:
@@ -145,6 +150,7 @@ void Flesh::update_machine_state(float delta){
 			check_fall();
 			check_crouch();
 			check_jump_atk_down_fallloop();
+			check_ultimate();
 		break;
 
 		case FighterState::RUNNING:
@@ -157,6 +163,7 @@ void Flesh::update_machine_state(float delta){
 			check_idle_atk_front();
 			check_fall();
 			check_special_1();
+			check_ultimate();
 		break;
 
 		case FighterState::CROUCH:
@@ -183,7 +190,7 @@ void Flesh::check_fall(bool change){
 void Flesh::check_left(bool change){
 	if(is_holding[LEFT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
-		speed.x = -2;
+		speed.x = -(INITIAL_SPEED + additional_speed);
 		orientation = Orientation::LEFT;
 	}
 }
@@ -191,7 +198,7 @@ void Flesh::check_left(bool change){
 void Flesh::check_right(bool change){
 	if(is_holding[RIGHT_BUTTON]){
 		if(change) temporary_state = FighterState::RUNNING;
-		speed.x = 2;
+		speed.x = (INITIAL_SPEED + additional_speed);
 		orientation = Orientation::RIGHT;
 	}
 }
@@ -263,6 +270,14 @@ void Flesh::check_special_1(bool change){
 
 void Flesh::check_special_2(bool){
 	additional_attack_damage = get_remaining_life() / Fighter::MAX_LIFE * BASIC_ATTACK_DAMAGE; 
+	additional_speed = get_remaining_life() / Fighter::MAX_LIFE * INITIAL_SPEED * 0.5;
+}
+
+void Flesh::check_ultimate(bool) {
+	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL){
+		MAX_LIFE += 500;
+		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "ult_effect.png", path + "aura.png", "has_sprite", 1));
+	}
 }
 
 void Flesh::check_pass_through_platform(bool change){

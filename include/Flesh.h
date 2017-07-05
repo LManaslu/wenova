@@ -8,9 +8,12 @@ class Flesh : public Fighter{
 		Flesh(string skin, float x, float y, int cid, Fighter *cpartner = nullptr);
 		const float BASIC_ATTACK_DAMAGE = 1;
 		const float SPECIAL_1_DAMAGE = 2;
+		const float INITIAL_SPEED = 2;
 
 	private:
 		float additional_attack_damage;
+		float additional_speed;
+
 
 		void check_jump(bool change = true);
 		void check_fall(bool change = true);
@@ -28,6 +31,7 @@ class Flesh : public Fighter{
 		void check_idle_atk_down(bool change = true);
 		void check_special_1(bool change = true);
 		void check_special_2(bool change = true);
+		void check_ultimate(bool change = true);
 
 		void check_pass_through_platform(bool change = true);
 		void check_defense(bool change = true);
