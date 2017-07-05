@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "UltimateEffect.h"
 
-#define CROUCH_COOLDOWN 100.0
+#define CROUCH_COOLDOWN 400.0
 
 Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighter(cid, x, cpartner){
 	path = "flesh/" + skin + "/";
@@ -18,7 +18,9 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	sprite[IDLE_ATK_FRONT] = Sprite(path + "idle_atk_front.png", 4, 10);
 	sprite[JUMP_ATK_DOWN_FALLLOOP] = Sprite(path + "jump_atk_down_fallloop.png", 3, 10);
 	sprite[JUMP_ATK_DOWN_DMG] = Sprite(path + "jump_atk_down_dmg.png", 3, 10);
+	sprite[JUMP_ATK_UP] = Sprite(path + "jump_atk_up.png", 4, 10);
 	sprite[IDLE_ATK_DOWN] = Sprite(path + "idle_atk_down.png", 4, 10);
+	sprite[CROUCH_ATK] = Sprite(path + "crouch_atk.png", 4, 10);
 	sprite[SPECIAL_1] = Sprite(path + "special_1.png", 3, 30);
 
 	crouching_size = Vector(84, 59);
@@ -33,7 +35,21 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 
 void Flesh::update_machine_state(float delta){
 	switch(state){
+		case FighterState::JUMP_ATK_UP:
+			attack_damage = 7 * (sprite[state].get_current_frame() == 1);
+			attack_mask = get_attack_orientation();
+			check_left(false);
+			check_right(false);
+			if(sprite[state].is_finished()){
+				speed.y = 0.1;
+				check_fall();
+				check_idle();
+			}
+		break;
+
 		case FighterState::IDLE_ATK_NEUTRAL_1:
+			attack_damage = 3 * (sprite[state].get_current_frame() == 1);
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -44,6 +60,8 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::IDLE_ATK_NEUTRAL_2:
+			attack_damage = 5 * (sprite[state].get_current_frame() == 1);
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -54,6 +72,8 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::IDLE_ATK_NEUTRAL_3:
+			attack_damage = 10 * (sprite[state].get_current_frame() == 2);
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
@@ -66,6 +86,14 @@ void Flesh::update_machine_state(float delta){
 				check_crouch();
 			}
 		break;
+
+		case FighterState::CROUCH_ATK:
+		attack_damage = 3 * (sprite[state].get_current_frame() == 1);
+		attack_mask = get_attack_orientation() | AttackDirection::ATK_DOWN;
+		if(sprite[state].is_finished()){
+			check_idle();
+			check_crouch();
+		}
 
 		case FighterState::JUMP_ATK_DOWN_FALLLOOP:
 			speed.x = 3 * (orientation == LEFT ? -1 : 1);
@@ -146,6 +174,7 @@ void Flesh::update_machine_state(float delta){
 			check_jump_atk_down_fallloop();
 			check_idle();
 			check_ultimate();
+			check_jump_atk_up();
 		break;
 
 		case FighterState::FALLING:
@@ -156,6 +185,7 @@ void Flesh::update_machine_state(float delta){
 			check_crouch();
 			check_jump_atk_down_fallloop();
 			check_ultimate();
+			check_jump_atk_up();
 		break;
 
 		case FighterState::RUNNING:
@@ -175,6 +205,7 @@ void Flesh::update_machine_state(float delta){
 
 		case FighterState::CROUCH:
 			check_idle();
+			check_crouch_atk();
 			check_fall();
 		break;
 
@@ -184,7 +215,6 @@ void Flesh::update_machine_state(float delta){
 			check_idle();
 			check_fall();
 		break;
-
 
 		case FighterState::DYING:
 			if(sprite[state].is_finished()){
@@ -295,7 +325,7 @@ void Flesh::check_special_1(bool change){
 }
 
 void Flesh::check_special_2(bool){
-	additional_attack_damage = get_remaining_life() / Fighter::MAX_LIFE * BASIC_ATTACK_DAMAGE; 
+	additional_attack_damage = get_remaining_life() / Fighter::MAX_LIFE * BASIC_ATTACK_DAMAGE;
 	additional_speed = get_remaining_life() / Fighter::MAX_LIFE * INITIAL_SPEED * 0.5;
 }
 
@@ -310,7 +340,7 @@ void Flesh::check_pass_through_platform(bool change) {
 	if(pressed[DOWN_BUTTON] and not is_holding[ATTACK_BUTTON]){
 		if(crouch_timer.get() < CROUCH_COOLDOWN){
 			if (change) temporary_state = FighterState::FALLING;
-			pass_through = true;
+			pass_through_timer.restart();
 		}
 		crouch_timer.restart();
 	}
@@ -330,5 +360,18 @@ void Flesh::check_stunt(bool change){
 void Flesh::check_dead(bool change) {
 	if(is("dying")) {
 		if(change) temporary_state = FighterState::DYING;
+	}
+}
+
+void Flesh::check_crouch_atk(bool change){
+	if(pressed[ATTACK_BUTTON]){
+		if(change) temporary_state = FighterState::CROUCH_ATK;
+	}
+}
+
+void Flesh::check_jump_atk_up(bool change) {
+	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
+		speed.y = -5;
+		if(change) temporary_state = FighterState::JUMP_ATK_UP;
 	}
 }
