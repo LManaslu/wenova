@@ -15,6 +15,7 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	sprite[JUMP_ATK_DOWN_FALLLOOP] = Sprite(path + "jump_atk_down_fallloop.png", 3, 10);
 	sprite[JUMP_ATK_DOWN_DMG] = Sprite(path + "jump_atk_down_dmg.png", 3, 10);
 	sprite[IDLE_ATK_DOWN] = Sprite(path + "idle_atk_down.png", 4, 10);
+	sprite[SPECIAL_1_1] = Sprite(path + "special_1_1.png", 3, 30);
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
@@ -64,7 +65,7 @@ void Flesh::update_machine_state(float delta){
 			speed.x = 3 * (orientation == LEFT ? -1 : 1);
 			speed.y = 3;
 			attack_damage = 1;
-			attack_mask = (1 << 4) - 1;
+			attack_mask = get_attack_orientation();
 
 			check_jump_atk_down_dmg();
 			if(on_floor){
@@ -86,9 +87,21 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::IDLE_ATK_DOWN:
+			attack_damage = 1;
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
+			}
+		break;
+
+		case FighterState::SPECIAL_1_1:
+			attack_damage = 2;
+			if(grab) increment_life(attack_damage);
+			attack_mask = get_attack_orientation();
+			if(sprite[state].is_finished()){
+				check_fall();
+				check_idle();
 			}
 		break;
 
@@ -103,6 +116,7 @@ void Flesh::update_machine_state(float delta){
 			check_fall();
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
+			check_special_1_1();
 		break;
 
 		case FighterState::JUMPING:
@@ -131,6 +145,7 @@ void Flesh::update_machine_state(float delta){
 			check_idle_atk_neutral_1();
 			check_idle_atk_front();
 			check_fall();
+			check_special_1_1();
 		break;
 
 		case FighterState::CROUCH:
@@ -226,6 +241,12 @@ void Flesh::check_jump_atk_down_dmg(bool change){
 void Flesh::check_idle_atk_down(bool change){
 	if(is_holding[ATTACK_BUTTON] and is_holding[DOWN_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE_ATK_DOWN;
+	}
+}
+
+void Flesh::check_special_1_1(bool change){
+	if(pressed[SPECIAL1_BUTTON]) {
+		if(change) temporary_state = FighterState::SPECIAL_1_1;
 	}
 }
 
