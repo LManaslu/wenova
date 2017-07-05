@@ -22,6 +22,7 @@ class Flesh : public Fighter{
 		void check_jump_atk_down_fallloop(bool change = true);
 		void check_jump_atk_down_dmg(bool change = true);
 		void check_idle_atk_down(bool change = true);
+		void check_special_1_1(bool change = true);
 		void check_pass_through_platform(bool change = true);
 		void check_defense(bool change = true);
 		void check_stunt(bool change = true);
