@@ -54,21 +54,27 @@ FighterStats::~FighterStats(){
 }
 
 void FighterStats::update(float){
-	percent_to_draw_life = (fighter->get_remaining_life() * 1.0) / fighter->get_max_life();
-	percent_to_draw_special = (fighter->get_special() * 1.0) / Fighter::MAX_SPECIAL;
+	if(fighter) {
+		percent_to_draw_life = (fighter->get_remaining_life() * 1.0) / Fighter::MAX_LIFE;
+		percent_to_draw_special = (fighter->get_special() * 1.0) / Fighter::MAX_SPECIAL;
 
-	condition = (percent_to_draw_special == 1.0) ? 1 : 0;
-	if(fighter->is("in_ultimate")) condition = 2;
-	//Left
-	if(side == 0){
-		special[condition].set_clip(special[condition].get_width() * (1 - percent_to_draw_special) , 0, special[condition].get_width() * percent_to_draw_special, special[condition].get_height());
-		life[condition].set_clip(0, 0, life[condition].get_width() * percent_to_draw_life, life[condition].get_height());
+		condition = (percent_to_draw_special == 1.0) ? 1 : 0;
+		if(fighter->is("in_ultimate")) condition = 2;
+		//Left
+		if(side == 0){
+			special[condition].set_clip(special[condition].get_width() * (1 - percent_to_draw_special) , 0, special[condition].get_width() * percent_to_draw_special, special[condition].get_height());
+			life.set_clip(0, 0, life.get_width() * percent_to_draw_life, life.get_height());
+		}
+
+		//Right
+		if(side == 1){
+			special[condition].set_clip(0, 0, special[condition].get_width() * percent_to_draw_special, special[condition].get_height());
+			life.set_clip(life.get_width() * (1 - percent_to_draw_life), 0, life.get_width() * percent_to_draw_life, life.get_height());
+		}
 	}
-
-	//Right
-	if(side == 1){
-		special[condition].set_clip(0, 0, special[condition].get_width() * percent_to_draw_special, special[condition].get_height());
-		life[condition].set_clip(life[condition].get_width() * (1 - percent_to_draw_life), 0, life[condition].get_width() * percent_to_draw_life, life[condition].get_height());
+	if(fighter and fighter->is("dying")) {
+		player_image = Sprite(fighter->get_path() + "dead_miniature.png");
+		fighter = nullptr;
 	}
 
 }
@@ -105,7 +111,7 @@ void FighterStats::render(){
 
 bool FighterStats::is_dead(){
 	//FIXME ficar cinza, nao destruir
-	return fighter->is_dead();
+	return false;
 }
 
 void FighterStats::notify_collision(GameObject &){
