@@ -41,7 +41,7 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	additional_speed = 0;
 }
 
-void Flesh::update_machine_state(float delta){
+void Flesh::update_machine_state(float){
 	switch(state){
 		case FighterState::JUMP_ATK_UP:
 			attack_damage = 7 * (sprite[state].get_current_frame() == 1);
@@ -265,8 +265,12 @@ void Flesh::update_machine_state(float delta){
 			}
 		break;
 
+		case FighterState::JUMP_ATK_DOWN:
+		case FighterState::SPECIAL_1_1:
+		case FighterState::SPECIAL_1_2:
+		case FighterState::SPECIAL_2:
 		case FighterState::LAST:
-			printf("Invalid flesh %d state\n", id);
+			printf("Invalid flesh %d %d state\n", id, state);
 			exit(-1);
 		break;
 	}
