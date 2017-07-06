@@ -40,10 +40,13 @@ Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fight
 	sound[IDLE_ATK_NEUTRAL_2] = Sound(sound_path + "attack_2.ogg");
 	sound[IDLE_ATK_NEUTRAL_3] = Sound(sound_path + "slash.ogg");
 	sound[IDLE_ATK_FRONT] = Sound(sound_path + "attack_2.ogg");
+	sound[IDLE_ATK_DOWN] = Sound(sound_path + "idle_atk_down.ogg");
 	sound[IDLE_ATK_UP] = Sound(sound_path + "slash.ogg");
 	sound[JUMP_ATK_NEUTRAL] = Sound(sound_path + "slash.ogg");
 	sound[JUMP_ATK_UP] = Sound(sound_path + "slash.ogg");
 	sound[CROUCH_ATK] = Sound(sound_path + "slash.ogg");
+	sound[SPECIAL_1_1] = Sound(sound_path + "special_1_1.ogg");
+	sound[SPECIAL_1_2] = Sound(sound_path + "special_1_2.ogg");
 	sound[SPECIAL_2] = Sound(sound_path + "heal.ogg");
 
 	land_sound = Sound(sound_path + "land.ogg");
@@ -193,7 +196,7 @@ void Blood::update_machine_state(float delta){
 			increment_special(0.2 * delta);
 			increment_life(-0.2 * delta);
 			if(sprite[state].is_finished()){
-				Game::get_instance().get_current_state().add_object(new HealEffect(partner, "blood/heal_effect.png", "has_sprite", 9, 0.2));
+				Game::get_instance().get_current_state().add_object(new HealEffect(partner, "characters/blood/heal_effect.png", "has_sprite", 9, 0.2));
 				check_idle();
 				check_crouch();
 			}
