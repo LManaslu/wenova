@@ -13,16 +13,19 @@
 #include <vector>
 #include <utility>
 
+#define N_PLAYERS 4
+
 using std::vector;
 using std::pair;
 
 class BattleState : public State{
 private:
 	vector<pair<Sprite, Vector> > backgrounds;
-	vector <Fighter *> fighters;
+	Fighter* players[N_PLAYERS];
 	Music music;
 	Sound sound;
 	void read_level_design(string stage);
+	bool alive[5];
 
 public:
 	BattleState(string stage, vector< pair<string, string> > players_info);
