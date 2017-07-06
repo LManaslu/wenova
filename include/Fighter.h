@@ -59,7 +59,6 @@ protected:
 	virtual void check_fall(bool change = true) = 0;
 	virtual void check_left(bool change = true) = 0;
 	virtual void check_right(bool change = true) = 0;
-	virtual void check_idle(bool change = true) = 0;
 	virtual void check_crouch(bool change = true) = 0;
 	virtual void check_idle_atk_neutral_1(bool change = true) = 0;
 	virtual void check_idle_atk_neutral_2(bool change = true) = 0;
