@@ -17,30 +17,18 @@ using std::make_pair;
 class CharacterSelectState : public State {
 private:
 	Sprite background[2], planet, character_slots;
-	Sprite number[4], selected_tag, ready_to_fight;
-	int cur_selection_row[4], cur_selection_col[4];
-	string selected_stage;
+	Sprite number[4], name_tag[4], selected_tag, ready_to_fight;
 	Sound blocked, selected_sound, changed;
+	int cur_row[4], cur_col[4], cur_skin[4];
+	bool selected[4], ready;
+	string selected_stage;
 
 	enum Button { A, B, Y, LEFT, RIGHT, UP, DOWN, SELECT, START, LT, RT };
 	bool pressed[4][15];
 
-	int cur_skin[4];
-	bool selected[4], ready;
-
-	vector<ii> number_delta, sprite_pos;
-	vector<int> col_slots, row_slots;
+	vector<ii> number_delta, sprite_pos, name_tag_positions, name_delta;
 
 	FighterMenu chars[N_CHARS];
-
-	Sprite name_tag[4];
-	Sprite char_name[8];
-	// Sprite disabled[8];
-	Sprite char_sprite[8][4];
-	vector<ii> name_tag_positions, name_delta;
-	vector<string> names;
-
-	bool available_skin[8][4];
 
 public:
 	CharacterSelectState(string cselected_stage);
@@ -50,14 +38,14 @@ public:
 
 	void pause();
 	void resume();
+	void process_input();
 
 	bool character_enabled(int row, int col);
 	pair<string, int> get_char_info(int idx);
 	bool all_players_selected();
-	string get_skin_name(int idx);
 	vector< pair<string, string> > export_players();
 
-	void process_input();
+	pair<int, int> get_slot(int row, int col);
 };
 
 #endif
