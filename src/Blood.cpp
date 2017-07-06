@@ -11,8 +11,8 @@
 using std::min;
 
 Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, x, cpartner){
-	path = "blood/" + skin + "/";
-	string sound_path = "blood/sound/";
+	path = "characters/blood/" + skin + "/";
+	string sound_path = "characters/blood/sound/";
 	sprite[IDLE] = Sprite(path + "idle.png", 12, 10);
 	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
 	sprite[JUMPING] = Sprite(path + "jumping.png", 6, 10);
