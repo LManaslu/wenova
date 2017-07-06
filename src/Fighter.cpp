@@ -187,7 +187,7 @@ void Fighter::change_state(FighterState cstate){
 		land_sound.play();
 	state = cstate;
 	Vector csize;
-	if(cstate == CROUCH or cstate == CROUCH_ATK) csize = crouching_size;
+	if(cstate == CROUCH or cstate == CROUCH_ATK or cstate == SPECIAL_1) csize = crouching_size;
 	else csize = not_crouching_size;
 	float new_height = csize.y;
 
