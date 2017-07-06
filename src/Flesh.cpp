@@ -382,7 +382,7 @@ void Flesh::check_special_2(bool){
 void Flesh::check_ultimate(bool) {
 	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL){
 		MAX_LIFE += 500;
-		Game::get_instance().get_current_state().add_object(new FleshUltimateEffect(this, path + "ult_effect.png", path + "aura.png", "has_sprite", 1));
+		Game::get_instance().get_current_state().add_object(new FleshUltimateEffect(this, path + "ult_effect.png", "has_sprite", 1));
 	}
 }
 
