@@ -17,7 +17,7 @@ void UltimateEffect::update(float delta){
 		sprite_box.y = parent->box.get_draw_y() - sprite_box.get_height()/2 - 10;
 		box.x = parent->box.x;
 		box.y = parent->box.y;
-		parent->increment_special(-1 * delta);
+		parent->increment_special(-0.4 * delta);
 		parent->increment_life(healing_factor);
 	}
 	sprite.update(delta);
