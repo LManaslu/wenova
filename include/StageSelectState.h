@@ -15,7 +15,7 @@ private:
 	bool go_to_edit;
 	int n_stages;
 
-	enum Button { LEFT, RIGHT, A, B, SELECT };
+	enum Button { LEFT, RIGHT, A, B, START, SELECT };
 	bool pressed[5];
 
 	void process_input();
