@@ -13,7 +13,11 @@ FighterMenu::FighterMenu(string cname, int frames, bool cenabled){
 	n_frames = frames;
 
 	for(int i=0;i<N_SKINS;i++){
-		skin[i] = Sprite("characters/" + name + "/" + get_skin_name(i) + "/idle.png", n_frames, FRAME_TIME);
+		if(enabled)
+			skin[i] = Sprite("characters/" + name + "/" + get_skin_name(i) + "/idle.png", n_frames, FRAME_TIME);
+		else
+			skin[i] = Sprite("characters/" + name + "/idle.png", n_frames, FRAME_TIME);
+
 		skin[i].set_scale(SKIN_SCALE);
 	}
 
