@@ -91,6 +91,8 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::IDLE_ATK_FRONT:
+			attack_damage = 1;
+			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
 				check_crouch();
