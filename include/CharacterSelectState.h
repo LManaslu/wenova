@@ -5,34 +5,42 @@
 #include "Sprite.h"
 #include "InputManager.h"
 #include "Sound.h"
+#include "FighterMenu.h"
 
 #include <string>
 
 using std::to_string;
 using std::make_pair;
 
+#define N_CHARS 8
+
 class CharacterSelectState : public State {
 private:
 	Sprite background[2], planet, character_slots;
-	Sprite name_tag[4], number[4], selected_tag, ready_to_fight;
+	Sprite number[4], selected_tag, ready_to_fight;
 	int cur_selection_row[4], cur_selection_col[4];
 	string selected_stage;
 	Sound blocked, selected_sound, changed;
 
-	vector<ii> name_tag_positions, number_delta, name_delta, sprite_pos;
-	vector<int> col_slots, row_slots;
-	// vector< vector<string> > names;
-	vector<string> names;
-
-	int cur_skin[4];
-	Sprite char_name[8];
-	Sprite disabled[8];
-	Sprite char_sprite[8][4];
-	bool available_skin[8][4];
-	bool selected[4], ready;
-
 	enum Button { A, B, Y, LEFT, RIGHT, UP, DOWN, SELECT, START, LT, RT };
 	bool pressed[4][15];
+
+	int cur_skin[4];
+	bool selected[4], ready;
+
+	vector<ii> number_delta, sprite_pos;
+	vector<int> col_slots, row_slots;
+
+	FighterMenu chars[N_CHARS];
+
+	Sprite name_tag[4];
+	Sprite char_name[8];
+	// Sprite disabled[8];
+	Sprite char_sprite[8][4];
+	vector<ii> name_tag_positions, name_delta;
+	vector<string> names;
+
+	bool available_skin[8][4];
 
 public:
 	CharacterSelectState(string cselected_stage);

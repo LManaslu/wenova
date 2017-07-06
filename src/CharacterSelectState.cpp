@@ -11,7 +11,6 @@
 #define N_PLAYERS 4
 #define N_BACKGROUNDS 2
 #define N_SKINS 4
-#define N_CHARS 8
 #define FIRST_PLAYER 0
 #define N_COLS 2
 #define N_ROWS 4
@@ -23,6 +22,7 @@ CharacterSelectState::CharacterSelectState(string cselected_stage){
 	memset(cur_selection_row, 0, sizeof cur_selection_row);
 	memset(cur_skin, 0, sizeof cur_skin);
 	memset(selected, false, sizeof selected);
+	memset(available_skin, true, sizeof available_skin);
 
 	character_slots = Sprite("character_select/character_slots.png");
 	selected_tag = Sprite("character_select/selected.png");
@@ -46,26 +46,29 @@ CharacterSelectState::CharacterSelectState(string cselected_stage){
 		number[i] = Sprite("character_select/number_" + to_string(i + 1) + ".png");
 	}
 
+
 	for(int i=0;i<N_CHARS;i++){
-		string character_name = get_char_info(i).first;
-		int n_frames = get_char_info(i).second;
-
-		memset(available_skin, true, sizeof available_skin);
-		char_name[i] = Sprite("character_select/name_" + character_name + ".png");
-
-		if(i < 2){
-			disabled[i] = Sprite(character_name + "/disabled.png", n_frames, 13);
-			disabled[i].set_scale(3);
-		}
-
-		// loop to get skins
-		for(int j=0;j<N_SKINS;j++){
-			char_sprite[i][j] = Sprite(character_name + "/" + get_skin_name(j) + "/idle.png", n_frames, 13);
-			char_sprite[i][j].set_scale(3);
-		}
+		chars[i] = FighterMenu(get_char_info(i).first, get_char_info(i).second, i < 2);
 	}
 
-	// names = { {"blood","hookline"}, {"flesh","sinker"}, {"trap","dusk"}, {"trip","dawn"} };
+	// for(int i=0;i<N_CHARS;i++){
+		// string character_name = get_char_info(i).first;
+		// int n_frames = get_char_info(i).second;
+
+		// char_name[i] = Sprite("character_select/name_" + character_name + ".png");
+
+		// if(i < 2){
+		// 	disabled[i] = Sprite(character_name + "/disabled.png", n_frames, 13);
+		// 	disabled[i].set_scale(3);
+		// }
+
+		// loop to get skins
+		// for(int j=0;j<N_SKINS;j++){
+		// 	char_sprite[i][j] = Sprite(character_name + "/" + get_skin_name(j) + "/idle.png", n_frames, 13);
+		// 	char_sprite[i][j].set_scale(3);
+		// }
+	// }
+
 	names = { "blood", "flesh", "hookline", "sinker", "trap", "trip", "dusk", "dawn" };
 	name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
 	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
@@ -115,19 +118,20 @@ void CharacterSelectState::update(float delta){
 			// random character
 			if(pressed[i][Y]){
 				selected_sound.play();
-				int rand_col = 0, rand_row = 0, rand_skin = 0;
+				int rand_col = 0, rand_row = 0, rand_skin = 0, char_sel = 0;
 
 				do{
 					rand_col = rand() % N_COLS;
 					rand_row = rand() % N_ROWS;
-				}while(not character_enabled(rand_row, rand_col));
+					char_sel = rand_row * N_COLS + rand_col;
+				}while(not chars[char_sel].is_enabled());
+				// }while(not character_enabled(rand_row, rand_col));
 
-				int char_sel = rand_row * N_COLS + rand_col;
-				// string char_selected = names[rand_col][rand_row];
-				string char_selected = names[char_sel];
+				// string char_selected = names[char_sel];
 				do{
 					rand_skin = rand() % N_SKINS;
-				}while(not available_skin[char_sel][rand_skin]);
+				}while(not chars[char_sel].is_skin_available(rand_skin));
+				// }while(not available_skin[char_sel][rand_skin]);
 
 				// printf("[RANDOM] PLAYER %d -> [%s] [%s] SKIN\n", i + 1, get_skin_name(rand_skin).c_str(), char_selected.c_str());
 
@@ -189,17 +193,20 @@ void CharacterSelectState::update(float delta){
 				int col_sel = cur_selection_col[i];
 				int row_sel = cur_selection_row[i];
 				int char_sel = row_sel * N_COLS + col_sel;
-				string char_selected = names[char_sel];
+				// string char_selected = names[char_sel];
 
-				if(character_enabled(row_sel, col_sel)){
-					if(not available_skin[char_sel][cur_skin[i]]){
+				// if(character_enabled(row_sel, col_sel)){
+				if(chars[char_sel].is_enabled()){
+					// if(not available_skin[char_sel][cur_skin[i]]){
+					if(not chars[char_sel].is_skin_available(cur_skin[i])){
 						blocked.play();
 						// printf("SKIN [%d] of [%s] ALREADY CHOSEN\n", cur_skin[i], char_selected.c_str());
 					}
 					else{
 						selected_sound.play();
 						// printf("PLAYER %d CHOSE SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
-						available_skin[char_sel][cur_skin[i]] = false;
+						// available_skin[char_sel][cur_skin[i]] = false;
+						chars[char_sel].lock_skin(cur_skin[i]);
 						selected[i] = true;
 					}
 				}
@@ -213,9 +220,10 @@ void CharacterSelectState::update(float delta){
 				int row_sel = cur_selection_row[i];
 				int char_sel = row_sel * N_COLS + col_sel;
 				// string char_selected = names[col_sel][row_sel];
-				string char_selected = names[char_sel];
+				// string char_selected = names[char_sel];
 
-				available_skin[char_sel][cur_skin[i]] = true;
+				// available_skin[char_sel][cur_skin[i]] = true;
+				chars[char_sel].unlock_skin(cur_skin[i]);
 				selected[i] = false;
 				ready = false;
 				// printf("PLAYER %d UNSELECTED SKIN [%d] of [%s]\n", i + 1, cur_skin[i], char_selected.c_str());
@@ -223,14 +231,22 @@ void CharacterSelectState::update(float delta){
 		}
 	}
 
-	for(int i=0;i<N_CHARS; i++){
-		for(int j=0;j<N_SKINS;j++){
-			char_sprite[i][j].update(delta);
-		}
-	}
+	// for(int i=0;i<N_CHARS; i++){
+	// 	for(int j=0;j<N_SKINS;j++){
+	// 		char_sprite[i][j].update(delta);
+	// 	}
+	// }
+	//
+	// for(int i=0;i<2;i++){
+	// 	disabled[i].update(delta);
+	// }
 
-	for(int i=0;i<2;i++){
-		disabled[i].update(delta);
+	for(int i=0;i<N_CHARS;i++){
+		chars[i].get_disabled().update(delta);
+
+		for(int j=0;j<N_SKINS;j++){
+			chars[i].get_skin(j).update(delta);
+		}
 	}
 
 	planet.update(delta);
@@ -247,22 +263,29 @@ void CharacterSelectState::render(){
 		int row_sel = cur_selection_row[i];
 		int char_sel = row_sel * N_COLS + col_sel;
 
+		FighterMenu char_selected = chars[char_sel];
+
 		// string char_selected = names[row_sel][col_sel];
-		string char_selected = names[char_sel];
+		// string char_selected = names[char_sel];
 
 		SDL_RendererFlip flip = i >= 2 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-		char_sprite[char_sel][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
+		// char_sprite[char_sel][cur_skin[i]].render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
+		char_selected.get_skin(cur_skin[i]).render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
 
 		// if(not available_skin[char_sel][cur_skin[i]] && not selected[i]){
 		// 	disabled[char_selected].render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
 		// }
 
+		if(not char_selected.is_skin_available(cur_skin[i]) && not selected[i]){
+			char_selected.get_disabled().render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
+		}
+
 		name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
 
-		char_name[char_sel].render(
-			name_tag_positions[i].first + name_delta[i].first,
-			name_tag_positions[i].second + name_delta[i].second
-		);
+		// char_name[char_sel].render(
+		// 	name_tag_positions[i].first + name_delta[i].first,
+		// 	name_tag_positions[i].second + name_delta[i].second
+		// );
 
 		number[i].render(col_slots[col_sel] + number_delta[i].first, row_slots[row_sel] + number_delta[i].second);
 
@@ -288,7 +311,7 @@ bool CharacterSelectState::all_players_selected(){
 
 // returns name and number of frames in corresponding sprite
 pair<string, int> CharacterSelectState::get_char_info(int idx){
-	vector< pair<string, int> > chars = {
+	vector< pair<string, int> > chars_info = {
 		make_pair("blood", 12),
 		make_pair("flesh", 8),
 		make_pair("hookline", 8),
@@ -299,7 +322,7 @@ pair<string, int> CharacterSelectState::get_char_info(int idx){
 		make_pair("dawn", 5)
 	};
 
-	return chars[idx];
+	return chars_info[idx];
 }
 
 string CharacterSelectState::get_skin_name(int idx){
@@ -347,9 +370,7 @@ void CharacterSelectState::process_input(){
 }
 
 void CharacterSelectState::pause(){
-
 }
 
 void CharacterSelectState::resume(){
-
 }
