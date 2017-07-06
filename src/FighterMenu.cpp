@@ -1,14 +1,14 @@
 #include "FighterMenu.h"
 
 #define FRAME_TIME 13
-#define WHITE { 255, 255, 255, 255 }
+#define YELLOW { 202, 236, 4, 1 }
 
 FighterMenu::FighterMenu(){
 }
 
 FighterMenu::FighterMenu(string cname, int frames, bool cenabled){
 	name = cname;
-	name_text = new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, name, WHITE);
+	name_text = new Text("font/8-BIT WONDER.ttf", 20, Text::TextStyle::SOLID, name, YELLOW);
 	enabled = cenabled;
 	n_frames = frames;
 
