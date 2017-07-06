@@ -289,8 +289,11 @@ void Blood::update_machine_state(float delta){
 			}
 		break;
 
+		case FighterState::JUMP_ATK_DOWN_FALLLOOP:
+		case FighterState::JUMP_ATK_DOWN_DMG:
+		case FighterState::SPECIAL_1:
 		case FighterState::LAST:
-			printf("Invalid blood %d state\n", id);
+			printf("Invalid blood %d %d state\n", id, state);
 			exit(-1);
 		break;
 	}
