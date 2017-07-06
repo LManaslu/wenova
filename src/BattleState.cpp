@@ -26,7 +26,7 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 
 	read_level_design(stage);
 
-//	music.play();
+	music.play();
 
 	vector< pair<int, int> > char_positions;
 	vector< pair<int, int> > hud_positions = { ii(133, 599.5), ii(133, 679.5), ii(1147, 599.5), ii(1147, 679.5) };
