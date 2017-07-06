@@ -32,14 +32,14 @@ void StageSelectState::update(float delta) {
 
 	InputManager * input_manager = InputManager::get_instance();
 
-	if(pressed[B] || pressed[SELECT]) {
+	if(input_manager->quit_requested()){
 		m_quit_requested = true;
-		Game::get_instance().push(new MenuState(true));
 		return;
 	}
 
-	if(input_manager->quit_requested()){
+	if(pressed[B] || pressed[SELECT]) {
 		m_quit_requested = true;
+		Game::get_instance().push(new MenuState(true));
 		return;
 	}
 
@@ -51,7 +51,7 @@ void StageSelectState::update(float delta) {
 		update_stage_select(1);
 	}
 
-	if(pressed[A]) {
+	if(pressed[A] || pressed[START]) {
 		m_quit_requested = true;
 		if(stage_select == 2){
 			srand(clock());
@@ -92,6 +92,7 @@ void StageSelectState::process_input(){
 		ii(RIGHT, InputManager::RIGHT),
 		ii(A, InputManager::A),
 		ii(B, InputManager::B),
+		ii(START, InputManager::START),
 		ii(SELECT, InputManager::SELECT)
 	};
 

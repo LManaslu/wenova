@@ -65,7 +65,6 @@ void CharacterSelectState::update(float delta){
 	// inputs
 	if(input_manager->quit_requested()){
 		m_quit_requested = true;
-		Game::get_instance().push(new StageSelectState());
 		return;
 	}
 
