@@ -243,6 +243,7 @@ void Fighter::increment_life(float increment){
 	remaining_life += increment;
 	if(remaining_life < 1) {
 		remaining_life = 1;
+		special = 0;
 		if(partner) partner->set_partner(nullptr);
 		add_tags("dying");
 	}
