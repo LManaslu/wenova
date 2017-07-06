@@ -21,7 +21,6 @@ FighterMenu::FighterMenu(string cname, int frames, bool cenabled){
 	disabled.set_scale(SKIN_SCALE);
 
 	memset(skin_available, true, sizeof skin_available);
-	for(auto &letter : name) letter = toupper(letter);
 }
 
 bool FighterMenu::is_enabled(){
