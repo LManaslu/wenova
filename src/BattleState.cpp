@@ -14,13 +14,13 @@
 #include "Flesh.h"
 
 #define N_BACKGROUND 2
-#define N_PLAYERS 4
 
 using std::fstream;
 using std::stringstream;
 using std::to_string;
 
 BattleState::BattleState(string stage, vector< pair<string, string> > players_info){
+	memset(alive, true, sizeof alive);
 
 	music = Music("stage_" + stage + "/music.ogg");
 	sound = Sound("stage_" + stage + "/sound.ogg");
@@ -37,8 +37,6 @@ BattleState::BattleState(string stage, vector< pair<string, string> > players_in
 		char_positions = { ii(177, 313), ii(276, 510), ii(1128, 245), ii(954, 474) };
 	else
 		char_positions = { ii(116, 227), ii(146, 394), ii(1036, 221), ii(1063, 382) };
-
-	Fighter* players[N_PLAYERS];
 
 	for(int i = 0; i < (int)players_info.size(); i++){
 		string char_name = players_info[i].first;
@@ -82,6 +80,24 @@ void BattleState::update(float delta){
 	if(input_manager->quit_requested()){
 		m_quit_requested = true;
 		return;
+	}
+
+	for(int i = 0; i < N_PLAYERS; i++){
+		if(alive[i]){
+			if(players[i]->is_dead()){
+				alive[i] = false;
+			}
+		}
+	}
+
+	if(not alive[0] && not alive[1]){
+		printf("time 2 ganhou\n");
+	 	m_quit_requested = true;
+		Game::get_instance().push(new WinState());
+	}else if(not alive[2] && not alive[3]){
+		printf("time 1 ganhou\n");
+	 	m_quit_requested = true;
+		Game::get_instance().push(new WinState());
 	}
 
 	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
