@@ -51,7 +51,7 @@ CharacterSelectState::CharacterSelectState(string cselected_stage){
 
 	name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
 	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
-	name_delta = { ii(118, 53), ii(117, 55), ii(47, 54), ii(50, 54) };
+	name_delta = { ii(173, 63), ii(172, 65), ii(102, 64), ii(105, 64) };
 	sprite_pos = { ii(155, 32), ii(141, 379), ii(923, 34), ii(946, 381) };
 
 	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
@@ -221,13 +221,14 @@ void CharacterSelectState::render(){
 			char_selected.get_disabled().render(sprite_pos[i].first, sprite_pos[i].second, 0, flip);
 		}
 
-		// char_name[char_sel].render(
-		//      name_tag_positions[i].first + name_delta[i].first,
-		//      name_tag_positions[i].second + name_delta[i].second
-		// );
+		char_selected.get_name_text()->set_pos(
+			name_tag_positions[i].first + name_delta[i].first,
+			name_tag_positions[i].second + name_delta[i].second, true, true
+		);
 
 		ii slot = get_slot(row_selected, col_selected);
 		name_tag[i].render(name_tag_positions[i].first, name_tag_positions[i].second);
+		char_selected.get_name_text()->render();
 		number[i].render(slot.first + number_delta[i].first, slot.second + number_delta[i].second);
 
 		if(selected[i]){
