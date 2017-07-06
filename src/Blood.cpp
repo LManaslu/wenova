@@ -254,6 +254,7 @@ void Blood::update_machine_state(float delta){
 		case FighterState::RUNNING:
 			attack_damage = 0;
 			attack_mask = 0;
+			combo = 0;
 			check_jump();
 			check_left(false);
 			check_right(false);
