@@ -235,6 +235,7 @@ void Flesh::update_machine_state(float){
 
 		case FighterState::RUNNING:
 			attack_damage = 0;
+			combo = 0;
 			check_jump();
 			check_left(false);
 			check_right(false);
@@ -364,7 +365,7 @@ void Flesh::check_jump_atk_down_dmg(bool change){
 }
 
 void Flesh::check_jump_atk_neutral(bool change){
-	if(is_holding[ATTACK_BUTTON]){
+	if(is_holding[ATTACK_BUTTON] and not is_holding[DOWN_BUTTON] and not is_holding[UP_BUTTON]){
 		if(change) temporary_state = FighterState::JUMP_ATK_NEUTRAL;
 	}
 }
@@ -430,6 +431,8 @@ void Flesh::check_crouch_atk(bool change){
 
 void Flesh::check_jump_atk_up(bool change) {
 	if(pressed[ATTACK_BUTTON] and is_holding[UP_BUTTON]) {
+		if(combo) return;
+		combo++;
 		speed.y = -5;
 		if(change) temporary_state = FighterState::JUMP_ATK_UP;
 	}

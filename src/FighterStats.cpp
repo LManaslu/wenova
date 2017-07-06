@@ -77,14 +77,18 @@ void FighterStats::render(){
 	int offset = -3 * ((index_fighter + 1) % 2);
 
 	int y_offset = is_ultimate_diff and condition == 2 ? -15 : 0;
+	int y_even_offset = is_ultimate_diff and condition == 2 and index_fighter % 2 == 0 ? 3 : 0;
+	int x_right_offset = is_ultimate_diff and condition == 2 ? -88 : 0;
+	int x_right_bg_offset = is_ultimate_diff and condition == 2 ? -30 : 0;
+	int x_right_ebg_offset = is_ultimate_diff and condition == 2 ? -22 : 0;
 	//Left
 	if(side == 0){
 		special[condition].render(82, box.get_draw_y());
 
-		empty_bg[condition].render(82, box.get_draw_y() + 22 + offset);
+		empty_bg[condition].render(82, box.get_draw_y() + 22 + offset + y_even_offset);
 		player_image.render(box.get_draw_x() + 7, box.get_draw_y() + 9);
+		life[condition].render(box.get_draw_x() + 82, box.get_draw_y() + 22 + offset + y_even_offset);
 		bg[condition].render(box.get_draw_x(), box.get_draw_y() + y_offset);
-		life[condition].render(box.get_draw_x() + 82, box.get_draw_y() + 22 + offset);
 	}
 
 	//Right
@@ -92,10 +96,10 @@ void FighterStats::render(){
 		SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
 		special[condition].render(box.get_draw_x() - 12 + special[condition].get_width() * (1 - percent_to_draw_special), box.get_draw_y());
 
-		empty_bg[condition].render(box.get_draw_x() + 8, box.get_draw_y() + 22 + offset);
+		empty_bg[condition].render(box.get_draw_x() + 8 + x_right_ebg_offset, box.get_draw_y() + 22 + offset + y_even_offset);
 		player_image.render(box.get_draw_x() + 197, box.get_draw_y() + 9, 0, flip);
-		bg[condition].render(box.get_draw_x(), box.get_draw_y() + y_offset);
-		life[condition].render(box.get_draw_x() + 8 + life[condition].get_width() * (1 - percent_to_draw_life), box.get_draw_y() + 22 + offset);
+		life[condition].render(box.get_draw_x() + 8 + life[condition].get_width() * (1 - percent_to_draw_life) + x_right_offset, box.get_draw_y() + 22 + offset + y_even_offset);
+		bg[condition].render(box.get_draw_x() + x_right_bg_offset, box.get_draw_y() + y_offset);
 	}
 }
 
