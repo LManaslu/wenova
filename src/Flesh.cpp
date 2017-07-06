@@ -204,8 +204,8 @@ void Flesh::update_machine_state(float){
 			check_ultimate();
 			check_defense();
 			check_pass_through_platform();
-			check_dead();
 			check_idle_atk_up();
+			check_dead();
 		break;
 
 		case FighterState::JUMPING:
