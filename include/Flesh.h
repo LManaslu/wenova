@@ -8,7 +8,7 @@ class Flesh : public Fighter{
 		Flesh(string skin, float x, float y, int cid, Fighter *cpartner = nullptr);
 		const float BASIC_ATTACK_DAMAGE = 1;
 		const float SPECIAL_1_DAMAGE = 2;
-		const float INITIAL_SPEED = 2;
+		const float INITIAL_SPEED = 3;
 
 	private:
 		float additional_attack_damage;
