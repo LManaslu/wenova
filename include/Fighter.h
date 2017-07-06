@@ -96,7 +96,7 @@ public:
 	Fighter * get_partner();
 	string get_path();
 
-	int MAX_LIFE = 2000;
+	double MAX_LIFE = 2000;
 	static const int MAX_SPECIAL = 250;
 };
 
