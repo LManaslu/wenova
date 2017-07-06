@@ -13,11 +13,11 @@ FighterMenu::FighterMenu(string cname, int frames, bool cenabled){
 	n_frames = frames;
 
 	for(int i=0;i<N_SKINS;i++){
-		skin[i] = Sprite(name + "/" + get_skin_name(i) + "/idle.png", n_frames, FRAME_TIME);
+		skin[i] = Sprite("characters/" + name + "/" + get_skin_name(i) + "/idle.png", n_frames, FRAME_TIME);
 		skin[i].set_scale(SKIN_SCALE);
 	}
 
-	disabled = Sprite(name + "/disabled.png", n_frames, FRAME_TIME);
+	disabled = Sprite("characters/" + name + "/disabled.png", n_frames, FRAME_TIME);
 	disabled.set_scale(SKIN_SCALE);
 
 	memset(skin_available, true, sizeof skin_available);
