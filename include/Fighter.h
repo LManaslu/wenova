@@ -45,9 +45,9 @@ protected:
 	Timer crouch_timer;
 	Timer pass_through_timer;
 
-	bool pressed[10];
-	bool is_holding[10];
-	bool released[10];
+	bool pressed[20];
+	bool is_holding[20];
+	bool released[20];
 
 	bool ultimate_ready;
 

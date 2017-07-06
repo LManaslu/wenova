@@ -5,7 +5,8 @@
 #define CROUCH_COOLDOWN 400.0
 
 Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighter(cid, x, cpartner){
-	path = "flesh/" + skin + "/";
+	path = "characters/flesh/" + skin + "/";
+	string sound_path = "characters/flesh/sound/";
 
 	sprite[IDLE] = Sprite(path + "idle.png", 8, 10);
 	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
@@ -22,7 +23,12 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	sprite[JUMP_ATK_UP] = Sprite(path + "jump_atk_up.png", 4, 10);
 	sprite[IDLE_ATK_DOWN] = Sprite(path + "idle_atk_down.png", 4, 10);
 	sprite[CROUCH_ATK] = Sprite(path + "crouch_atk.png", 4, 10);
-	sprite[SPECIAL_1] = Sprite(path + "special_1.png", 3, 30);
+	sprite[SPECIAL_1] = Sprite(path + "special_1.png", 3, 30); //FIXME time
+	sprite[STUNT] = Sprite(path + "stunt.png", 2, 10);
+	sprite[DYING] = Sprite(path + "dying.png", 10, 10);
+	sprite[DEFENDING] = Sprite(path + "defense.png", 2, 10);
+
+	land_sound = Sound(sound_path + "land.ogg");
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
@@ -238,7 +244,7 @@ void Flesh::update_machine_state(float delta){
 		break;
 
 		case FighterState::LAST:
-			printf("Invalid blood %d state\n", id);
+			printf("Invalid flesh %d state\n", id);
 			exit(-1);
 		break;
 	}
@@ -275,7 +281,7 @@ void Flesh::check_right(bool change){
 }
 
 void Flesh::check_idle(bool change){
-	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON]){
+	if(speed.x == 0 and on_floor and not is_holding[DOWN_BUTTON] and not is_holding[BLOCK_BUTTON]){
 		if(change) temporary_state = FighterState::IDLE;
 		printf("Temporary state = %d\n", temporary_state);
 	}

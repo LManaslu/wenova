@@ -273,7 +273,7 @@ void InputManager::connect_joysticks(){
 	}
 }
 
-void InputManager::map_keyboard_to_joystick(int map_id){
+void InputManager::map_keyboard_to_joystick(int){
 	keyboard_to_joystick = {
 		{K_LEFT , LEFT + 1},
 		{K_RIGHT , RIGHT + 1},
@@ -293,7 +293,7 @@ void InputManager::map_keyboard_to_joystick(int map_id){
 		{K_R3, R3 + 1}
 	};
 
-	if(map_id == MENU_MODE){
+	/*if(map_id == MENU_MODE){
 		keyboard_to_joystick[K_A] = 0;
 		keyboard_to_joystick[K_B] = 0;
 		keyboard_to_joystick[K_Y] = 0;
@@ -302,7 +302,7 @@ void InputManager::map_keyboard_to_joystick(int map_id){
 		keyboard_to_joystick[K_MENU_B] = B + 1;
 		keyboard_to_joystick[K_MENU_Y] = Y + 1;
 		keyboard_to_joystick[K_MENU_LB] = LB + 1;
-	}
+	}*/
 }
 
 void InputManager::emulate_joystick(int key_id, bool state){
@@ -348,7 +348,14 @@ void InputManager::emulate_joystick(int key_id, bool state){
 }
 
 void InputManager::reset_keyboard_to_joystick(){
-	if(keyboard_to_joystick_id < 0 or keyboard_to_joystick_id > 3) return;
+	if(keyboard_to_joystick_id < 0 or keyboard_to_joystick_id > 4) return;
+	if(keyboard_to_joystick_id == 4){
+		for(int i = 0; i < 4; ++i){
+			for(auto & c : joystick_state[i]){
+				c.second = false;
+			}
+		}
+	}
 	for(auto & c : joystick_state[keyboard_to_joystick_id]){
 		c.second = false;
 	}

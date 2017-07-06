@@ -46,8 +46,7 @@ BattleState::BattleState(string stage, string cmusic, vector< pair<string, strin
 			players[i] = new Blood(skin_name, char_positions[i].first, char_positions[i].second, i);
 		}
 		else if(char_name == "flesh"){
-			players[i] = new Flesh(skin_name, char_positions[i].first, char_positions[i].second,
-									SDL_NumJoysticks() == i ? -1 : i);
+			players[i] = new Flesh(skin_name, char_positions[i].first, char_positions[i].second, i);
 		}
 	}
 
