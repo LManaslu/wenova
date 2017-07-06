@@ -23,9 +23,9 @@ class FighterStats : public GameObject{
 		void notify_collision(GameObject &object);
 
 	private:
-		Sprite bg;
-		Sprite empty_bg;
-		Sprite life;
+		Sprite bg[3];
+		Sprite empty_bg[3];
+		Sprite life[3];
 		Sprite special[3];
 		Sprite player_image;
 		double percent_to_draw_life;
@@ -33,6 +33,7 @@ class FighterStats : public GameObject{
 		int index_fighter;
 		int side;
 		int condition;
+		bool is_ultimate_diff;
 		double x, y;
 		Fighter *fighter;
 };
