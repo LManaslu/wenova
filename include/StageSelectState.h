@@ -3,6 +3,7 @@
 
 #include "State.h"
 #include "Sprite.h"
+#include "Sound.h"
 #include "InputManager.h"
 
 #define N_BACKGROUNDS 2
@@ -11,6 +12,7 @@
 class StageSelectState : public State {
 private:
 	Sprite background[N_BACKGROUNDS], planet, stage[3];
+	Sound blocked, selected, changed;
 	int stage_select = 0;
 	bool go_to_edit;
 	int n_stages;
