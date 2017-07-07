@@ -9,8 +9,8 @@
 
 class JoystickConfigState : public State{
 private:
-	Sprite background, joystick_help, back_btn, test_btn, analogic;
-	Text *back_txt, *test_txt, *press_both, *to_go_back;
+	Sprite background, joystick_help, back_btn, test_btn;
+	Text *back_txt, *test_txt, *press, *select_text, *and_text, *start_text, *to_go_back;
 	bool on_test;
 	Sound blocked, selected, changed;
 
