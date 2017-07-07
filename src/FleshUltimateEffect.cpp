@@ -11,7 +11,7 @@ void FleshUltimateEffect::update(float delta){
 	if(parent){
 		box.x = parent->box.x;
 		box.y = parent->box.get_draw_y() - box.get_height()/2 - 10;
-		parent->increment_special(-0.5 * delta);
+		parent->increment_special(-0.4 * delta);
 	}
 	sprite.update(delta);
 }
