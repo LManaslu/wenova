@@ -81,7 +81,9 @@ public:
 	float get_remaining_life();
 	float get_special();
 
+
 	void notify_collision(GameObject & object);
+	void kill();
 
 	void change_state(FighterState cstate);
 	void reset_position(float x, float y);

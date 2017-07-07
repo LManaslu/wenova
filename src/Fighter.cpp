@@ -250,7 +250,7 @@ void Fighter::increment_life(float increment){
 		if(partner) partner->set_partner(nullptr);
 		add_tags("dying");
 	}
-	
+
 	if(remaining_life > MAX_LIFE) remaining_life = MAX_LIFE;
 }
 
@@ -291,4 +291,8 @@ void Fighter::play_hit(){
 	else if(sound_file == sound_path + "attack_2.ogg") sound_index = 2;
 	else if(sound_file == sound_path + "attack_3.ogg") sound_index = 3;
 	if(sound_index != -1) hit_sounds[sound_index].play();
+}
+
+void Fighter::kill(){
+	remaining_life = 0;
 }

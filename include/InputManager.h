@@ -136,9 +136,11 @@ public:
 	static const int K_ARROW_LEFT = SDLK_LEFT;
 	static const int K_CTRL = SDLK_LCTRL;
 	static const int K_C = SDLK_c;
+	static const int K_S = SDLK_s;
 	static const int K_F = SDLK_f;
 	static const int K_P = SDLK_p;
 	static const int K_O = SDLK_o;
+	static const int K_SHIFT = SDLK_LSHIFT;
 	static const int K_ROT_LEFT = SDLK_z;
 	static const int K_ROT_RIGHT = SDLK_x;
 	static const int K_ROT_RESET = SDLK_r;
