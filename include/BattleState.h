@@ -25,7 +25,7 @@ private:
 	Music music;
 	Sound sound;
 	void read_level_design(string stage);
-	bool alive[5];
+	bool alive[5], game_over;
 
 public:
 	BattleState(string stage, vector< pair<string, string> > players_info);

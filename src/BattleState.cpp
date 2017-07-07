@@ -12,6 +12,7 @@
 #include "Config.h"
 #include "Blood.h"
 #include "Flesh.h"
+#include "BattleEnd.h"
 
 #define N_BACKGROUND 2
 
@@ -20,6 +21,7 @@ using std::stringstream;
 using std::to_string;
 
 BattleState::BattleState(string stage, vector< pair<string, string> > players_info){
+	game_over = false;
 	memset(alive, true, sizeof alive);
 
 	music = Music("stage_" + stage + "/music.ogg");
@@ -90,14 +92,14 @@ void BattleState::update(float delta){
 		}
 	}
 
-	if(not alive[0] && not alive[1]){
+	if(not alive[0] && not alive[1] && not game_over){
 		printf("time 2 ganhou\n");
-	 	m_quit_requested = true;
-		Game::get_instance().push(new WinState());
-	}else if(not alive[2] && not alive[3]){
+		game_over = true;
+		add_object(new BattleEnd(2));
+	}else if(not alive[2] && not alive[3] && not game_over){
 		printf("time 1 ganhou\n");
-	 	m_quit_requested = true;
-		Game::get_instance().push(new WinState());
+		game_over = true;
+		add_object(new BattleEnd(1));
 	}
 
 	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
