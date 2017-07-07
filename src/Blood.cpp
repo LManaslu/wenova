@@ -13,7 +13,7 @@ using std::min;
 Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, x, cpartner){
 	path = "characters/blood/" + skin + "/";
 	sound_path = "characters/blood/sound/";
-	
+
 	sprite[IDLE] = Sprite(path + "idle.png", 12, 10);
 	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
 	sprite[JUMPING] = Sprite(path + "jumping.png", 6, 10);
@@ -72,6 +72,7 @@ void Blood::update_machine_state(float delta){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 				check_idle_atk_neutral_2();
 			}else if(pressed[ATTACK_BUTTON]){
@@ -84,6 +85,7 @@ void Blood::update_machine_state(float delta){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 				check_idle_atk_neutral_3();
 			}else if(pressed[ATTACK_BUTTON]){
@@ -96,6 +98,7 @@ void Blood::update_machine_state(float delta){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -105,6 +108,7 @@ void Blood::update_machine_state(float delta){
 			attack_mask = AttackDirection::ATK_DOWN;
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -113,6 +117,7 @@ void Blood::update_machine_state(float delta){
 		attack_mask = get_attack_orientation() | AttackDirection::ATK_DOWN;
 		if(sprite[state].is_finished()){
 			check_idle();
+			check_defense();
 			check_crouch();
 		}
 
@@ -122,6 +127,7 @@ void Blood::update_machine_state(float delta){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -148,6 +154,8 @@ void Blood::update_machine_state(float delta){
 			if(on_floor){
 				check_idle();
 				check_right();
+				check_defense();
+				check_crouch();
 				check_left();
 			}
 		break;
@@ -160,6 +168,8 @@ void Blood::update_machine_state(float delta){
 			if(sprite[state].is_finished()){
 				speed.y = 0.1;
 				check_fall();
+				check_crouch();
+				check_defense();
 				check_idle();
 			}
 		break;
@@ -169,6 +179,8 @@ void Blood::update_machine_state(float delta){
 			attack_mask = 0;
 			if(sprite[state].is_finished()){
 				check_fall();
+				check_defense();
+				check_crouch();
 				check_idle();
 				check_dead();
 			}
@@ -183,6 +195,8 @@ void Blood::update_machine_state(float delta){
 					check_special_1_2();
 				}else{
 					check_fall();
+					check_defense();
+					check_crouch();
 					check_idle();
 				}
 			}
@@ -194,6 +208,8 @@ void Blood::update_machine_state(float delta){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished() or not grab){
 				check_fall();
+				check_defense();
+				check_crouch();
 				check_idle();
 			}
 		break;
@@ -204,6 +220,7 @@ void Blood::update_machine_state(float delta){
 			if(sprite[state].is_finished()){
 				Game::get_instance().get_current_state().add_object(new HealEffect(partner, "characters/blood/heal_effect.png", "has_sprite", 9, 0.2));
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -236,6 +253,8 @@ void Blood::update_machine_state(float delta){
 			check_right(on_floor);
 			check_fall();
 			check_idle();
+			check_defense();
+			check_crouch();
 			check_jump_atk_neutral();
 			check_jump_atk_up();
 			check_jump_atk_down();
@@ -249,6 +268,7 @@ void Blood::update_machine_state(float delta){
 			check_left(on_floor);
 			check_right(on_floor);
 			check_fall();
+			check_defense();
 			check_crouch();
 			check_jump_atk_neutral();
 			check_jump_atk_up();
@@ -290,6 +310,7 @@ void Blood::update_machine_state(float delta){
 			attack_mask = 0;
 			check_idle();
 			check_crouch_atk();
+			check_defense();
 			check_fall();
 		break;
 
