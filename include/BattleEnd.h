@@ -1,7 +1,7 @@
 #ifndef BATTLEEND_H
 #define BATTLEEND_H
 
-#define N_SPRITES 22
+#define N_SPRITES 3
 
 #include "State.h"
 #include "Sprite.h"
@@ -22,12 +22,16 @@ class BattleEnd : public GameObject{
 
 		bool is_dead();
 
+		bool quit_requested();
+
 		void notify_collision(GameObject & object);
 
 	private:
 		vector <Sprite> sprite;
 
 		int current_sprite;
+
+		bool back_selected, quitRequested;
 
 		Sprite back_btn;
 		Text *back_txt;
