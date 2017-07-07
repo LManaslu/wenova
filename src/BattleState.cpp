@@ -95,11 +95,14 @@ void BattleState::update(float delta){
 	if(time_counter->is_over() && not game_over){
 		game_over = true;
 	
-		if(alive[0] + alive[1] > alive[2] + alive[3])
-			add_object(new BattleEnd(1));
-		else if(alive[2] + alive[3] > alive[0] + alive[1])
-			add_object(new BattleEnd(2));
-		else{
+		if(alive[0] + alive[1] > alive[2] + alive[3]){
+			battleEnd = new BattleEnd(1);
+			add_object(battleEnd);
+		}
+		else if(alive[2] + alive[3] > alive[0] + alive[1]){
+			battleEnd = new BattleEnd(2);
+			add_object(battleEnd);
+		}else{
 			int sum_life_team_1 = 0;
 			for(int i = 0; i < N_PLAYERS / 2; i++){
 				if(alive[i])
@@ -112,21 +115,27 @@ void BattleState::update(float delta){
 					sum_life_team_2 += players[i]->get_remaining_life();
 			}
 
-			if(sum_life_team_1 > sum_life_team_2)
-				add_object(new BattleEnd(1));
-			else if(sum_life_team_2 > sum_life_team_1)
-				add_object(new BattleEnd(2));
-			else
-				add_object(new BattleEnd(3));
+			if(sum_life_team_1 > sum_life_team_2){
+				battleEnd = new BattleEnd(1);
+				add_object(battleEnd);
+			}else if(sum_life_team_2 > sum_life_team_1){
+				battleEnd = new BattleEnd(2);
+				add_object(battleEnd);
+			}else{
+				battleEnd = new BattleEnd(3);
+				add_object(battleEnd);
+			}
 		}
 	}
 
 	if(not alive[0] && not alive[1] && not game_over){
 		game_over = true;
-		add_object(new BattleEnd(2));
+		battleEnd = new BattleEnd(2);
+		add_object(battleEnd);
 	}else if(not alive[2] && not alive[3] && not game_over){
 		game_over = true;
-		add_object(new BattleEnd(1));
+		battleEnd = new BattleEnd(1);
+		add_object(battleEnd);
 	}
 
 	if(game_over){
@@ -136,12 +145,14 @@ void BattleState::update(float delta){
 		}
 	}
 
-	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
-		music.stop();
-		sound.stop();
-		m_quit_requested = true;
-		Game::get_instance().push(new MenuState());
-		return;
+	if(game_over){
+		if(battleEnd->quit_requested()){
+			music.stop();
+			sound.stop();
+			m_quit_requested = true;
+			Game::get_instance().push(new MenuState());
+			return;
+		}
 	}
 
 	for(auto & background : backgrounds)
