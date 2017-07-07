@@ -102,6 +102,13 @@ void BattleState::update(float delta){
 		add_object(new BattleEnd(1));
 	}
 
+	if(game_over){
+		for(int i = 0; i < N_PLAYERS; i++){
+			if(alive[i])
+				players[i]->add_tags("game_over");
+		}
+	}
+
 	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
 		music.stop();
 		sound.stop();

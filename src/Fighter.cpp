@@ -56,26 +56,28 @@ Fighter::~Fighter(){
 }
 
 void Fighter::process_input(){
-	InputManager * input_manager = InputManager::get_instance();
-	vector< pair<int, int> > joystick_buttons = {
-		ii(JUMP_BUTTON, InputManager::A),
-		ii(UP_BUTTON, InputManager::UP),
-		ii(DOWN_BUTTON, InputManager::DOWN),
-		ii(LEFT_BUTTON, InputManager::LEFT),
-		ii(RIGHT_BUTTON, InputManager::RIGHT),
-		ii(ATTACK_BUTTON, InputManager::X),
-		ii(SPECIAL1_BUTTON, InputManager::B),
-		ii(SPECIAL2_BUTTON, InputManager::RB),
-		ii(BLOCK_BUTTON, InputManager::LB),
-		ii(ULTIMATE_BUTTON, InputManager::Y)
-	};
+	if(not tags["game_over"]){
+		InputManager * input_manager = InputManager::get_instance();
+		vector< pair<int, int> > joystick_buttons = {
+			ii(JUMP_BUTTON, InputManager::A),
+			ii(UP_BUTTON, InputManager::UP),
+			ii(DOWN_BUTTON, InputManager::DOWN),
+			ii(LEFT_BUTTON, InputManager::LEFT),
+			ii(RIGHT_BUTTON, InputManager::RIGHT),
+			ii(ATTACK_BUTTON, InputManager::X),
+			ii(SPECIAL1_BUTTON, InputManager::B),
+			ii(SPECIAL2_BUTTON, InputManager::RB),
+			ii(BLOCK_BUTTON, InputManager::LB),
+			ii(ULTIMATE_BUTTON, InputManager::Y)
+		};
 
-	bool alive = !is("dying");
+		bool alive = !is("dying");
 
-	for(ii button : joystick_buttons){
-		pressed[button.first] = alive and input_manager->joystick_button_press(button.second, id);
-		is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
-		released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
+		for(ii button : joystick_buttons){
+			pressed[button.first] = alive and input_manager->joystick_button_press(button.second, id);
+			is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
+			released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
+		}
 	}
 }
 
