@@ -77,11 +77,10 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 		//Select and start
 		add_object(new JoystickButton(offset_x + SELECT_X, offset_y + SELECT_Y, "select", InputManager::SELECT, joystick_id, "select_start"));
 		add_object(new JoystickButton(offset_x + MIDDLE_X + DISTANCE_START, offset_y + SELECT_Y, "start", InputManager::START, joystick_id, "select_start"));
-
 	}
 
 	InputManager::get_instance()->set_analogic_value(20000);
-	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::BATTLE_MODE);
+	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
 }
 
 void JoystickConfigState::update(float delta){
@@ -97,6 +96,12 @@ void JoystickConfigState::update(float delta){
 			input_manager->is_joystick_button_down(InputManager::L3, 0)){
 			selected.play();
 			on_test = false;
+			InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
+		}
+
+		// workaround to uncheck A button pressed in joystick test screen
+		if(input_manager->joystick_button_release(InputManager::A, 0)){
+			InputManager::get_instance()->map_keyboard_to_joystick(InputManager::BATTLE_MODE);
 		}
 	}else{
 		if(input_manager->joystick_button_press(InputManager::SELECT, 0) ||
@@ -134,9 +139,7 @@ void JoystickConfigState::render(){
 }
 
 void JoystickConfigState::pause(){
-
 }
 
 void JoystickConfigState::resume(){
-
 }
