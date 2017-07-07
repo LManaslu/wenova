@@ -10,10 +10,10 @@ JoystickButton::JoystickButton(int x, int y, string clabel, int cbutton_id, int 
 	joystick_id = cjoystick_id;
 	rotation = 0;
 	label = clabel;
+	pressed = false;
 }
 
 JoystickButton::~JoystickButton(){
-
 }
 
 void JoystickButton::update(float){
