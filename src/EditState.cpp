@@ -6,9 +6,11 @@
 #include "InputManager.h"
 #include "Game.h"
 #include "Blood.h"
+#include "Flesh.h"
 #include "EditableFloor.h"
 #include "MenuState.h"
 #include "Config.h"
+#include "Rectangle.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -21,8 +23,7 @@ using std::stringstream;
 using std::to_string;
 
 EditState::EditState(string cstage) : stage(cstage){
-	int joystick_id = 0;
-	test_fighter = new Blood("test", WIDTH/2, HEIGHT/2 - 200, joystick_id);
+	test_fighter = new Blood("test", WIDTH/2, HEIGHT/2 - 200, 0);
 	add_object(test_fighter);
 
 	music = Music("stage_" + stage + "/music.ogg");
@@ -81,7 +82,7 @@ void EditState::update(float delta){
 
 	// save level design
 	if(input_manager->is_key_down(InputManager::K_CTRL) &&
-		input_manager->key_press(InputManager::K_C)
+		input_manager->key_press(InputManager::K_S)
 	){
 		update_level_design();
 	}
@@ -89,6 +90,17 @@ void EditState::update(float delta){
 	// output
 	if(input_manager->is_key_down(InputManager::K_O)){
 		printf("%f, %f\n", object_array[0].get()->box.x, object_array[0].get()->box.y);
+	}
+
+	if(input_manager->key_press(InputManager::K_SHIFT)){
+		Rectangle player_box = test_fighter->box;
+		bool is_blood = test_fighter->is("blood");
+		test_fighter->kill();
+		if(is_blood)
+			test_fighter = new Flesh("test", player_box.x, player_box.y, 0);
+		else
+			test_fighter = new Blood("test", player_box.x, player_box.y, 0);
+		add_object(test_fighter);
 	}
 
 	for(auto & background : backgrounds)
