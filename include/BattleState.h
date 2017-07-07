@@ -10,6 +10,7 @@
 #include "Fighter.h"
 #include "Vector.h"
 #include "TimeCounter.h"
+#include "BattleEnd.h"
 
 #include <vector>
 #include <utility>
@@ -29,6 +30,7 @@ private:
 	bool game_over;
 	int alive[5];
 	TimeCounter *time_counter;
+	BattleEnd *battleEnd;
 
 public:
 	BattleState(string stage, vector< pair<string, string> > players_info);
