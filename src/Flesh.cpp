@@ -77,6 +77,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -86,6 +87,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 				check_idle_atk_neutral_2();
 			}else if(pressed[ATTACK_BUTTON]){
@@ -98,6 +100,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 				check_idle_atk_neutral_3();
 			}else if(pressed[ATTACK_BUTTON]){
@@ -110,6 +113,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -119,6 +123,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -133,8 +138,10 @@ void Flesh::update_machine_state(float){
 			}
 			if(on_floor){
 				check_idle();
+				check_defense();
 				check_right();
 				check_left();
+				check_crouch();
 			}
 		break;
 
@@ -143,6 +150,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation() | AttackDirection::ATK_DOWN;
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -157,6 +165,7 @@ void Flesh::update_machine_state(float){
 			if(on_floor){
 				speed.x = 0;
 				check_idle();
+				check_defense();
 				check_left();
 				check_right();
 				check_crouch();
@@ -169,6 +178,7 @@ void Flesh::update_machine_state(float){
 			if(sprite[state].is_finished() or on_floor){
 				speed.x = 0;
 				check_idle();
+				check_defense();
 				check_crouch();
 				check_fall();
 			}
@@ -179,6 +189,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_defense();
 				check_crouch();
 			}
 		break;
@@ -190,6 +201,8 @@ void Flesh::update_machine_state(float){
 			if(sprite[state].is_finished()){
 				check_fall();
 				check_idle();
+				check_defense();
+				check_crouch();
 				check_dead();
 			}
 		break;
@@ -202,6 +215,7 @@ void Flesh::update_machine_state(float){
 				check_idle_atk_front(true, true);
 			}
 			check_idle(true, on_floor);
+			check_defense();
 			check_crouch();
 		break;
 
@@ -233,6 +247,8 @@ void Flesh::update_machine_state(float){
 			check_jump_atk_neutral();
 			check_jump_atk_down_fallloop();
 			check_idle();
+			check_defense();
+			check_crouch();
 			check_ultimate();
 			check_jump_atk_up();
 		break;
