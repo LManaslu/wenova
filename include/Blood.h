@@ -23,7 +23,7 @@ private:
 	void check_jump_atk_down(bool change = true);
 	void check_pass_through_platform(bool change = true);
 	void check_defense(bool change = true);
-	void check_stunt(bool change = true);
+	void check_stunned(bool change = true);
 	void check_special_1_1(bool change = true);
 	void check_special_1_2(bool change = true);
 	void check_special_2(bool change = true);

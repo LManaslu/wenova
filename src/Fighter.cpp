@@ -143,7 +143,7 @@ void Fighter::notify_collision(GameObject & object){
 				increment_life(-damage);
 				float m_increment_special = (fighter.get_attack_damage() / 3) * ((state == FighterState::DEFENDING) ? 0 : 1) * not_in_ultimate;
 				this->increment_special(m_increment_special);
-				if(state != FighterState::DEFENDING) check_stunt();
+				if(state != FighterState::DEFENDING) check_stunned();
 			}
 		}else if(is_attacking() and fighter.get_id() != partner_id){
 			int left = AttackDirection::ATK_LEFT * (fighter.box.x <= box.x);

@@ -169,6 +169,7 @@ void Game::update_resolution() {
 	SDL_RenderSetLogicalSize(renderer, 1280, 720);
 
 	SDL_GetWindowSize(window, &width, &height);
+	SDL_SetWindowSize(window, width, height);
 
 	printf("W: %d, H: %d\n", width, height);
 	Config::update_information(width, height, Config::is_fullscreen());
@@ -198,4 +199,5 @@ void Game::change_resolution(int cwidth, int cheight){
 void Game::set_fullscreen(bool on){
 	Config::update_information(width, height, (int) on);
 	SDL_SetWindowFullscreen(window, on ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	update_resolution();
 }
