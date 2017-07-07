@@ -18,7 +18,7 @@ BattleEnd::BattleEnd(int id_winner){
 	string path = "victory/" + to_string(id_winner) + "/"; 
 
 	for(int i = 1; i <= N_SPRITES; i++){
-		sprite[i] = Sprite(path + to_string(i) + ".png", 1, 100);
+		sprite[i] = Sprite(path + to_string(i) + ".png", 1, 5);
 	}
 
 	current_sprite = 1;
