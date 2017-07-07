@@ -20,13 +20,15 @@ using std::fstream;
 using std::stringstream;
 using std::to_string;
 
-BattleState::BattleState(string stage, string cmusic, vector< pair<string, string> > players_info){
+BattleState::BattleState(string stage, vector< pair<string, string> > players_info){
 
-	music = Music("stage_" + stage + "/" + cmusic);
+	music = Music("stage_" + stage + "/music.ogg");
+	sound = Sound("stage_" + stage + "/sound.ogg");
 
 	read_level_design(stage);
 
 	music.play();
+	sound.play(-1);
 
 	vector< pair<int, int> > char_positions;
 	vector< pair<int, int> > hud_positions = { ii(133, 589.5), ii(133, 679.5), ii(1147, 589.5), ii(1147, 679.5) };
@@ -84,6 +86,7 @@ void BattleState::update(float delta){
 
 	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
 		music.stop();
+		sound.stop();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;

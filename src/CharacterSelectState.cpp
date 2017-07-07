@@ -84,7 +84,7 @@ void CharacterSelectState::update(float delta){
 			selected_sound.play();
 			vector< pair<string, string> > p = export_players();
 			m_quit_requested = true;
-			Game::get_instance().push(new BattleState(selected_stage, "music.ogg", export_players()));
+			Game::get_instance().push(new BattleState(selected_stage, export_players()));
 			return;
 		}
 	}
