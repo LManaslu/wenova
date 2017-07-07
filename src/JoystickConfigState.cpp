@@ -27,7 +27,7 @@
 
 #define WHITE { 255, 255, 255, 255 }
 #define LIGHT_GREEN { 181, 201, 60, 1 }
-
+#define BLUE { 0, 108, 166, 1 }
 
 JoystickConfigState::JoystickConfigState(int joystick_id){
 	Mix_AllocateChannels(50);
@@ -36,12 +36,14 @@ JoystickConfigState::JoystickConfigState(int joystick_id){
 	joystick_help = Sprite("joysticks/help/controls_help.png");
 	test_btn = Sprite("joysticks/help/a.png");
 	back_btn = Sprite("joysticks/help/b.png");
-	analogic = Sprite("joysticks/help/analogic.png");
 	test_txt = new Text("font/8-BIT WONDER.ttf", 22, Text::TextStyle::SOLID, "TEST", WHITE);
 	back_txt = new Text("font/8-BIT WONDER.ttf", 22, Text::TextStyle::SOLID, "BACK", WHITE);
 
-	press_both = new Text("font/8-BIT WONDER.ttf", 22, Text::TextStyle::SOLID, "PRESS BOTH", LIGHT_GREEN, 640, 280);
-	to_go_back = new Text("font/8-BIT WONDER.ttf", 22, Text::TextStyle::SOLID, "TO GO BACK", LIGHT_GREEN, 640, 450);
+	press = new Text("font/8-BIT WONDER.ttf", 22, Text::TextStyle::SOLID, "PRESS", LIGHT_GREEN, 640, 300);
+	select_text = new Text("font/8-BIT WONDER.ttf", 25, Text::TextStyle::SOLID, "SELECT", BLUE, 500, 350);
+	and_text = new Text("font/8-BIT WONDER.ttf", 22, Text::TextStyle::SOLID, "AND", LIGHT_GREEN, 640, 350);
+	start_text = new Text("font/8-BIT WONDER.ttf", 25, Text::TextStyle::SOLID, "START", BLUE, 760, 350);
+	to_go_back = new Text("font/8-BIT WONDER.ttf", 22, Text::TextStyle::SOLID, "TO GO BACK", LIGHT_GREEN, 640, 400);
 
 	test_txt->set_pos(970, 650);
 	back_txt->set_pos(1154, 650);
@@ -92,8 +94,9 @@ void JoystickConfigState::update(float delta){
 	}
 
 	if(on_test){
-		if(input_manager->is_joystick_button_down(InputManager::R3, 0) &&
-			input_manager->is_joystick_button_down(InputManager::L3, 0)){
+		if(input_manager->is_joystick_button_down(InputManager::SELECT, 0) &&
+			input_manager->is_joystick_button_down(InputManager::START, 0)
+		){
 			selected.play();
 			on_test = false;
 			InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
@@ -132,8 +135,10 @@ void JoystickConfigState::render(){
 	else{
 		background.render(0, 0);
 		render_array();
-		press_both->render();
-		analogic.render(590, 310);
+		press->render();
+		select_text->render();
+		and_text->render();
+		start_text->render();
 		to_go_back->render();
 	}
 }
