@@ -39,7 +39,7 @@ class Flesh : public Fighter{
 
 		void check_pass_through_platform(bool change = true);
 		void check_defense(bool change = true);
-		void check_stunt(bool change = true);
+		void check_stunned(bool change = true);
 		void check_dead(bool change = true);
 
 		void update_machine_state(float delta);

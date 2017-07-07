@@ -25,7 +25,7 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	sprite[IDLE_ATK_DOWN] = Sprite(path + "idle_atk_down.png", 4, 10);
 	sprite[CROUCH_ATK] = Sprite(path + "crouch_atk.png", 4, 10);
 	sprite[SPECIAL_1] = Sprite(path + "special_1.png", 3, 30); //FIXME time
-	sprite[STUNT] = Sprite(path + "stunt.png", 2, 10);
+	sprite[STUNNED] = Sprite(path + "stunned.png", 2, 10);
 	sprite[DYING] = Sprite(path + "dying.png", 10, 10);
 	sprite[DEFENDING] = Sprite(path + "defense.png", 2, 10);
 
@@ -195,7 +195,7 @@ void Flesh::update_machine_state(float){
 			}
 		break;
 
-		case FighterState::STUNT:
+		case FighterState::STUNNED:
 			attack_damage = 0;
 			attack_mask = 0;
 			check_special_2();
@@ -450,9 +450,9 @@ void Flesh::check_defense(bool change){
     }
 }
 
-void Flesh::check_stunt(bool change){
+void Flesh::check_stunned(bool change){
 	speed.x = 0;
-	if(change) temporary_state = FighterState::STUNT;
+	if(change) temporary_state = FighterState::STUNNED;
 }
 
 void Flesh::check_dead(bool change) {
