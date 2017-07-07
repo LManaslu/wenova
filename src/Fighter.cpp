@@ -78,6 +78,9 @@ void Fighter::process_input(){
 			is_holding[button.first] = alive and input_manager->is_joystick_button_down(button.second, id);
 			released[button.first] = alive and input_manager->joystick_button_release(button.second, id);
 		}
+	}else{
+		memset(pressed, false, sizeof pressed);
+		memset(is_holding, false, sizeof is_holding);
 	}
 }
 
