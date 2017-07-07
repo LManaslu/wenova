@@ -158,10 +158,6 @@ void OptionsState::update(float){
 		int text_x = 250;
 		int text_y = (i ? options[i-1]->get_y() + prev_text_height : 200);
 
-		printf("prev_text_size: %d\nprev_text_height: %d\n", prev_text_size, prev_text_height);
-
-		printf("i: %d, text_y %d, name: [%s]\n", i, text_y, cur_text->get_text().c_str());
-
 		cur_text->set_pos(text_x, text_y, false, false);
 
 		for(int j=0; j<(int)sub_options[cur_text->get_text()].size(); j++){

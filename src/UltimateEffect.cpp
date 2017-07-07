@@ -2,7 +2,6 @@
 
 UltimateEffect::UltimateEffect(Fighter * cparent, string csprite, string caura, string ctags, int frames) : Effect(cparent, csprite, ctags, frames){
 	aura = Sprite(caura, 14, 10, 4);
-	printf("Aura: %d, %d\n", aura.get_height(), aura.get_width());
 	sprite_box = box;
 	box = Rectangle(0, 0, aura.get_width(), aura.get_height());
 	if(parent){
