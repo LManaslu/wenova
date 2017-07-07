@@ -209,7 +209,7 @@ void Flesh::update_machine_state(float){
 
 		case FighterState::SPECIAL_1:
 			attack_damage = SPECIAL_1_DAMAGE * additional_attack_damage;
-			speed.x = 2 * (orientation == LEFT ? -1 : 1);
+			speed.x = 4 * (orientation == LEFT ? -1 : 1);
 			attack_mask = get_attack_orientation();
 			if(grab){
 				check_idle_atk_front(true, true);
@@ -251,6 +251,7 @@ void Flesh::update_machine_state(float){
 			check_crouch();
 			check_ultimate();
 			check_jump_atk_up();
+			check_special_1();
 		break;
 
 		case FighterState::FALLING:
@@ -264,6 +265,7 @@ void Flesh::update_machine_state(float){
 			check_jump_atk_down_fallloop();
 			check_ultimate();
 			check_jump_atk_up();
+			check_special_1();
 		break;
 
 		case FighterState::RUNNING:
@@ -411,7 +413,8 @@ void Flesh::check_idle_atk_down(bool change){
 
 void Flesh::check_special_1(bool change){
 	if(pressed[SPECIAL1_BUTTON]) {
-		speed.y = -5;
+		if(speed.y == 0) speed.y = -5;
+		box.y -= 15;
 		if(change) temporary_state = FighterState::SPECIAL_1;
 	}
 }
