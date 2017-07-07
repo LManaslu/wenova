@@ -25,6 +25,7 @@ bool FleshUltimateEffect::is_dead(){
 	if(dead){
 		parent->remove_tags("in_ultimate");
 		parent->MAX_LIFE /= 1.5;
+		parent->increment_life(0);
 	}
 	return dead;
 }

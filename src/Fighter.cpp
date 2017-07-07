@@ -25,7 +25,7 @@ Fighter::Fighter(int cid, float x, Fighter * cpartner){
 
 	state = FighterState::IDLE;
 	id = cid;
-	remaining_life = MAX_LIFE / 2;
+	remaining_life = MAX_LIFE;
 
 	special = 0;
 	attack_damage = 0;
@@ -250,6 +250,7 @@ void Fighter::increment_life(float increment){
 		if(partner) partner->set_partner(nullptr);
 		add_tags("dying");
 	}
+	
 	if(remaining_life > MAX_LIFE) remaining_life = MAX_LIFE;
 }
 

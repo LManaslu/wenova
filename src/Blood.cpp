@@ -367,7 +367,7 @@ void Blood::check_idle(bool change){
 }
 
 void Blood::check_crouch(bool change){
-	if(is_holding[DOWN_BUTTON] and on_floor and not is_holding[ATTACK_BUTTON]){
+	if(is_holding[DOWN_BUTTON] and on_floor){
    		if(change) temporary_state = FighterState::CROUCH;
     }
 }
