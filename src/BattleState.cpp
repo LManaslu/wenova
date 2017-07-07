@@ -94,7 +94,7 @@ void BattleState::update(float delta){
 
 	if(time_counter->is_over() && not game_over){
 		game_over = true;
-	
+
 		if(alive[0] + alive[1] > alive[2] + alive[3]){
 			battleEnd = new BattleEnd(1);
 			add_object(battleEnd);
@@ -126,6 +126,12 @@ void BattleState::update(float delta){
 				add_object(battleEnd);
 			}
 		}
+	}
+
+	if(not alive[0] && not alive[1] && not alive[2] && not alive[3] && not game_over){
+		game_over = true;
+		battleEnd = new BattleEnd(3);
+		add_object(battleEnd);
 	}
 
 	if(not alive[0] && not alive[1] && not game_over){
