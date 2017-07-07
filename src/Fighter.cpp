@@ -56,7 +56,7 @@ Fighter::~Fighter(){
 }
 
 void Fighter::process_input(){
-	if(not tags["game_over"]){
+	if(not is("game_over")){
 		InputManager * input_manager = InputManager::get_instance();
 		vector< pair<int, int> > joystick_buttons = {
 			ii(JUMP_BUTTON, InputManager::A),
