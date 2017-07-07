@@ -86,7 +86,7 @@ void BattleState::update(float delta){
 
 	for(int i = 0; i < N_PLAYERS; i++){
 		if(alive[i]){
-			if(players[i]->is_dead()){
+			if(players[i]->is("dying")){
 				alive[i] = false;
 			}
 		}

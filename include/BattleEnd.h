@@ -1,7 +1,7 @@
 #ifndef BATTLEEND_H
 #define BATTLEEND_H
 
-#define N_SPRITES 3
+#define N_SPRITES 8
 
 #include "State.h"
 #include "Sprite.h"
