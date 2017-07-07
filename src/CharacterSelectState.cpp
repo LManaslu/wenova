@@ -49,10 +49,10 @@ CharacterSelectState::CharacterSelectState(string cselected_stage){
 		chars[i] = FighterMenu(get_char_info(i).first, get_char_info(i).second, i < 2);
 	}
 
-	name_tag_positions = { ii(91, 234), ii(92, 583), ii(956, 234), ii(955, 583) };
+	name_tag_positions = { ii(91, 145), ii(92, 494), ii(956, 145), ii(955, 494) };
 	number_delta = { ii(12, 9), ii(93, 9), ii(12, 101), ii(93, 101) };
-	name_delta = { ii(173, 63), ii(172, 65), ii(102, 64), ii(105, 64) };
-	sprite_pos = { ii(155, 32), ii(141, 379), ii(923, 34), ii(946, 381) };
+	name_delta = { ii(173, 152), ii(172, 154), ii(102, 153), ii(105, 153) };
+	sprite_pos = { ii(125, 32), ii(121, 379), ii(943, 34), ii(956, 381) };
 
 	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
 }
