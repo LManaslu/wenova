@@ -49,12 +49,10 @@ void StageSelectState::update(float delta) {
 	}
 
 	if(pressed[LEFT]) {
-		selected.play();
 		update_stage_select(-1);
 	}
 
 	if(pressed[RIGHT]) {
-		selected.play();
 		update_stage_select(1);
 	}
 
@@ -87,8 +85,17 @@ void StageSelectState::render() {
 
 void StageSelectState::update_stage_select(int increment) {
 	stage_select += increment;
-	if(stage_select < 0) stage_select = 0;
-	if(stage_select > n_stages - 1) stage_select = n_stages - 1;
+	if(stage_select < 0){
+		blocked.play();
+		stage_select = 0;
+	}
+	else if(stage_select > n_stages - 1){
+		blocked.play();
+		stage_select = n_stages - 1;
+	}
+	else{
+		selected.play();
+	}
 }
 
 void StageSelectState::process_input(){
