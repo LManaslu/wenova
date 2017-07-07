@@ -29,10 +29,13 @@
 #define LIGHT_GREEN { 181, 201, 60, 1 }
 #define BLUE { 0, 108, 166, 1 }
 
-JoystickConfigState::JoystickConfigState(int joystick_id){
+JoystickConfigState::JoystickConfigState(int joystick_id, bool ckeyboard){
 	Mix_AllocateChannels(50);
 
+	is_keyboard = ckeyboard;
+
 	background = Sprite("joysticks/help/background.png");
+	keyboard = Sprite("joysticks/help/keyboard_help.png");
 	joystick_help = Sprite("joysticks/help/controls_help.png");
 	test_btn = Sprite("joysticks/help/a.png");
 	back_btn = Sprite("joysticks/help/b.png");
@@ -115,7 +118,9 @@ void JoystickConfigState::update(float delta){
 			return;
 		}
 
-		if(input_manager->joystick_button_press(InputManager::A, 0)){
+		if(input_manager->joystick_button_press(InputManager::A, 0) &&
+			not is_keyboard
+		){
 			selected.play();
 			on_test = true;
 		}
@@ -126,10 +131,16 @@ void JoystickConfigState::update(float delta){
 
 void JoystickConfigState::render(){
 	if(not on_test){
-		joystick_help.render(0, 0);
-		test_btn.render(914, 642);
+		if(!is_keyboard){
+			joystick_help.render(0, 0);
+			test_btn.render(914, 642);
+			test_txt->render();
+		}
+		else{
+			keyboard.render(0, 0);
+		}
+
 		back_btn.render(1094, 642);
-		test_txt->render();
 		back_txt->render();
 	}
 	else{
