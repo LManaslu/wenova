@@ -4,11 +4,13 @@
 #include "Config.h"
 
 Sound::Sound(){
+	file = "";
 	sound = nullptr;
 }
 
-Sound::Sound(string file){
-	this->open(file);
+Sound::Sound(string cfile){
+	file = cfile;
+	this->open(cfile);
 }
 
 void Sound::play(int times){
@@ -23,10 +25,14 @@ void Sound::stop(){
 	Mix_HaltChannel(channel);
 }
 
-void Sound::open(string file){
-	sound = Resources::get_sound(RES_FOLDER + file);
+void Sound::open(string cfile){
+	sound = Resources::get_sound(RES_FOLDER + cfile);
 }
 
 bool Sound::is_open(){
 	return sound != nullptr;
+}
+
+string Sound::get_file(){
+	return file;
 }
