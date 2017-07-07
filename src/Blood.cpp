@@ -30,7 +30,7 @@ Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fight
 	sprite[JUMP_ATK_NEUTRAL] = Sprite(path + "jump_atk_neutral.png", 5, 10);
 	sprite[JUMP_ATK_UP] = Sprite(path + "jump_atk_up.png", 4, 10);
 	sprite[DEFENDING] = Sprite(path + "defending.png", 2, 10);
-	sprite[STUNT] = Sprite(path + "stunt.png", 2, 10);
+	sprite[STUNNED] = Sprite(path + "stunned.png", 2, 10);
 	sprite[SPECIAL_1_1] = Sprite(path + "special_1_1.png", 7, 10);
 	sprite[SPECIAL_1_2] = Sprite(path + "special_1_2.png", 11, 10);
 	sprite[SPECIAL_2] = Sprite(path + "special_2.png", 8, 10);
@@ -174,7 +174,7 @@ void Blood::update_machine_state(float delta){
 			}
 		break;
 
-		case FighterState::STUNT:
+		case FighterState::STUNNED:
 			attack_damage = 0;
 			attack_mask = 0;
 			if(sprite[state].is_finished()){
@@ -455,9 +455,9 @@ void Blood::check_defense(bool change){
     }
 }
 
-void Blood::check_stunt(bool change){
+void Blood::check_stunned(bool change){
 	speed.x = 0;
-	if(change) temporary_state = FighterState::STUNT;
+	if(change) temporary_state = FighterState::STUNNED;
 }
 
 void Blood::check_special_1_1(bool change){

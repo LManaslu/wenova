@@ -84,6 +84,12 @@ void BattleState::update(float delta){
 		return;
 	}
 
+	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
+		Game::get_instance().push(new MenuState(true));
+		m_quit_requested = true;
+		return;
+	}
+
 	for(int i = 0; i < N_PLAYERS; i++){
 		if(alive[i]){
 			if(players[i]->is("dying")){
