@@ -123,6 +123,7 @@ void Flesh::update_machine_state(float){
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
+				check_fall();
 				check_defense();
 				check_crouch();
 			}
@@ -382,6 +383,7 @@ void Flesh::check_idle_atk_neutral_3(bool change){
 
 void Flesh::check_idle_atk_front(bool change, bool condition){
 	if((pressed[ATTACK_BUTTON] and (is_holding[LEFT_BUTTON] or is_holding[RIGHT_BUTTON])) or condition){
+		speed.y = 0;
 		if(change) temporary_state = FighterState::IDLE_ATK_FRONT;
 		if(not condition) orientation = is_holding[LEFT_BUTTON] ? Orientation::LEFT : Orientation::RIGHT;
 	}
