@@ -93,11 +93,9 @@ void BattleState::update(float delta){
 	}
 
 	if(not alive[0] && not alive[1] && not game_over){
-		printf("time 2 ganhou\n");
 		game_over = true;
 		add_object(new BattleEnd(2));
 	}else if(not alive[2] && not alive[3] && not game_over){
-		printf("time 1 ganhou\n");
 		game_over = true;
 		add_object(new BattleEnd(1));
 	}

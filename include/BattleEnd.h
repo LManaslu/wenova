@@ -5,6 +5,7 @@
 
 #include "State.h"
 #include "Sprite.h"
+#include "Text.h"
 
 #include <string>
 #include <vector>
@@ -27,6 +28,9 @@ class BattleEnd : public GameObject{
 		vector <Sprite> sprite;
 
 		int current_sprite;
+
+		Sprite back_btn;
+		Text *back_txt;
 };
 
 #endif
