@@ -9,6 +9,7 @@
 #include "Sound.h"
 #include "Fighter.h"
 #include "Vector.h"
+#include "TimeCounter.h"
 
 #include <vector>
 #include <utility>
@@ -25,7 +26,9 @@ private:
 	Music music;
 	Sound sound;
 	void read_level_design(string stage);
-	bool alive[5], game_over;
+	bool game_over;
+	int alive[5];
+	TimeCounter *time_counter;
 
 public:
 	BattleState(string stage, vector< pair<string, string> > players_info);
