@@ -6,6 +6,7 @@
 #include "Text.h"
 #include "Timer.h"
 #include "Music.h"
+#include "Sound.h"
 #include "Fighter.h"
 #include "Vector.h"
 
@@ -20,10 +21,11 @@ private:
 	vector<pair<Sprite, Vector> > backgrounds;
 	vector <Fighter *> fighters;
 	Music music;
+	Sound sound;
 	void read_level_design(string stage);
 
 public:
-	BattleState(string stage, string cmusic, vector< pair<string, string> > players_info);
+	BattleState(string stage, vector< pair<string, string> > players_info);
 	~BattleState();
 
 	void update(float delta);

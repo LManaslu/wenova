@@ -25,6 +25,12 @@ EditState::EditState(string cstage) : stage(cstage){
 	test_fighter = new Blood("test", WIDTH/2, HEIGHT/2 - 200, joystick_id);
 	add_object(test_fighter);
 
+	music = Music("stage_" + stage + "/music.ogg");
+	sound = Sound("stage_" + stage + "/sound.ogg");
+
+	music.play();
+	sound.play(-1);
+
 	read_level_design();
 	InputManager::get_instance()->set_analogic_value(20000);
 	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::BATTLE_MODE);
@@ -40,6 +46,8 @@ void EditState::update(float delta){
 
 	// leave edit state
 	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
+		music.stop();
+		sound.stop();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState());
 		return;

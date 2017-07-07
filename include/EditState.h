@@ -5,6 +5,8 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "Timer.h"
+#include "Music.h"
+#include "Sound.h"
 #include "Fighter.h"
 #include "Vector.h"
 
@@ -19,6 +21,8 @@ private:
 	vector<pair<Sprite, Vector> > backgrounds;
 	Fighter * test_fighter;
 	string stage;
+	Music music;
+	Sound sound;
 
 	void read_level_design();
 	void update_level_design();
