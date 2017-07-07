@@ -41,6 +41,10 @@ bool TimeCounter::is_dead(){
 	return false;
 }
 
+bool TimeCounter::is_over(){
+	return remaining_seconds <= 0;
+}
+
 void TimeCounter::notify_collision(GameObject &){
 
 }

@@ -8,7 +8,6 @@
 #include "Floor.h"
 #include "MenuState.h"
 #include "FighterStats.h"
-#include "TimeCounter.h"
 #include "Config.h"
 #include "Blood.h"
 #include "Flesh.h"
@@ -22,7 +21,7 @@ using std::to_string;
 
 BattleState::BattleState(string stage, vector< pair<string, string> > players_info){
 	game_over = false;
-	memset(alive, true, sizeof alive);
+	memset(alive, 1, sizeof alive);
 
 	music = Music("stage_" + stage + "/music.ogg");
 	sound = Sound("stage_" + stage + "/sound.ogg");
@@ -67,7 +66,8 @@ BattleState::BattleState(string stage, vector< pair<string, string> > players_in
 		add_object(players[i]);
 	}
 
-	add_object(new TimeCounter());
+	time_counter = new TimeCounter();
+	add_object(time_counter);
 
 	InputManager::get_instance()->set_analogic_value(20000);
 	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::BATTLE_MODE);
@@ -89,6 +89,35 @@ void BattleState::update(float delta){
 			if(players[i]->is_dead()){
 				alive[i] = false;
 			}
+		}
+	}
+
+	if(time_counter->is_over() && not game_over){
+		game_over = true;
+	
+		if(alive[0] + alive[1] > alive[2] + alive[3])
+			add_object(new BattleEnd(1));
+		else if(alive[2] + alive[3] > alive[0] + alive[1])
+			add_object(new BattleEnd(2));
+		else{
+			int sum_life_team_1 = 0;
+			for(int i = 0; i < N_PLAYERS / 2; i++){
+				if(alive[i])
+					sum_life_team_1 += players[i]->get_remaining_life();
+			}
+
+			int sum_life_team_2 = 0;
+			for(int i = N_PLAYERS / 2; i < N_PLAYERS; i++){
+				if(alive[i])
+					sum_life_team_2 += players[i]->get_remaining_life();
+			}
+
+			if(sum_life_team_1 > sum_life_team_2)
+				add_object(new BattleEnd(1));
+			else if(sum_life_team_2 > sum_life_team_1)
+				add_object(new BattleEnd(2));
+			else
+				add_object(new BattleEnd(3));
 		}
 	}
 

@@ -20,7 +20,6 @@ BattleEnd::BattleEnd(int id_winner){
 	}
 
 	current_sprite = 1;
-	printf("entrei\n");
 }
 
 void BattleEnd::update(float delta){

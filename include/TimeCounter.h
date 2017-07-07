@@ -21,6 +21,8 @@ class TimeCounter : public GameObject{
 
 		bool is_dead();
 
+		bool is_over();
+
 		void notify_collision(GameObject &object);
 
 		static const int total_time = 100;
