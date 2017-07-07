@@ -6,7 +6,7 @@
 
 Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighter(cid, x, cpartner){
 	path = "characters/flesh/" + skin + "/";
-	string sound_path = "characters/flesh/sound/";
+	sound_path = "characters/flesh/sound/";
 
 	sprite[IDLE] = Sprite(path + "idle.png", 8, 10);
 	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
@@ -29,7 +29,24 @@ Flesh::Flesh(string skin, float x, float y, int cid, Fighter *cpartner) : Fighte
 	sprite[DYING] = Sprite(path + "dying.png", 10, 10);
 	sprite[DEFENDING] = Sprite(path + "defense.png", 2, 10);
 
+	sound[JUMPING] = Sound(sound_path + "jump.ogg");
+	sound[IDLE_ATK_NEUTRAL_1] = Sound(sound_path + "attack_1.ogg");
+	sound[IDLE_ATK_NEUTRAL_2] = Sound(sound_path + "attack_2.ogg");
+	sound[IDLE_ATK_NEUTRAL_3] = Sound(sound_path + "attack_3.ogg");
+	sound[IDLE_ATK_UP] = Sound(sound_path + "slash.ogg");
+	sound[IDLE_ATK_FRONT] = Sound(sound_path + "slash.ogg");
+	sound[IDLE_ATK_DOWN] = Sound(sound_path + "attack_1.ogg");
+	sound[JUMP_ATK_UP] = Sound(sound_path + "attack_1.ogg");
+	sound[JUMP_ATK_DOWN_DMG] = Sound(sound_path + "slash.ogg");
+	sound[JUMP_ATK_NEUTRAL] = Sound(sound_path + "attack_2.ogg");
+	sound[CROUCH_ATK] = Sound(sound_path + "attack_2.ogg");
+
+	ultimate_sound = Sound(sound_path + "ultimate.ogg");
 	land_sound = Sound(sound_path + "land.ogg");
+	hit_sounds[0] = Sound(sound_path + "hit_slash.ogg");
+	hit_sounds[1] = Sound(sound_path + "hit_1.ogg");
+	hit_sounds[2] = Sound(sound_path + "hit_2.ogg");
+	hit_sounds[3] = Sound(sound_path + "hit_3.ogg");
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
@@ -149,7 +166,7 @@ void Flesh::update_machine_state(float){
 		case FighterState::JUMP_ATK_DOWN_DMG:
 			speed.x = (INITIAL_SPEED + 1 + additional_speed) * (orientation == LEFT ? -1 : 1);
 			speed.y = (INITIAL_SPEED + 1 + additional_speed);
-			if(sprite[state].is_finished()){
+			if(sprite[state].is_finished() or on_floor){
 				speed.x = 0;
 				check_idle();
 				check_crouch();
@@ -192,8 +209,8 @@ void Flesh::update_machine_state(float){
 			combo = 0;
 			attack_mask = attack_damage = 0;
 			check_jump();
-			check_left();
-			check_right();
+			check_left(on_floor);
+			check_right(on_floor);
 			check_idle_atk_down();
 			check_crouch();
 			check_fall();
@@ -393,6 +410,7 @@ void Flesh::check_ultimate(bool) {
 	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL){
 		MAX_LIFE += 500;
 		Game::get_instance().get_current_state().add_object(new FleshUltimateEffect(this, path + "ult_effect.png", "has_sprite", 1));
+		ultimate_sound.play();
 	}
 }
 
