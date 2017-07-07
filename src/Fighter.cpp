@@ -38,6 +38,7 @@ Fighter::Fighter(int cid, float x, Fighter * cpartner){
 	sound = vector<Sound>(LAST);
 	temporary_state = state;
 	pass_through_timer.set(100);
+	played = false;
 
 	orientation = (x > 640 ? LEFT : RIGHT);
 
@@ -147,6 +148,7 @@ void Fighter::notify_collision(GameObject & object){
 			int position_mask = left | right | up | down;
 			if(position_mask & get_attack_mask()){
 				grab = true;
+				play_hit();
 				this->increment_special((attack_damage / 2) * not_in_ultimate);
 			}
 		}
@@ -182,12 +184,13 @@ void Fighter::change_state(FighterState cstate){
 	if(state == cstate) return;
 
 	float old_height = box.height;
+	played = false;
 
 	if((state == FALLING or state == JUMPING) and (cstate == IDLE or cstate == RUNNING))
 		land_sound.play();
 	state = cstate;
 	Vector csize;
-	if(cstate == CROUCH or cstate == CROUCH_ATK or cstate == SPECIAL_1) csize = crouching_size;
+	if(cstate == CROUCH or cstate == CROUCH_ATK or cstate == SPECIAL_1 or cstate == JUMP_ATK_DOWN_FALLLOOP or cstate == JUMP_ATK_DOWN_DMG) csize = crouching_size;
 	else csize = not_crouching_size;
 	float new_height = csize.y;
 
@@ -275,4 +278,16 @@ void Fighter::play_sound(){
 }
 int Fighter::get_max_life(){
 	return MAX_LIFE;
+}
+
+void Fighter::play_hit(){
+	if(played) return;
+	played = true;
+	string sound_file = sound[state].get_file();
+	int sound_index = -1;
+	if(sound_file == sound_path + "slash.ogg") sound_index = 0;
+	else if(sound_file == sound_path + "attack_1.ogg") sound_index = 1;
+	else if(sound_file == sound_path + "attack_2.ogg") sound_index = 2;
+	else if(sound_file == sound_path + "attack_3.ogg") sound_index = 3;
+	if(sound_index != -1) hit_sounds[sound_index].play();
 }
