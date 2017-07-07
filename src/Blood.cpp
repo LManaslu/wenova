@@ -12,7 +12,8 @@ using std::min;
 
 Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fighter(cid, x, cpartner){
 	path = "characters/blood/" + skin + "/";
-	string sound_path = "characters/blood/sound/";
+	sound_path = "characters/blood/sound/";
+	
 	sprite[IDLE] = Sprite(path + "idle.png", 12, 10);
 	sprite[RUNNING] = Sprite(path + "running.png", 8, 10);
 	sprite[JUMPING] = Sprite(path + "jumping.png", 6, 10);
@@ -49,7 +50,12 @@ Blood::Blood(string skin, float x, float y, int cid, Fighter * cpartner) : Fight
 	sound[SPECIAL_1_2] = Sound(sound_path + "special_1_2.ogg");
 	sound[SPECIAL_2] = Sound(sound_path + "heal.ogg");
 
+	ultimate_sound = Sound(sound_path + "ultimate.ogg");
 	land_sound = Sound(sound_path + "land.ogg");
+	hit_sounds[0] = Sound(sound_path + "hit_slash.ogg");
+	hit_sounds[1] = Sound(sound_path + "hit_1.ogg");
+	hit_sounds[2] = Sound(sound_path + "hit_2.ogg");
+	hit_sounds[3] = Sound(sound_path + "hit_3.ogg");
 
 	crouching_size = Vector(84, 59);
 	not_crouching_size = Vector(84, 84);
@@ -459,5 +465,6 @@ void Blood::check_dead(bool change) {
 void Blood::check_ultimate() {
 	if(pressed[ULTIMATE_BUTTON] and special == MAX_SPECIAL) {
 		Game::get_instance().get_current_state().add_object(new UltimateEffect(this, path + "ult_effect.png", path + "aura.png", "has_sprite", 1));
+		ultimate_sound.play();
 	}
 }

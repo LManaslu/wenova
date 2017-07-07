@@ -20,11 +20,12 @@ protected:
 	enum AttackDirection{ATK_DOWN = 1, ATK_LEFT = 2, ATK_UP = 4, ATK_RIGHT = 8};
 	vector<Sprite> sprite;
 	vector<Sound> sound;
+	Sound hit_sounds[4];
 	FighterState state, temporary_state;
 	Orientation orientation;
 	Vector speed;
 	Vector acceleration;
-	Sound land_sound;
+	Sound land_sound, ultimate_sound;
 	Vector crouching_size, not_crouching_size;
 	float vertical_speed;
 	bool on_floor, grab;
@@ -49,9 +50,9 @@ protected:
 	bool is_holding[20];
 	bool released[20];
 
-	bool ultimate_ready;
+	bool ultimate_ready, played;
 
-	string path;
+	string path, sound_path;
 
 	void process_input();
 
@@ -84,6 +85,7 @@ public:
 
 	void change_state(FighterState cstate);
 	void reset_position(float x, float y);
+	void play_hit();
 
 	bool is_attacking();
 	float get_attack_damage();
