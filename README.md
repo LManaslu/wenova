@@ -16,3 +16,41 @@
 * [5. Time]()   
 
 ------------------------------------------------------------
+
+## 1. Descrição do Jogo
+
+
+## 2. Informações Gerais
+
+
+### 2.1. História
+
+
+### 2.2. Screenshots
+
+
+### 2.3. Gameplay
+
+
+## 3. Jogabilidade
+
+
+### 3.1. Objetivos
+
+
+### 3.2. Controles
+
+
+## 4. Outras Informações
+
+
+### 4.1. Dependências
+
+
+### 4.2. Instalação e Compilação
+
+
+### 4.3. Licença
+
+
+## 5. Time
