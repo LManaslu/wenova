@@ -36,7 +36,7 @@ OptionsState::OptionsState(){
 	for(unsigned i = 0; i < options.size(); ++i){
 		current_sub_option.push_back(get_current_sub_option(i));
 	}
-	
+
 	InputManager::get_instance()->map_keyboard_to_joystick(InputManager::MENU_MODE);
 }
 
@@ -113,6 +113,11 @@ void OptionsState::update(float){
 				Game::get_instance().push(new JoystickConfigState(0));
 				return;
 			}
+			else if(current_option == 3){ // keyboard controls
+				m_quit_requested = true;
+				Game::get_instance().push(new JoystickConfigState(0, true));
+				return;
+			}
 			else{
 				on_submenu = true;
 				current_sub_option[current_option] = get_current_sub_option(current_option);
@@ -145,11 +150,17 @@ void OptionsState::update(float){
 	for(int i=0; i<(int)options.size(); i++){
 		Text* cur_text = options[i];
 
-		int prev_text_size = (i ? sub_options[options[i-1]->get_text()].size() : 1);
+		int prev_text_size = 1;
+
+		if(i) prev_text_size = max((int)sub_options[options[i-1]->get_text()].size(), 1);
 		int prev_text_height = (TEXT_HEIGHT + TEXT_OFFSET * 2) * prev_text_size;
 
 		int text_x = 250;
 		int text_y = (i ? options[i-1]->get_y() + prev_text_height : 200);
+
+		printf("prev_text_size: %d\nprev_text_height: %d\n", prev_text_size, prev_text_height);
+
+		printf("i: %d, text_y %d, name: [%s]\n", i, text_y, cur_text->get_text().c_str());
 
 		cur_text->set_pos(text_x, text_y, false, false);
 
@@ -213,7 +224,8 @@ void OptionsState::build_options(){
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "SCREEN RESOLUTION", WHITE, 100, 200));
 	options.back()->set_pos(100, 200, false, false);
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "FULLSCREEN", WHITE));
-	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "CONTROLS", WHITE));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "JOYSTICK", WHITE));
+	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "KEYBOARD", WHITE));
 	options.push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "BACK", WHITE));
 
 	sub_options["SCREEN RESOLUTION"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "800 x 600", WHITE));
@@ -224,14 +236,6 @@ void OptionsState::build_options(){
 
 	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "OFF", WHITE));
 	sub_options["FULLSCREEN"].push_back(new Text("font/8-BIT WONDER.ttf", 30, Text::TextStyle::SOLID, "ON", WHITE));
-}
-
-void OptionsState::pause(){
-
-}
-
-void OptionsState::resume(){
-
 }
 
 int OptionsState::get_current_sub_option(int option){
@@ -245,7 +249,8 @@ int OptionsState::get_current_sub_option(int option){
 			sub_option++;
 		}
 		return 0;
-	}else{ //fullscreen
+	}
+	else{ //fullscreen
 		return Config::is_fullscreen();
 	}
 }
@@ -253,7 +258,6 @@ int OptionsState::get_current_sub_option(int option){
 void OptionsState::process_input(){
 	InputManager * input_manager = InputManager::get_instance();
 
-	//MENU BUTTONS HERE
 	vector< pair<int, int> > joystick_buttons = {
 		ii(A, InputManager::A),
 		ii(B, InputManager::B),
@@ -266,4 +270,10 @@ void OptionsState::process_input(){
 	for(ii button : joystick_buttons){
 		pressed[button.first] = input_manager->joystick_button_press(button.second, 0);
 	}
+}
+
+void OptionsState::pause(){
+}
+
+void OptionsState::resume(){
 }
