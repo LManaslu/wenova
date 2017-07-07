@@ -15,7 +15,7 @@ BattleEnd::BattleEnd(int id_winner){
 
 	sprite = vector<Sprite>(N_SPRITES + 2);
 
-	string path = "victory/" + to_string(id_winner) + "/"; 
+	string path = "victory/" + to_string(id_winner) + "/";
 
 	for(int i = 1; i <= N_SPRITES; i++){
 		sprite[i] = Sprite(path + to_string(i) + ".png", 1, 5);
@@ -31,14 +31,16 @@ void BattleEnd::update(float delta){
 
 	if(sprite[current_sprite].is_finished()){
 		if(back_selected && current_sprite > 1)
-			current_sprite--;	
+			current_sprite--;
 		else if(not back_selected && current_sprite < N_SPRITES)
 			current_sprite++;
 	}
 
 	InputManager * input_manager = InputManager::get_instance();
 
-	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
+	if(input_manager->joystick_button_press(InputManager::SELECT, 0) ||
+		input_manager->joystick_button_press(InputManager::B, 0)
+	){
 		for(int i = 1; i <= N_SPRITES; i++)
 			sprite[i].restart_count();
 

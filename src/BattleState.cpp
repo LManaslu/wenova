@@ -85,6 +85,7 @@ void BattleState::update(float delta){
 	}
 
 	if(input_manager->joystick_button_press(InputManager::SELECT, 0)){
+		music.stop();
 		Game::get_instance().push(new MenuState(true));
 		m_quit_requested = true;
 		return;

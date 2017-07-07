@@ -97,6 +97,7 @@ Nessa grande exploração espacial e procura de novos mundos, esses dois encontr
 
 ### 2.3. Gameplay
 
+O gameplay deste jogo pode ser acessado por este [link](https://youtu.be/oDbqc0H2Fv4).
 
 ## 3. Jogabilidade
 
