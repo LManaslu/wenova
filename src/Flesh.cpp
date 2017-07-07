@@ -96,7 +96,7 @@ void Flesh::update_machine_state(float){
 		break;
 
 		case FighterState::IDLE_ATK_NEUTRAL_2:
-			attack_damage = (5 * additional_attack_damage) * (sprite[state].get_current_frame() == 1);
+			attack_damage = (1 * additional_attack_damage) * (sprite[state].get_current_frame() == 1);
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
@@ -109,7 +109,7 @@ void Flesh::update_machine_state(float){
 		break;
 
 		case FighterState::IDLE_ATK_NEUTRAL_3:
-			attack_damage = 4 * additional_attack_damage;
+			attack_damage = 1 * additional_attack_damage;
 			attack_mask = get_attack_orientation();
 			if(sprite[state].is_finished()){
 				check_idle();
