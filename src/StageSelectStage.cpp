@@ -16,6 +16,10 @@ StageSelectState::StageSelectState(bool cgo_to_edit) {
 	go_to_edit = cgo_to_edit;
 	n_stages = 2 + (go_to_edit ? 0 : 1);
 
+	blocked = Sound("menu/sound/cancel.ogg");
+	selected = Sound("menu/sound/select.ogg");
+	changed = Sound("menu/sound/cursor.ogg");
+
 	for(int i=0;i<N_BACKGROUNDS;i++){
 		background[i] = Sprite("stage_select/background_" + to_string(i) + ".png");
 	}
@@ -38,20 +42,24 @@ void StageSelectState::update(float delta) {
 	}
 
 	if(pressed[B] || pressed[SELECT]) {
+		selected.play();
 		m_quit_requested = true;
 		Game::get_instance().push(new MenuState(true));
 		return;
 	}
 
 	if(pressed[LEFT]) {
+		selected.play();
 		update_stage_select(-1);
 	}
 
 	if(pressed[RIGHT]) {
+		selected.play();
 		update_stage_select(1);
 	}
 
 	if(pressed[A] || pressed[START]) {
+		selected.play();
 		m_quit_requested = true;
 		if(stage_select == 2){
 			srand(clock());
