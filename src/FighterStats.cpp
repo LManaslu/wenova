@@ -18,32 +18,32 @@ FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side,
 	bg[0] = Sprite("hud/life" + to_string(index_fighter) + "_frame.png");
 	bg[1] = bg[2] = Sprite("hud/life" + to_string(index_fighter) + 
 		"_frame.png");
-	if(is_ultimate_diff) bg[2] = Sprite("hud/life" + to_string(index_fighter) 
+	if (is_ultimate_diff) bg[2] = Sprite("hud/life" + to_string(index_fighter) 
 		+ "_frame_ultimate.png");
 
 	//Left
-	if(side == 0){
+	if (side == 0) {
 		empty_bg[0] = Sprite("hud/empty_background.png");
 		empty_bg[1] = empty_bg[2] = Sprite("hud/empty_background.png");
-		if(is_ultimate_diff) empty_bg[2] = 
+		if (is_ultimate_diff) empty_bg[2] = 
 			Sprite("hud/empty_background_ultimate.png");
 		life[0] = life[2] = Sprite("hud/left_life.png");
 		life[1] = Sprite("hud/full_left_life.png");
-		if(is_ultimate_diff) life[2] = Sprite("hud/in_ultimate_left_life.png");
+		if (is_ultimate_diff) life[2] = Sprite("hud/in_ultimate_left_life.png");
 		special[0] = Sprite("hud/left_special_bar.png");
 		special[1] = Sprite("hud/full_left_special_bar.png");
 		special[2] = Sprite("hud/in_ultimate_left_special_bar.png");
 	}
 
 	//Right
-	if(side == 1){
+	if (side == 1) {
 		empty_bg[0] = Sprite("hud/empty_background.png");
 		empty_bg[1] = empty_bg[2] = Sprite("hud/empty_background.png");
-		if(is_ultimate_diff) empty_bg[2] = 
+		if (is_ultimate_diff) empty_bg[2] = 
 			Sprite("hud/empty_background_ultimate.png");
 		life[0] = life[2] = Sprite("hud/right_life.png");
 		life[1] = Sprite("hud/full_right_life.png");
-		if(is_ultimate_diff) life[2] = Sprite("hud/in_ultimate_right_life.png");
+		if (is_ultimate_diff) life[2] = Sprite("hud/in_ultimate_right_life.png");
 		special[0] = Sprite("hud/right_special_bar.png");
 		special[1] = Sprite("hud/full_right_special_bar.png");
 		special[2] = Sprite("hud/in_ultimate_right_special_bar.png");
@@ -59,16 +59,16 @@ FighterStats::~FighterStats(){
 }
 
 void FighterStats::update(float){
-	if(fighter) {
+	if (fighter) {
 		percent_to_draw_life = (fighter->get_remaining_life() * 1.0) / 
-		fighter->get_max_life();
+			fighter->get_max_life();
 		percent_to_draw_special = (fighter->get_special() * 1.0) / 
-		Fighter::MAX_SPECIAL;
+			Fighter::MAX_SPECIAL;
 
 		condition = (percent_to_draw_special == 1.0) ? 1 : 0;
-		if(fighter->is("in_ultimate")) condition = 2;
+		if (fighter->is("in_ultimate")) condition = 2;
 		//Left
-		if(side == 0){
+		if (side == 0) {
 			special[condition].set_clip(special[condition].get_width() * 
 				(1 - percent_to_draw_special) , 0, 
 				special[condition].get_width() * percent_to_draw_special, 
@@ -78,7 +78,7 @@ void FighterStats::update(float){
 		}
 
 		//Right
-		if(side == 1){
+		if (side == 1) {
 			special[condition].set_clip(0, 0, special[condition].get_width() 
 				* percent_to_draw_special, special[condition].get_height());
 			life[condition].set_clip(life[condition].get_width() * 
@@ -86,7 +86,7 @@ void FighterStats::update(float){
 				* percent_to_draw_life, life[condition].get_height());
 		}
 	}
-	if(fighter and fighter->is("dying")) {
+	if (fighter and fighter->is("dying")) {
 		player_image = Sprite(fighter->get_path() + "dead_miniature.png");
 		fighter = nullptr;
 	}
@@ -102,7 +102,7 @@ void FighterStats::render(){
 	int x_right_bg_offset = is_ultimate_diff and condition == 2 ? -30 : 0;
 	int x_right_ebg_offset = is_ultimate_diff and condition == 2 ? -22 : 0;
 	//Left
-	if(side == 0){
+	if (side == 0) {
 		special[condition].render(82, box.get_draw_y());
 
 		empty_bg[condition].render(82, box.get_draw_y() + 22 + offset + 
@@ -114,7 +114,7 @@ void FighterStats::render(){
 	}
 
 	//Right
-	if(side == 1){
+	if (side == 1) {
 		SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
 		special[condition].render(box.get_draw_x() - 12 + 
 			special[condition].get_width() * (1 - percent_to_draw_special), 
