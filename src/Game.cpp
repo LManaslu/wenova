@@ -17,8 +17,9 @@ Game::Game(string title){
 	Config::init();
 	int cwidth = Config::get_width();
 	int cheight = Config::get_height();
-
-	int sdl_init = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
+                                                                                
+	int sdl_init = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | 
+		SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
 	if(sdl_init){
 		printf("%s\n", SDL_GetError());
 		exit(-1);
@@ -31,13 +32,15 @@ Game::Game(string title){
 		exit(-1);
 	}
 
-	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, cwidth, cheight, 0);
+	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, 
+		SDL_WINDOWPOS_CENTERED, cwidth, cheight, 0);
 	if(window == nullptr){
 		printf("%s\n", SDL_GetError());
 		exit(-1);
 	}
 
-	if(Config::is_fullscreen()) SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	if(Config::is_fullscreen()) SDL_SetWindowFullscreen(window, 
+		SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(renderer == nullptr){
@@ -54,7 +57,8 @@ Game::Game(string title){
 		exit(-1);
 	}
 
-	int mix_open = Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024);
+	int mix_open = Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 
+		MIX_DEFAULT_CHANNELS, 1024);
 	if(mix_open){
 		printf("%s\n", SDL_GetError());
 		exit(-1);
@@ -70,7 +74,8 @@ Game::Game(string title){
 		printf("Warning: No joysticks connected!\n");
 	}
 
-	SDL_GameControllerAddMappingsFromFile((RES_FOLDER + "joysticks/gamecontrollerdb.txt").c_str());
+	SDL_GameControllerAddMappingsFromFile((RES_FOLDER + 
+		"joysticks/gamecontrollerdb.txt").c_str());
 
 	InputManager::get_instance()->connect_joysticks();
 
@@ -187,7 +192,7 @@ void Game::update_resolution() {
 		offset_x = 0;
 		offset_y = (1280 / w) * (h - height) / 2;
 	}
-
+                                                                                
 	InputManager::get_instance()->set_mouse_scale(1280 / w, offset_x, offset_y);
 }
 
