@@ -2,26 +2,36 @@
 #include "InputManager.h"
 
 using std::to_string;
-                                                                                
-//FIXME: Trocar side pra enum
-FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side, 
-	double p_x, double p_y){
+
+/** @file arquivo.h */
+
+/**
+ * Verify the fighter side and update the background acording
+ * to the life and ultimate stats.
+ */
+FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, 
+	int p_side, double p_x, double p_y){
 	fighter = p_fighter;
 	side = p_side;
-	x = p_x;
+	x = p_x; 
 	y = p_y;
 	percent_to_draw_life = 1.0;
 	index_fighter = p_index_fighter;
 
 	is_ultimate_diff = fighter->is("flesh");
 
+	/**
+	 * Create the fighter life bar and ultimate on the background.
+	*/
 	bg[0] = Sprite("hud/life" + to_string(index_fighter) + "_frame.png");
 	bg[1] = bg[2] = Sprite("hud/life" + to_string(index_fighter) + 
 		"_frame.png");
 	if (is_ultimate_diff) bg[2] = Sprite("hud/life" + to_string(index_fighter) 
 		+ "_frame_ultimate.png");
 
-	//Left
+	/**
+	 * Create the left side of the background life and ultimate.
+	*/
 	if (side == 0) {
 		empty_bg[0] = Sprite("hud/empty_background.png");
 		empty_bg[1] = empty_bg[2] = Sprite("hud/empty_background.png");
@@ -35,7 +45,9 @@ FighterStats::FighterStats(Fighter *p_fighter, int p_index_fighter, int p_side,
 		special[2] = Sprite("hud/in_ultimate_left_special_bar.png");
 	}
 
-	//Right
+	/**
+	 * Create the right side of the background life and ultimate.
+	*/
 	if (side == 1) {
 		empty_bg[0] = Sprite("hud/empty_background.png");
 		empty_bg[1] = empty_bg[2] = Sprite("hud/empty_background.png");
@@ -67,7 +79,10 @@ void FighterStats::update(float){
 
 		condition = (percent_to_draw_special == 1.0) ? 1 : 0;
 		if (fighter->is("in_ultimate")) condition = 2;
-		//Left
+		
+		/**
+		 * Update the left side of the background life and ultimate bar.
+		*/
 		if (side == 0) {
 			special[condition].set_clip(special[condition].get_width() * 
 				(1 - percent_to_draw_special) , 0, 
@@ -77,7 +92,9 @@ void FighterStats::update(float){
 				percent_to_draw_life, life[condition].get_height());
 		}
 
-		//Right
+		/**
+		 * Update the right side of the background life and ultimate bar.
+		*/
 		if (side == 1) {
 			special[condition].set_clip(0, 0, special[condition].get_width() 
 				* percent_to_draw_special, special[condition].get_height());
@@ -86,6 +103,10 @@ void FighterStats::update(float){
 				* percent_to_draw_life, life[condition].get_height());
 		}
 	}
+
+	/**
+	 * Update the player miniature if he is dead.
+	*/
 	if (fighter and fighter->is("dying")) {
 		player_image = Sprite(fighter->get_path() + "dead_miniature.png");
 		fighter = nullptr;
@@ -101,7 +122,10 @@ void FighterStats::render(){
 	int x_right_offset = is_ultimate_diff and condition == 2 ? -88 : 0;
 	int x_right_bg_offset = is_ultimate_diff and condition == 2 ? -30 : 0;
 	int x_right_ebg_offset = is_ultimate_diff and condition == 2 ? -22 : 0;
-	//Left
+	
+	/**
+	 * Render and draw the left side of the background life and ultimate.
+	*/
 	if (side == 0) {
 		special[condition].render(82, box.get_draw_y());
 
@@ -113,7 +137,9 @@ void FighterStats::render(){
 		bg[condition].render(box.get_draw_x(), box.get_draw_y() + y_offset);
 	}
 
-	//Right
+	/**
+	 * Render and draw the right side of the background life and ultimate.
+	*/
 	if (side == 1) {
 		SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
 		special[condition].render(box.get_draw_x() - 12 + 

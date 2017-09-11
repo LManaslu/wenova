@@ -7,7 +7,7 @@
 
 Game * Game::instance = nullptr;
 
-Game::Game(string title){
+Game::Game(string title) {
 	instance = instance ? instance : this;
 	frame_start = SDL_GetTicks();
 	delta = 0;
@@ -82,7 +82,7 @@ Game::Game(string title){
 	stored_state = nullptr;
 }
 
-Game::~Game(){
+Game::~Game() {
 	if (stored_state not nullptr) delete stored_state;
 
 	while(not state_stack.empty())
@@ -96,23 +96,23 @@ Game::~Game(){
 	SDL_Quit();
 }
 
-Game & Game::get_instance(){
+Game & Game::get_instance() {
 	return *instance;
 }
 
-SDL_Renderer * Game::get_renderer(){
+SDL_Renderer * Game::get_renderer() {
 	return renderer;
 }
 
-State & Game::get_current_state(){
+State & Game::get_current_state() {
 	return *(state_stack.top());
 }
 
-void Game::push(State * state){
+void Game::push(State * state) {
 	stored_state = state;
 }
 
-void Game::run(){
+void Game::run() {
 	if (stored_state not nullptr) {
 		state_stack.emplace(stored_state);
 		get_current_state().load_assets();
@@ -136,7 +136,7 @@ void Game::run(){
 	}
 }
 
-void Game::calculate_delta_time(){
+void Game::calculate_delta_time() {
 	int new_frame_start = SDL_GetTicks();
 
 	delta = std::min((new_frame_start - frame_start)/10.0, 1.0);
@@ -144,11 +144,11 @@ void Game::calculate_delta_time(){
 	frame_start = new_frame_start;
 }
 
-float Game::get_delta_time(){
+float Game::get_delta_time() {
 	return delta;
 }
 
-void Game::manage_stack(){
+void Game::manage_stack() {
 	if (get_current_state().quit_requested()) {
 		state_stack.pop();
 		Resources::clear_images();
@@ -193,12 +193,12 @@ void Game::update_resolution() {
 	InputManager::get_instance()->set_mouse_scale(1280 / w, offset_x, offset_y);
 }
 
-void Game::change_resolution(int cwidth, int cheight){
+void Game::change_resolution(int cwidth, int cheight) {
 	SDL_SetWindowSize(window, cwidth, cheight);
 	update_resolution();
 }
 
-void Game::set_fullscreen(bool on){
+void Game::set_fullscreen(bool on) {
 	Config::update_information(width, height, (int) on);
 	SDL_SetWindowFullscreen(window, on ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 	update_resolution();
