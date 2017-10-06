@@ -4,6 +4,7 @@
 #include "Config.h"
 
 #include <cstdlib>
+#include <ctime>
 
 Game * Game::instance = nullptr;
 

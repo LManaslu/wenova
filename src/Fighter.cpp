@@ -3,8 +3,10 @@
 #include "Floor.h"
 
 #include <algorithm>
-#include <cstdlib>
 #include <vector>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
 
 #define LAYER 0
 

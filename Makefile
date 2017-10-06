@@ -28,8 +28,10 @@ SDL_PATH = C:\SDL-2.0.5
 
 INCLUDES = -Iinclude/ -I$(SDL_PATH)\include
 
-LIBS = -L $(SDL_PATH)\lib -lSDL2main\
-	   -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lm
+LIBS = -L $(SDL_PATH)\lib\
+	   -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lm
+
+CFLAGS += -mwindows -Wl,-subsystem,windows
 
 NAME := $(NAME).exe
 #--------------------------------------------------------------

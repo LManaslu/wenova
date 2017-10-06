@@ -4,9 +4,10 @@
 #include "EditState.h"
 #include "CharacterSelectState.h"
 #include "Game.h"
-#include <string>
 
+#include <string>
 #include <cstdlib>
+#include <ctime>
 
 using std::to_string;
 

@@ -7,6 +7,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <cstring>
 
 using std::string;
 using std::vector;
