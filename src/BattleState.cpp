@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <cstring>
 
 #include "InputManager.h"
 #include "Game.h"

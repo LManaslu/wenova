@@ -1,4 +1,4 @@
-#include "SDL_mixer.h"
+#include "SDL2/SDL_mixer.h"
 
 #include "JoystickConfigState.h"
 #include "InputManager.h"
