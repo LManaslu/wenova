@@ -208,7 +208,7 @@ A equipe responsável pelo desenvolvimento do jogo ***Wenova - Rise of Conqueror
 ### Desenvolvimento
 * Igor Ribeiro Barbosa Duarte
 * João Paulo Busche da Cruz
-* João Vítor Araujo Moura
+* João Vitor Araujo Moura
 * Vítor Barbosa de Araujo
 
 ### Arte
