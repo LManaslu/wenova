@@ -88,7 +88,7 @@ void EditState::update(float delta){
 	}
 
 	// output
-	if(input_manager->is_key_down(InputManager::K_O)){
+	if(input_manager->key_press(InputManager::K_O)){
 		printf("%f, %f\n", object_array[0].get()->box.x, object_array[0].get()->box.y);
 	}
 

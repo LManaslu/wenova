@@ -31,7 +31,7 @@ void EditableFloor::update(float delta){
 
 	if(input_manager->mouse_press(InputManager::LEFT_MOUSE_BUTTON)){
 		int x = input_manager->get_mouse_x();
-      	int y = input_manager->get_mouse_y();
+		int y = input_manager->get_mouse_y();
 		Rectangle mouse = Rectangle(x, y, 1, 1);
 		selected = Collision::is_colliding(box, mouse, rotation, 0);
 	}
@@ -81,6 +81,7 @@ void EditableFloor::update(float delta){
 		// toggle floor
 		if(input_manager->key_press(InputManager::K_C)){
 			is_platform = !is_platform;
+			tags["platform"] = !tags["platform"];
 		}
 
 		// increase floor width
