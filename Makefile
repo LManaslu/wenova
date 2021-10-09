@@ -99,3 +99,6 @@ dist-clean: clean
 
 print-%:
 	@echo $* = $($*)
+
+docker-build:
+	sudo docker build -t vitorbaraujo/wenova .
